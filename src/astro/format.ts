@@ -9,6 +9,12 @@ export function fmtNum(x: number, digits = 2): string {
   return (s === `-${(0).toFixed(digits)}` ? s.slice(1) : s).replace('.', ',');
 }
 
+/** Cấp sao (và số có thể âm khác): dấu trừ thật U+2212 như các số âm còn lại, không thêm "+": −1,44 · 0,03. */
+export function fmtMag(x: number, digits = 2): string {
+  const s = fmtNum(x, digits);
+  return s.startsWith('-') ? `−${s.slice(1)}` : s;
+}
+
 export function fmtDeg(x: number, digits = 2): string {
   return `${fmtNum(x, digits)}°`;
 }

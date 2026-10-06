@@ -5,37 +5,57 @@ import { TASKS, type Task } from '../data/tasks';
 import { t } from '../i18n';
 import type { Actions, Store } from '../state';
 import { button, clear, h, newId } from './dom';
+import { isPlainObject, readJson, writeJson } from './storage';
 
-interface Progress {
-  [taskId: string]: { attempts: number; correct: boolean; hinted: boolean };
+export interface TaskProgress {
+  attempts: number;
+  correct: boolean;
+  hinted: boolean;
+}
+
+export interface Progress {
+  [taskId: string]: TaskProgress;
 }
 
 const STORAGE_KEY = 'thien-cau.hoc-tap.v1';
 
+const isTaskProgress = (v: unknown): v is TaskProgress =>
+  isPlainObject(v) && typeof v.attempts === 'number' && Number.isFinite(v.attempts) && typeof v.correct === 'boolean' && typeof v.hinted === 'boolean';
+
+/** Giữ lại các mục đúng dạng {attempts, correct, hinted}; bỏ mọi thứ khác (dữ liệu hỏng, null, mảng…). */
+export function sanitizeProgress(v: unknown): Progress {
+  const out: Progress = {};
+  if (!isPlainObject(v)) return out;
+  for (const [id, p] of Object.entries(v)) if (isTaskProgress(p)) out[id] = { attempts: p.attempts, correct: p.correct, hinted: p.hinted };
+  return out;
+}
+
 function loadProgress(): Progress {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as Progress) : {};
-  } catch {
-    return {};
-  }
+  return sanitizeProgress(readJson(STORAGE_KEY, isPlainObject, {}));
 }
 
 function saveProgress(p: Progress): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
-  } catch {
-    /* bộ nhớ trình duyệt không khả dụng: bỏ qua */
-  }
+  writeJson(STORAGE_KEY, p);
 }
 
 /** Điểm: đúng ngay lần đầu và không xem gợi ý = 2 điểm; đúng sau đó = 1 điểm. */
-function points(p: Progress[string] | undefined): number {
+export function points(p: TaskProgress | undefined): number {
   if (!p?.correct) return 0;
   return p.attempts <= 1 && !p.hinted ? 2 : 1;
 }
 
-export function learningDrawer(store: Store, actions: Actions) {
+/** Ghi nhận việc xem gợi ý. Xem gợi ý sau khi đã làm đúng không trừ điểm. */
+export function withHint(p: TaskProgress | undefined): TaskProgress {
+  const cur = p ?? { attempts: 0, correct: false, hinted: false };
+  return cur.correct ? cur : { ...cur, hinted: true };
+}
+
+export interface LearningOptions {
+  /** Phần tử nhận lại tiêu điểm khi đóng ngăn (thường là nút đã mở nó). */
+  returnFocus?: () => HTMLElement | null;
+}
+
+export function learningDrawer(store: Store, actions: Actions, opts: LearningOptions = {}) {
   let progress = loadProgress();
   const score = h('p', { class: 'learn__score', 'aria-live': 'polite' });
   const list = h('ol', { class: 'learn__list' });
@@ -128,9 +148,7 @@ export function learningDrawer(store: Store, actions: Actions) {
         button(t('learn.check'), () => check(), { cls: 'btn--primary' }),
         button(t('learn.hint'), () => {
           hintEl.hidden = false;
-          const p = progress[task.id] ?? { attempts: 0, correct: false, hinted: false };
-          p.hinted = true;
-          progress[task.id] = p;
+          progress[task.id] = withHint(progress[task.id]);
           saveProgress(progress);
           updateScore();
         }),
@@ -167,9 +185,11 @@ export function learningDrawer(store: Store, actions: Actions) {
   );
 
   const open = (v: boolean) => {
+    const wasOpen = !el.hidden;
     el.hidden = !v;
     document.body.classList.toggle('learn-open', v);
     if (v) (el.querySelector('h2') as HTMLElement)?.focus?.();
+    else if (wasOpen) opts.returnFocus?.()?.focus();
     window.dispatchEvent(new Event('resize'));
   };
   closeBtn.addEventListener('click', () => open(false));

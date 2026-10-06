@@ -6,9 +6,14 @@ import { DEG, fmtDeg } from '../astro';
 import { t } from '../i18n';
 import type { AppState, Store } from '../state';
 import { createEarthTexture } from './earth';
-import { COLORS, fatLine, greatArc, sectorGeometry, setFatLinePoints, translucent } from './geom';
+import { COLORS, dynamicFatLine, greatArcInto, sectorGeometry, translucent, writeFatLine } from './geom';
 import { makeLabel, setLabelText, type Label } from './labels';
-import { SKY_RADIUS, View } from './view';
+import { SKY_RADIUS, View, type KeepOutDisc } from './view';
+
+const _arc = new Float32Array(41 * 3);
+const _dir = new THREE.Vector3();
+const _hit = new THREE.Vector3();
+const _c = new THREE.Vector3();
 
 export class CelestialSphereView extends View {
   private earth: THREE.Mesh;
@@ -23,6 +28,16 @@ export class CelestialSphereView extends View {
   private lastLoc = '';
   private _ray = new THREE.Ray();
   private _sphere: THREE.Sphere;
+
+  /**
+   * Trình chiếu: khung thiên cầu thường hơi dọc (0,7 ≤ tỉ lệ < 0,9) nên góc nhìn 58° của điện thoại để trống một dải
+   * lớn bên dưới (review-2 H1). Khi trình chiếu, chọn góc nhìn để nửa góc ngang là 21,5° (≈ khung vuông 42° và một
+   * chút lề cho nhãn Đ/T) — thiên cầu to hơn mà vẫn trọn trong khung. Điện thoại không đổi.
+   */
+  protected preferredFov(aspect: number): number {
+    if (this.presenting && aspect >= 0.7 && aspect < 0.9) return (2 * Math.atan(Math.tan((21.5 * Math.PI) / 180) / aspect) * 180) / Math.PI;
+    return super.preferredFov(aspect);
+  }
 
   constructor(container: HTMLElement, store: Store) {
     const R = SKY_RADIUS;
@@ -40,7 +55,7 @@ export class CelestialSphereView extends View {
 
     this.earth = new THREE.Mesh(
       new THREE.SphereGeometry(this.earthR, 96, 64),
-      new THREE.MeshLambertMaterial({ map: createEarthTexture() }),
+      new THREE.MeshLambertMaterial({ map: createEarthTexture(() => (this.dirty = true)) }),
     );
     this.earth.userData.tip = 'earth';
     this.scene.add(this.earth);
@@ -60,7 +75,7 @@ export class CelestialSphereView extends View {
     this.tangent = new THREE.Mesh(new THREE.CircleGeometry(this.R * 0.17, 48), translucent(COLORS.horizon, 0.55));
     this.tangent.userData.tip = 'observerHorizon';
     this.observer.add(this.tangent);
-    const obsLabel = makeLabel(t('scene.observer'), 'poles', { cls: 'lbl--small', color: '#ffffff', hideBelowHorizon: false });
+    const obsLabel = makeLabel(t('scene.observer'), 'poles', { cls: 'lbl--small lbl--chip', color: '#ffffff', hideBelowHorizon: false });
     obsLabel.position.set(0, this.R * 0.06, 0);
     this.observerDot.add(obsLabel);
     this.scene.add(this.observer);
@@ -68,21 +83,23 @@ export class CelestialSphereView extends View {
     // Góc vĩ độ φ ở tâm Trái Đất
     this.latSector = new THREE.Mesh(new THREE.BufferGeometry(), translucent(COLORS.latitude, 0.35));
     this.latSector.userData.tip = 'latitude';
-    this.latArc = fatLine([new THREE.Vector3(), new THREE.Vector3(0, 1, 0)], COLORS.latitude, { width: 2.4, depthTest: false });
-    this.latLabel = makeLabel('', 'angles', { cls: 'lbl--angle', color: COLORS.latitude, hideBelowHorizon: false });
+    this.latArc = dynamicFatLine(41, COLORS.latitude, { width: 2.4, depthTest: false, boundsRadius: this.earthR * 1.7 });
+    this.latLabel = makeLabel('', 'angles', { cls: 'lbl--angle lbl--key', edge: COLORS.latitude, hideBelowHorizon: false, emph: 'pole' });
     this.latGroup.add(this.latSector, this.latArc, this.latLabel);
     this.scene.add(this.latGroup);
+    // Tô sáng "độ cao thiên cực": trục (SkyLayer) và góc vĩ độ φ ở tâm Trái Đất cùng đậm lên (review-1 F2).
+    this.emphasis.add('pole', this.latArc, this.latSector);
 
     this.update(store.state);
   }
 
-  protected onUpdate(s: AppState): void {
+  protected onUpdate(s: AppState, emphasis: string | null): void {
     const key = `${s.lat},${s.lon}`;
     if (key !== this.lastLoc) {
       this.lastLoc = key;
       this.placeObserver(s.lat, s.lon);
     }
-    this.latGroup.visible = s.toggles.poleAltitude;
+    this.latGroup.visible = s.toggles.poleAltitude || emphasis === 'pole';
   }
 
   private placeObserver(lat: number, lon: number): void {
@@ -97,19 +114,37 @@ export class CelestialSphereView extends View {
     const r = this.earthR * 1.6;
     this.latSector.geometry.dispose();
     this.latSector.geometry = Math.abs(lat) < 0.01 ? new THREE.BufferGeometry() : sectorGeometry(eqDir, up, r);
-    setFatLinePoints(this.latArc, Math.abs(lat) < 0.01 ? [eqDir.clone().multiplyScalar(r), up.clone().multiplyScalar(r * 1.001)] : greatArc(eqDir, up, r, 40));
+    writeFatLine(this.latArc, _arc, Math.abs(lat) < 0.01 ? greatArcInto(eqDir, eqDir, r, 1, _arc) : greatArcInto(eqDir, up, r, 40, _arc));
     const mid = new THREE.Vector3(0, Math.sin((lat / 2) * DEG), Math.cos((lat / 2) * DEG));
     this.latLabel.position.copy(mid.multiplyScalar(r * 1.25));
     setLabelText(this.latLabel, `φ = ${fmtDeg(lat)}`);
   }
 
+  /**
+   * Đĩa quả địa cầu trên màn hình (fix-2 #3): tâm = hình chiếu tâm Trái Đất, bán kính = bán kính góc asin(r/d) đổi ra
+   * px (cộng 4 px viền). Tên chòm sao chạm đĩa này bị ẩn — chúng từng in đè lên lục địa (VULPECULA, SAGITTA…).
+   * Không cấp phát.
+   */
+  protected keepOutDisc(out: KeepOutDisc, W: number, H: number): boolean {
+    const d = this.camera.position.length();
+    if (d <= this.earthR) return false;
+    _c.set(0, 0, 0).project(this.camera);
+    if (_c.z > 1) return false;
+    const a = Math.asin(this.earthR / d);
+    out.x = ((_c.x + 1) / 2) * W;
+    out.y = ((1 - _c.y) / 2) * H;
+    out.r = Math.tan(a) * this.camera.projectionMatrix.elements[5] * (H / 2) + 4;
+    return true;
+  }
+
   protected isOccluded(world: THREE.Vector3): boolean {
-    // Đoạn thẳng từ camera tới điểm có cắt Trái Đất không?
+    // Đoạn thẳng từ camera tới điểm có cắt Trái Đất không? (vectơ nháp, không cấp phát)
     const cam = this.camera.position;
-    const dir = world.clone().sub(cam);
-    const dist = dir.length();
-    this._ray.set(cam, dir.normalize());
-    const hit = this._ray.intersectSphere(this._sphere, new THREE.Vector3());
+    const dist = _dir.copy(world).sub(cam).length();
+    if (dist < 1e-9) return false;
+    this._ray.origin.copy(cam);
+    this._ray.direction.copy(_dir).divideScalar(dist);
+    const hit = this._ray.intersectSphere(this._sphere, _hit);
     return !!hit && hit.distanceTo(cam) < dist - 1e-3;
   }
 

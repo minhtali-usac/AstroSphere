@@ -3,14 +3,20 @@
 import { fmtHMS, fmtNum, SIDEREAL_DAY_SECONDS } from '../astro';
 import { t } from '../i18n';
 import { lstCont, lstOf, RATE_MAX, RATE_MIN, type Actions, type AnimMode, type Store } from '../state';
-import { button, h } from './dom';
+import { button, h, setText } from './dom';
 
-export function animationPanel(store: Store, actions: Actions): HTMLElement {
-  const playBtn = h('button', { type: 'button', class: 'btn btn--primary btn--play', 'aria-pressed': 'false', onclick: () => actions.togglePlay() });
+export interface AnimationPanel {
+  el: HTMLElement;
+  /** Cập nhật LST, thanh trượt và tiến độ một ngày (gọi từ nhịp giao diện của vòng lặp). */
+  tick(): void;
+}
+
+export function animationPanel(store: Store, actions: Actions): AnimationPanel {
+  const playBtn = h('button', { type: 'button', class: 'btn btn--play', 'aria-pressed': 'false', 'data-guide': 'play', onclick: () => actions.togglePlay() });
 
   const mode = h(
     'select',
-    { id: 'anim-mode', onchange: (e: Event) => actions.setMode((e.target as HTMLSelectElement).value as AnimMode) },
+    { id: 'anim-mode', 'data-guide': 'animMode', onchange: (e: Event) => actions.setMode((e.target as HTMLSelectElement).value as AnimMode) },
     h('option', { value: 'continuous', text: t('panel.animation.modeContinuous') }),
     h('option', { value: 'oneDay', text: t('panel.animation.modeOneDay') }),
     h('option', { value: 'stepHour', text: t('panel.animation.modeStep') }),
@@ -52,37 +58,66 @@ export function animationPanel(store: Store, actions: Actions): HTMLElement {
     h('h2', { id: 'h-anim', class: 'panel__title', text: t('panel.animation.title') }),
     h('div', { class: 'row' }, playBtn, h('label', { class: 'sr-only', htmlFor: 'anim-mode', text: t('panel.animation.mode') }), mode),
     progress,
-    h('div', { class: 'field' }, h('div', { class: 'field__head' }, h('label', { htmlFor: 'lst', text: t('panel.animation.lst') }), lstOut), lst, ticks),
+    h('div', { class: 'field', 'data-guide': 'lstSlider' }, h('div', { class: 'field__head' }, h('label', { htmlFor: 'lst', text: t('panel.animation.lst') }), lstOut), lst, ticks),
     h(
       'div',
-      { class: 'row row--wrap' },
+      { class: 'row row--wrap', 'data-guide': 'stepHour' },
       button(t('panel.animation.stepBack'), () => actions.stepHours(-1), { title: t('panel.animation.stepBackTip') }),
       button(t('panel.animation.stepForward'), () => actions.stepHours(1), { title: t('panel.animation.stepForwardTip') }),
       button(t('panel.animation.now'), () => actions.setNow(), { title: t('panel.animation.nowTip') }),
     ),
-    h('div', { class: 'field' }, h('div', { class: 'field__head' }, h('label', { htmlFor: 'rate', text: t('panel.animation.speed') }), rateOut), rate, h('div', { class: 'ticks', 'aria-hidden': 'true' }, h('span', { text: t('panel.animation.slow') }), h('span', { text: t('panel.animation.fast') }))),
+    h('div', { class: 'field', 'data-guide': 'rate' }, h('div', { class: 'field__head' }, h('label', { htmlFor: 'rate', text: t('panel.animation.speed') }), rateOut), rate, h('div', { class: 'ticks', 'aria-hidden': 'true' }, h('span', { text: t('panel.animation.slow') }), h('span', { text: t('panel.animation.fast') }))),
     rateNote,
     h('p', { class: 'note', text: t('panel.animation.siderealNote') }),
   );
 
-  const sync = () => {
+  // Các trường ít đổi: chỉ ghi khi nguồn của chúng thay đổi.
+  const syncPlaying = (playing: boolean) => {
+    setText(playBtn, playing ? t('panel.animation.pause') : t('panel.animation.play'));
+    playBtn.setAttribute('aria-pressed', String(playing));
+    // Đang chạy: "Tạm dừng" là nút phụ yên lặng, để đường đọc không dừng ở nút phát (review-1 B1–B3).
+    // Đang dừng: "Bắt đầu" là hành động chính (cam).
+    playBtn.classList.toggle('btn--primary', !playing);
+  };
+  const syncMode = (m: AnimMode) => {
+    if (mode.value !== m) mode.value = m;
+  };
+  const syncRate = (r: number) => {
+    const v = String(RATE_MAX + RATE_MIN - r);
+    if (rate.value !== v) rate.value = v;
+    setText(rateOut, t('panel.animation.speedValue', { s: r }));
+    setText(rateNote, t('panel.animation.speedNote', { x: fmtNum(SIDEREAL_DAY_SECONDS / r, 0) }));
+  };
+  store.subscribe((s, prev) => {
+    if (s.playing !== prev.playing) syncPlaying(s.playing);
+    if (s.mode !== prev.mode) syncMode(s.mode);
+    if (s.rate !== prev.rate) syncRate(s.rate);
+  });
+  syncPlaying(store.state.playing);
+  syncMode(store.state.mode);
+  syncRate(store.state.rate);
+
+  // Các trường đổi liên tục khi chạy: cập nhật theo nhịp giao diện, bỏ qua khi bảng đang ẩn
+  // (tab khác trên điện thoại, chế độ trình chiếu); lần gọi đầu tiên sau khi hiện lại sẽ ghi bù.
+  let lstText = '';
+  const tick = () => {
+    if (el.offsetParent === null) return;
     const s = store.state;
-    playBtn.textContent = s.playing ? t('panel.animation.pause') : t('panel.animation.play');
-    playBtn.setAttribute('aria-pressed', String(s.playing));
-    mode.value = s.mode;
-    rate.value = String(RATE_MAX + RATE_MIN - s.rate);
-    rateOut.textContent = t('panel.animation.speedValue', { s: s.rate });
-    rateNote.textContent = t('panel.animation.speedNote', { x: fmtNum(SIDEREAL_DAY_SECONDS / s.rate, 0) });
     const l = lstOf(s);
-    lstOut.textContent = fmtHMS(l);
-    if (document.activeElement !== lst || !s.playing) lst.value = String(Math.round((l / 15) * 60) % 1440);
-    lst.setAttribute('aria-valuetext', fmtHMS(l));
+    const text = fmtHMS(l);
+    if (text !== lstText) {
+      lstText = text;
+      lstOut.textContent = text;
+      lst.setAttribute('aria-valuetext', text);
+    }
+    if (document.activeElement !== lst || !s.playing) {
+      const v = String(Math.round((l / 15) * 60) % 1440);
+      if (lst.value !== v) lst.value = v;
+    }
     if (s.mode === 'oneDay') {
       const done = Math.min(1, Math.max(0, (lstCont(s) - s.runStartLst) / 360));
-      progress.textContent = t('panel.animation.oneDayProgress', { p: fmtNum(done * 100, 0) });
-    } else progress.textContent = '';
+      setText(progress, t('panel.animation.oneDayProgress', { p: fmtNum(done * 100, 0) }));
+    } else setText(progress, '');
   };
-  store.subscribe(sync);
-  sync();
-  return el;
+  return { el, tick };
 }

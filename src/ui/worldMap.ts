@@ -1,10 +1,19 @@
 // Bản đồ thế giới (phép chiếu trụ đều) để bấm/kéo chọn vị trí quan sát. Dữ liệu nội bộ, không cần mạng.
 
 import { fmtLat, fmtLon } from '../astro';
-import { drawLand } from '../data/land';
+import { drawLand, landRings, loadLand } from '../data/land';
 import { VN_PLACES } from '../data/places';
 import { t } from '../i18n';
 import { h } from './dom';
+
+/** Giá trị một token màu trong :root (styles.css); `fallback` khi chưa có CSS (vd. kiểm thử). */
+function cssToken(name: string, fallback: string): string {
+  try {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
+  } catch {
+    return fallback;
+  }
+}
 
 export class WorldMap {
   readonly el: HTMLDivElement;
@@ -13,6 +22,7 @@ export class WorldMap {
   private lat = 0;
   private lon = 0;
   private dragging = false;
+  private equatorColor = '';
   private onPick: (lat: number, lon: number) => void;
 
   constructor(onPick: (lat: number, lon: number) => void) {
@@ -26,6 +36,16 @@ export class WorldMap {
     });
     this.el = h('div', { class: 'worldmap' }, this.canvas);
     this.base = this.renderBase();
+    // Lục địa tải động: vẽ biển + lưới trước, vẽ lại nền khi dữ liệu tới.
+    if (!landRings()) {
+      loadLand().then(
+        () => {
+          this.base = this.renderBase();
+          this.draw(this.lat, this.lon);
+        },
+        (err) => console.error(err),
+      );
+    }
 
     const pick = (e: PointerEvent) => {
       const r = this.canvas.getBoundingClientRect();
@@ -99,17 +119,15 @@ export class WorldMap {
       ctx.stroke();
     }
     ctx.setLineDash([]);
-    ctx.strokeStyle = 'rgba(255,213,79,0.7)';
+    // Các địa điểm Việt Nam: chấm trắng trung tính (token --text) viền tối, nhỏ hơn ghim vị trí hiện tại (trắng viền
+    // đỏ). Không còn hồng: hồng là màu vòng thẳng đứng và độ cao trong cảnh (fix-3 #9).
+    ctx.fillStyle = cssToken('--text', '#f2f2f2');
+    ctx.strokeStyle = cssToken('--bg', '#0a0a0a');
     ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(0, y(0));
-    ctx.lineTo(w, y(0));
-    ctx.stroke();
-    // Các địa điểm Việt Nam
-    ctx.fillStyle = '#fca5a5';
     for (const p of VN_PLACES) {
       ctx.beginPath();
-      ctx.arc(x(p.lon!), y(p.lat), 4, 0, Math.PI * 2);
+      ctx.arc(x(p.lon!), y(p.lat), 5, 0, Math.PI * 2);
+      ctx.stroke();
       ctx.fill();
     }
     return c;
@@ -132,6 +150,16 @@ export class WorldMap {
     }
     const ctx = this.canvas.getContext('2d')!;
     ctx.drawImage(this.base, 0, 0, W, H);
+    // Xích đạo Trái Đất vẽ ở độ phân giải thật của canvas (không thu nhỏ từ ảnh nền 1440 px, nơi nét mảnh lúc
+    // hiện lúc mất tùy bề rộng): xám trung tính nét đứt (--map-equator), vì vàng là xích đạo trời (review-4 #10).
+    this.equatorColor ||= cssToken('--map-equator', '#a3a3a3');
+    ctx.strokeStyle = this.equatorColor;
+    ctx.lineWidth = 1.5 * dpr;
+    ctx.setLineDash([8 * dpr, 5 * dpr]);
+    ctx.beginPath();
+    ctx.moveTo(0, H / 2);
+    ctx.lineTo(W, H / 2);
+    ctx.stroke();
     const x = ((lon + 180) / 360) * W;
     const y = ((90 - lat) / 180) * H;
     ctx.strokeStyle = 'rgba(255,255,255,0.55)';

@@ -44,6 +44,22 @@ export function equatorialToHorizontal(
   return { ...hourAngleToHorizontal(ha, dec, lat), ha };
 }
 
+/**
+ * Như equatorialToHorizontal nhưng ghi (h, A) vào `out` — không cấp phát, dùng trong đường cập nhật mỗi khung hình
+ * của cảnh 3D (AGENTS.md: không cấp phát trong update()/frame()).
+ */
+export function equatorialToHorizontalInto(ra: number, dec: number, lat: number, lst: number, out: Horizontal): Horizontal {
+  const ha = norm180(lst - ra);
+  const sd = sinD(dec);
+  const cd = cosD(dec);
+  const sp = sinD(lat);
+  const cp = cosD(lat);
+  const ch = cosD(ha);
+  out.alt = asinD(sp * sd + cp * cd * ch);
+  out.az = norm360(atan2D(-cd * sinD(ha), sd * cp - cd * ch * sp));
+  return out;
+}
+
 export function hourAngleToHorizontal(ha: number, dec: number, lat: number): Horizontal {
   const sd = sinD(dec);
   const cd = cosD(dec);

@@ -1,21 +1,72 @@
 /* Mô phỏng hệ tọa độ thiên cầu — giao diện nền tối, tương phản cao. */
 
 :root {
-  --bg: #070b16;
-  --surface: #0d1427;
-  --surface-2: #131c34;
-  --surface-3: #1a2542;
-  --border: #253253;
-  --text: #e8edf7;
-  --muted: #a3b0cc;
-  --accent: #4f9dff;
-  --accent-strong: #2f7fe8;
-  --yellow: #ffd54f;
+  /* Thương hiệu CLB Thiên văn USAC (web-usac.vercel.app): một màu nhấn cam trên nền gần đen, chữ trắng, Arial. */
+  --accent: #f26522; /* 6,28:1 trên --bg */
+  --accent-hi: #ff8a4c; /* hover, liên kết trên nền tối */
+  --accent-a12: #f265221f;
+  --accent-a30: #f265224d;
+  --accent-a46: #f2652276; /* biến thể trong suốt của trang CLB */
+  --on-accent: #0a0a0a; /* chữ trên nền cam (trắng trên cam chỉ 3,15:1 — không đạt) */
+  --accent-on-light: #c94f12; /* chữ cam trên nền trắng (4,55:1) */
+
+  --bg: #0a0a0a;
+  --surface: #141414;
+  --surface-2: #1c1c1c;
+  --surface-3: #242424;
+  --surface-quiet: #101010; /* bề mặt phụ (dải số liệu, bảng điều khiển): gần nền hơn để giản đồ chân trời nổi lên */
+  --text-quiet: #d9d9d9; /* giá trị phụ (dải số liệu): 13,0:1 trên --surface-quiet, nhỏ giọng hơn chữ chính */
+  --border: #2e2e2e; /* chỉ để phân cách */
+  --border-control: #707070; /* viền ô nhập, hộp kiểm (≥ 3:1) */
+  --text: #f2f2f2;
+  --muted: #b3b3b3;
+  --subtle: #8c8c8c; /* cỡ chữ nhỏ nhất cho phép: 4,62:1 trên --surface-3 */
   --ok: #4ade80;
-  --err: #fb7185;
+  --err: #ff6b6b;
+
+  --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-hi); /* không dùng vàng: vàng là màu xích đạo trời */
+  --font: Arial, Helvetica, sans-serif;
+
+  --radius-sm: 6px;
   --radius: 10px;
-  --focus: 0 0 0 3px rgba(255, 213, 79, 0.85);
-  --font: system-ui, 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --tap: 44px;
+  --topbar-h: 56px;
+  --z-topbar: 30;
+  --z-sheet: 35;
+  --z-drawer: 40;
+  --z-toast: 60;
+  --shadow-sheet: 0 -8px 24px #00000080;
+
+  --shadow-pop: 0 10px 30px #00000073; /* thẻ nổi, chú thích, ngăn kéo */
+  --scrim: #000000b3; /* nền mờ sau hộp thoại */
+  --veil: #ffffff14; /* lớp phủ sáng nhẹ khi rê chuột */
+  --label-halo: #000; /* viền chữ cho nhãn trong cảnh 3D */
+  --label-pill: #0a0a0aa6; /* nền viên thuốc mờ sau mọi nhãn cảnh: đường kẻ đi dưới nhãn không cắt nét chữ */
+  --scene-label-dim: #d4d4d4; /* tên sao danh mục: 13,4:1 trên nền trời, 5,26:1 trên mặt đất xanh (cả khi không có viền) */
+
+  /* Màu ngữ nghĩa của cảnh 3D (trùng scene/colors.ts) — không đổi theo thương hiệu. */
+  --scene-dir: #bbf7d0; /* nhãn hướng B/Đ/N/T (xanh lá như chân trời) */
+  --zone-circumpolar: #8b5cf6;
+  --zone-riseset: #14b8a6;
+  --zone-neverrise: #ef4444;
+  /* Tên 88 chòm sao nền (review-4 G2): xám ấm cùng họ với đường nối (scene/colors.ts figureSky), không còn xanh
+     như trục thiên cực. 6,4:1 trên viên thuốc nhãn, độ mờ 1 (độ mờ phần tử làm viên thuốc trong suốt theo). */
+  --scene-allsky-name: #9a9283;
+  /* Viên thuốc đậm hơn cho tên sao và tên chòm (review-4 D2): đường nối chòm sao đi qua tên của chính nó không
+     còn cắt nét chữ (65 % → 85 %). */
+  --label-pill-strong: #0a0a0ad9;
+  /* Xích đạo Trái Đất trên bản đồ chọn vị trí (review-4 #10): xám trung tính, nét đứt. Không dùng vàng: vàng là
+     xích đạo trời trong cảnh. */
+  --map-equator: #a3a3a3;
+
   color-scheme: dark;
 }
 
@@ -67,13 +118,13 @@ select {
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 30;
+  z-index: var(--z-topbar);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
   padding: 8px 16px;
-  background: linear-gradient(180deg, #0b1224, #0a1020);
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
 }
 
@@ -101,10 +152,14 @@ select {
 }
 
 .brand__org {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.3px;
-  color: #93c5fd;
+  color: var(--muted);
+}
+
+.brand__short {
+  display: none;
 }
 
 .brand__name {
@@ -140,29 +195,30 @@ select {
 }
 
 .btn:hover {
-  background: #22305a;
-  border-color: #3a4b78;
+  border-color: var(--accent-hi);
 }
 
 .btn--primary {
-  background: var(--accent-strong);
+  background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
-  font-weight: 600;
+  color: var(--on-accent);
+  font-weight: 700;
 }
 
 .btn--primary:hover {
-  background: #3b8cf5;
+  background: var(--accent-hi);
+  border-color: var(--accent-hi);
 }
 
 .btn--danger {
-  border-color: #6b2c3a;
-  background: #2a1520;
-  color: #fecdd3;
+  border-color: color-mix(in srgb, var(--err) 45%, var(--surface));
+  background: color-mix(in srgb, var(--err) 10%, var(--surface));
+  color: var(--text);
 }
 
 .btn--danger:hover {
-  background: #3b1a28;
+  border-color: var(--err);
+  background: color-mix(in srgb, var(--err) 18%, var(--surface));
 }
 
 .btn--ghost {
@@ -185,9 +241,13 @@ select {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--veil);
   font-size: 12px;
   font-weight: 700;
+}
+
+.btn__icon svg {
+  display: block;
 }
 
 .btn--play {
@@ -196,7 +256,19 @@ select {
 }
 
 .btn[aria-pressed='true'] {
-  border-color: var(--yellow);
+  border-color: var(--accent);
+  background: var(--accent-a12);
+}
+
+.btn--primary[aria-pressed='true'] {
+  background: var(--accent);
+}
+
+/* Đang chạy: "Tạm dừng" là nút phụ yên lặng, không phải điểm dừng của mắt (review-1 B1–B3). */
+.btn--play[aria-pressed='true'] {
+  border-color: var(--border-control);
+  background: var(--surface-3);
+  font-weight: 600;
 }
 
 .icon-btn {
@@ -217,6 +289,27 @@ select {
   color: var(--text);
 }
 
+/* Nút mở/thu gọn thẻ thông tin (fix-2 #8): chevron chỉ xuống = "Chi tiết", xoay lên khi thẻ đang mở = "Thu gọn". */
+.infocard__fold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infocard__fold .chevron {
+  transition: transform 0.15s;
+}
+
+.infocard__fold[aria-expanded='true'] .chevron {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .infocard__fold .chevron {
+    transition: none;
+  }
+}
+
 .chip {
   min-height: 30px;
   padding: 4px 10px;
@@ -234,8 +327,8 @@ select {
 .layout {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  padding: 10px 16px 24px;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) var(--space-5);
   max-width: 1800px;
   margin: 0 auto;
   transition: margin-right 0.2s;
@@ -245,12 +338,16 @@ body.learn-open .layout {
   margin-right: 420px;
 }
 
+/* Giản đồ chân trời (điều bạn thấy) là "số một": cột trái, rộng hơn. Thiên cầu (vì sao) đứng phụ bên phải. */
 .views {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  height: clamp(380px, 60vh, 760px);
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: var(--space-3);
+  /* Màn hình đầu = hai khung nhìn + chú giải + dải số liệu; bảng điều khiển bắt đầu ngay dưới mép màn hình
+     (review-2 B2: bớt các nhóm cạnh tranh quanh tiêu điểm thay vì chen nửa bảng vào khung đầu). 226 px = thanh
+     trên, chú giải, dải số liệu và các khoảng cách. */
+  height: clamp(380px, calc(100svh - 226px), 760px);
 }
 
 .view {
@@ -261,7 +358,6 @@ body.learn-open .layout {
   min-width: 0;
   min-height: 0;
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
 }
@@ -271,9 +367,7 @@ body.learn-open .layout {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 6px 10px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(13, 20, 39, 0.9);
+  padding: 8px 12px 4px;
 }
 
 .view__head h2 {
@@ -281,17 +375,86 @@ body.learn-open .layout {
   font-size: 15px;
 }
 
+/* Thiên cầu là "số hai" (review-2 B2) nhưng không được trông như bị vô hiệu (review-3 D1): cùng độ đậm tiêu đề,
+   màu --text, chỉ nhỏ hơn một bậc — thứ bậc nằm ở cỡ chữ và độ rộng khung, không ở màu xám. */
+#view-sphere .view__head h2 {
+  font-size: 14px;
+  color: var(--text);
+}
+
 .view__sub {
   margin: 0;
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--muted);
 }
 
+/* ---- Luồng P (review-4 B4): nút công cụ nổi trong cảnh -------------------------------------------------------
+   Khung cảnh (.view__stage) chứa canvas và một nhóm nút biểu tượng ở góc trên phải. Đầu khung chỉ còn tiêu đề;
+   trên điện thoại đầu khung ẩn hẳn (thẻ chọn khung đã gọi tên khung) để cảnh bắt đầu ngay dưới thẻ chọn. */
+.view__stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .view__tools {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 2;
   display: flex;
   gap: 6px;
-  flex-wrap: wrap;
-  justify-content: flex-end;
+}
+
+.view-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--border-control);
+  border-radius: 8px;
+  background: var(--label-pill-strong);
+  color: var(--text);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.view-tool:hover {
+  background: var(--surface-3);
+}
+
+.view-tool[aria-pressed='true'] {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+.view-tool__icon {
+  font-size: 15px;
+  line-height: 1;
+}
+
+/* Khung nhìn hẹp (Đầy đủ: hai khung chia đôi bề ngang, fix-2 #1): nút công cụ chỉ còn biểu tượng — tên vẫn là
+   aria-label, title giải thích khi rê chuột. Nút chữ từng che "Thiên đỉnh" ở giữa đỉnh khung. Điện thoại có quy tắc
+   riêng (nút 44 px xếp dọc) ở khối @media bên dưới, ghi đè quy tắc này. */
+.view__stage {
+  container-type: inline-size;
+}
+
+@container (max-width: 860px) {
+  .view-tool {
+    width: 36px;
+    min-height: 36px;
+    padding: 0;
+  }
+
+  .view-tool__text {
+    display: none;
+  }
 }
 
 .view__canvas {
@@ -306,14 +469,39 @@ body.learn-open .layout {
   display: block;
 }
 
-.view__hint {
-  position: absolute;
-  left: 10px;
-  bottom: 6px;
+.view__canvas .label-layer {
+  z-index: 1;
+}
+
+/* Chân khung nhìn: điều cốt lõi + một dòng gợi ý, nằm DƯỚI cảnh (không che cảnh — review-1 D2). */
+.view__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-4);
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+/* Ý chính của cả ứng dụng (review-2 A2, I1.3): cỡ tiêu đề, đậm, ở đầu chân khung — tách hẳn khỏi dòng gợi ý. */
+.view__key {
   margin: 0;
-  font-size: 11px;
-  color: rgba(203, 213, 225, 0.6);
-  pointer-events: none;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.1px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+/* Gợi ý thao tác: luôn nhỏ và màu phụ, để không ngang hàng với ý chính (review-2 A2). Lớp is-new (chưa tương
+   tác lần nào) chỉ quyết định việc hiện gợi ý trên điện thoại. */
+.view__hint {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
 }
 
 .label-layer {
@@ -335,44 +523,62 @@ body.learn-open .layout {
 
 /* ------------------------------------------------------------------ Nhãn trong khung nhìn */
 .lbl {
-  font-size: 12px;
+  /* --lbl-k: hệ số cỡ chữ nhãn cảnh (1,8 trong chế độ trình chiếu). */
+  font-size: calc(12px * var(--lbl-k, 1));
   font-weight: 550;
   white-space: nowrap;
-  color: #e2e8f0;
+  color: var(--text);
+  /* Mọi nhãn cảnh có viên thuốc tối mờ như nhãn "A = …" (review-3 D2/I1.1): đường xích đạo, trục, vòng chọn đi
+     ngang qua nhãn bị che dưới nền này thay vì cắt ngang chữ. Viền chữ bên dưới vẫn giữ cho phần nền mờ. */
+  padding: 0 4px;
+  border-radius: 4px;
+  background: var(--label-pill);
+  /* Viền chữ tối (review-2 D2): bốn bóng cứng 1 px tạo viền liền quanh nét chữ, thêm hai lớp mờ — nhãn đọc được
+     cả khi nằm trên đường kẻ, chòm sao hay bề mặt Trái Đất. */
   text-shadow:
-    0 0 3px #000,
-    0 0 6px #000;
+    1px 0 0 var(--label-halo),
+    -1px 0 0 var(--label-halo),
+    0 1px 0 var(--label-halo),
+    0 -1px 0 var(--label-halo),
+    0 0 3px var(--label-halo),
+    0 0 6px var(--label-halo);
   pointer-events: none;
   user-select: none;
 }
 
 .lbl--dir {
-  font-size: 17px;
+  font-size: calc(17px * var(--lbl-k, 1));
   font-weight: 800;
-  color: #bbf7d0;
+  color: var(--scene-dir);
 }
 
+/* Nhãn nhỏ nhất trong cảnh: 12 px, màu --muted trên nền trời tối (≥ 4,5:1, review-1 G3). */
 .lbl--small {
-  font-size: 10.5px;
+  font-size: calc(12px * var(--lbl-k, 1));
   font-weight: 500;
 }
 
 .lbl--catalog {
-  font-size: 10.5px;
+  font-size: calc(12px * var(--lbl-k, 1));
   font-weight: 500;
-  color: #cbd5e1;
-  opacity: 0.85;
+  color: var(--scene-label-dim);
 }
 
 .lbl--star {
-  font-size: 11.5px;
+  font-size: calc(12px * var(--lbl-k, 1));
 }
 
 .lbl--constellation {
-  font-size: 12px;
+  font-size: calc(12px * var(--lbl-k, 1));
   font-style: italic;
   letter-spacing: 0.4px;
-  opacity: 0.95;
+}
+
+/* review-4 D2: tên sao và tên chòm nằm giữa các đường nối — viên thuốc đậm hơn để đường đi DƯỚI chữ không cắt nét. */
+.lbl--constellation,
+.lbl--catalog,
+.lbl--star {
+  background: var(--label-pill-strong);
 }
 
 .lbl--allsky {
@@ -381,16 +587,36 @@ body.learn-open .layout {
   font-style: normal;
   letter-spacing: 0.6px;
   text-transform: uppercase;
-  color: #8fa7d6;
-  opacity: 0.8;
+  color: var(--scene-allsky-name);
 }
 
 .lbl--angle {
-  font-size: 12px;
+  font-size: calc(12px * var(--lbl-k, 1));
   font-weight: 650;
   padding: 1px 6px;
   border-radius: 6px;
-  background: rgba(5, 9, 19, 0.72);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+}
+
+/* Nhãn đặt trên bề mặt có họa tiết (người quan sát trên Trái Đất): chip tối mờ phía sau chữ. */
+.lbl--chip {
+  padding: 0 5px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+}
+
+/* Số đo góc gắn với tô sáng liên kết: chip tối, chữ sáng, viền trái mang màu ngữ nghĩa của hình (review-1 F2). */
+.lbl--key {
+  color: var(--text);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border-left: 3px solid;
+  padding: 2px 7px;
+}
+
+.lbl--key.is-em {
+  background: var(--bg);
+  font-weight: 800;
+  box-shadow: 0 0 0 1px var(--border-control);
 }
 
 /* ------------------------------------------------------------------ Chú giải */
@@ -444,39 +670,56 @@ body.learn-open .layout {
 }
 
 /* ------------------------------------------------------------------ Bảng số liệu */
+/* Một dải số liệu duy nhất; khoảng trống (không phải đường viền) tách ba cụm: vị trí · thời gian · đối tượng. */
 .databar {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  background: var(--surface-quiet);
+  border-radius: var(--radius);
 }
 
 .data__item {
   display: flex;
   flex-direction: column;
-  padding: 5px 10px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--surface);
-  min-width: 112px;
+  flex: 1 1 120px;
+  min-width: 0;
+  max-width: 230px;
+}
+
+.data__item--end {
+  margin-right: var(--space-4);
 }
 
 .data__k {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
 }
 
+/* Câu nghĩa dưới số liệu: chia dòng cân bằng, không để một chữ mồ côi ("trời") ở dòng cuối (review-2 C2). */
+.data__n {
+  text-wrap: balance;
+}
+
+/* Giá trị chính đủ lớn để đọc lướt (review-1 D1: trước đây ~14 px như chữ thường). */
 .data__v {
+  font-size: 16px;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
+  color: var(--text-quiet);
   white-space: nowrap;
 }
 
 .data__item:last-child {
-  flex: 1 1 320px;
+  flex: 2 1 260px;
+  max-width: none;
 }
 
 .data__item:last-child .data__v {
-  white-space: normal;
+  font-size: 15px;
+  /* Hai dòng có chủ ý "α …, δ …" / "A …, h …" (review-3 D2); chỉ ngắt thêm sau dấu phẩy. */
+  white-space: pre-line;
 }
 
 /* ------------------------------------------------------------------ Thẻ thông tin */
@@ -485,17 +728,17 @@ body.learn-open .layout {
   top: 48px;
   right: 10px;
   z-index: 5;
-  width: min(300px, calc(50% - 20px));
+  width: min(290px, calc(40% - 20px));
   min-width: 250px;
   max-height: calc(100% - 60px);
   font-size: 13px;
   overflow: auto;
   padding: 10px 12px;
-  background: rgba(10, 16, 32, 0.94);
-  border: 1px solid #33456f;
+  /* Nền đặc (review-1 #1): chữ và nút của khung nhìn phía sau không còn lộ qua thẻ. */
+  background: var(--surface);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
+  box-shadow: var(--shadow-pop);
 }
 
 .infocard__head {
@@ -512,7 +755,7 @@ body.learn-open .layout {
   height: 12px;
   margin-top: 5px;
   border-radius: 50%;
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 0 2px var(--border-control);
 }
 
 .infocard__title {
@@ -521,8 +764,30 @@ body.learn-open .layout {
   font-size: 15px;
 }
 
+/* Thu gọn (–) và đóng (×) cách nhau rõ (review-1 #1): 8 px khoảng cách đầu + 8 px lề = 16 px giữa hai vùng bấm. */
+.infocard__close {
+  margin-left: var(--space-2);
+}
+
+/* Dòng tóm tắt "A …, h …" chỉ dùng cho thẻ thu gọn trên điện thoại (xem @media max-width 900px). */
+.infocard__brief {
+  display: none;
+}
+
 .infocard.is-collapsed .infocard__body,
+.infocard.is-collapsed .infocard__vi,
 .infocard.is-collapsed .infocard__kind {
+  display: none;
+}
+
+.infocard__vi {
+  margin: 0 0 0 20px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.infocard__vi[hidden],
+.infocard.is-empty .infocard__vi {
   display: none;
 }
 
@@ -534,10 +799,10 @@ body.learn-open .layout {
 
 .infocard h4 {
   margin: 10px 0 4px;
-  font-size: 11.5px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.6px;
-  color: #93c5fd;
+  color: var(--muted);
 }
 
 .infocard dl {
@@ -549,7 +814,7 @@ body.learn-open .layout {
   grid-template-columns: 98px 1fr;
   gap: 8px;
   padding: 2px 0;
-  border-bottom: 1px dashed rgba(148, 163, 184, 0.15);
+  border-bottom: 1px dashed var(--border);
 }
 
 .kv dt {
@@ -574,44 +839,102 @@ body.learn-open .layout {
   font-size: 12px;
 }
 
+.kv--stack {
+  grid-template-columns: 1fr;
+  gap: var(--space-1);
+  padding-bottom: var(--space-1);
+}
+
+.infocard__mag {
+  white-space: nowrap;
+}
+
 .status {
   display: inline-block;
+  white-space: nowrap;
   padding: 1px 8px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 650;
 }
 
-.status--circumpolar {
-  background: rgba(139, 92, 246, 0.25);
-  color: #ddd6fe;
-  border: 1px solid #8b5cf6;
+/* .status--circumpolar / --riseSet / --neverRise: viên trung tính với chấm màu vùng, xem mục
+   "Owner decisions 2026-10-05" ở cuối tệp (review-2 #12). */
+
+/* Màn hình rộng (review-2 B2/B3): thẻ bắt đầu thu gọn thành một dòng tên đối tượng, nổi ở góc dưới bên phải
+   của thiên cầu (khung số hai; góc trên là chỗ của thiên cực Bắc và Polaris), và hai khung nhìn chia hết bề ngang. Khi người dùng mở thẻ (bấm vào sao hoặc thanh tiêu
+   đề), thẻ thành cột thứ ba, không che khung nhìn nào. Đường đọc: điều bạn thấy → vì sao → số đo. */
+@media (min-width: 901px) {
+  .infocard.is-collapsed {
+    top: auto;
+    bottom: 10px;
+    width: auto;
+    min-width: 0;
+    max-width: min(320px, calc(40% - 20px));
+    padding: 6px 6px 6px 12px;
+    background: var(--surface);
+    box-shadow: none;
+  }
+
+  .infocard.is-collapsed .infocard__head {
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .infocard.is-collapsed .infocard__dot {
+    margin-top: 0;
+  }
+
+  .infocard.is-collapsed .infocard__title {
+    font-size: 14px;
+    font-weight: 600;
+  }
 }
 
-.status--riseSet {
-  background: rgba(20, 184, 166, 0.2);
-  color: #99f6e4;
-  border: 1px solid #14b8a6;
+@media (min-width: 1200px) {
+  .views:has(> .infocard:not(.is-collapsed)) {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) 270px;
+  }
+
+  .infocard:not(.is-collapsed) {
+    position: static;
+    width: auto;
+    min-width: 0;
+    max-height: none;
+    background: var(--surface-quiet);
+    border: 0;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .infocard:not(.is-collapsed) .infocard__head {
+    cursor: default;
+  }
 }
 
-.status--neverRise {
-  background: rgba(239, 68, 68, 0.2);
-  color: #fecaca;
-  border: 1px solid #ef4444;
+/* Thẻ dài hơn khung: thanh cuộn luôn thấy và mép dưới mờ dần để biết còn nội dung (review-1 D2). */
+.infocard {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-control) transparent;
 }
 
 /* ------------------------------------------------------------------ Bảng điều khiển */
+/* Bảng điều khiển xếp kiểu "tường gạch" (đa cột, review-2 C2): mỗi thẻ giữ chiều cao tự nhiên, thẻ ngắn (Hoạt ảnh)
+   nằm ngay dưới thẻ Vị trí thay vì đứng một mình với khoảng trống lớn bên dưới; thứ tự đọc từ trên xuống, trái sang
+   phải. Ba cột trên màn hình rộng, hai cột ở màn hình vừa. */
 .panels {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  align-items: start;
+  columns: 3;
+  column-gap: 10px;
+}
+
+.panels > .panel {
+  break-inside: avoid;
+  margin-bottom: 10px;
 }
 
 .panel {
-  padding: 10px 12px 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  background: var(--surface-quiet);
   border-radius: var(--radius);
   min-width: 0;
 }
@@ -619,31 +942,22 @@ body.learn-open .layout {
 .panel__title {
   margin: 0 0 8px;
   font-size: 15px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-weight: 600;
 }
 
-.panel__title::before {
-  content: '';
-  width: 4px;
-  height: 16px;
-  border-radius: 2px;
-  background: var(--accent);
-}
-
+/* Nhóm trong bảng: tách bằng khoảng trống và tiêu đề nhỏ, không đóng khung. */
 .group {
-  margin: 10px 0 0;
-  padding: 8px 10px 10px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  min-width: 0; /* fieldset mặc định rộng theo nội dung (min-content) → tràn khỏi bảng */
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  border: 0;
 }
 
 .group legend {
-  padding: 0 6px;
+  padding: 0 0 var(--space-1);
   font-size: 12.5px;
   font-weight: 600;
-  color: #cbd5e1;
+  color: var(--muted);
 }
 
 .row {
@@ -667,13 +981,21 @@ input[type='text'],
 input[type='date'] {
   min-height: 34px;
   padding: 5px 8px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-control);
   border-radius: 8px;
-  background: #0a1122;
+  background: var(--bg);
 }
 
 input[type='date'] {
   color-scheme: dark;
+}
+
+/* Gợi ý mẫu ("6h45m", "−16,7") đọc như gợi ý, không như giá trị đã nhập (review-3 G3): chữ nghiêng, màu --subtle
+   (5,89:1 trên --bg, vẫn đạt AA) so với chữ nhập màu --text. */
+input::placeholder {
+  color: var(--subtle);
+  font-style: italic;
+  opacity: 1;
 }
 
 input.num {
@@ -729,9 +1051,9 @@ input[aria-invalid='true'] {
   margin: 8px 0 0;
   padding: 6px 8px;
   font-size: 12px;
-  border-left: 3px solid var(--yellow);
-  background: rgba(255, 213, 79, 0.06);
-  color: #fde68a;
+  border-left: 3px solid var(--border-control);
+  background: var(--surface-2);
+  color: var(--text);
   border-radius: 0 6px 6px 0;
 }
 
@@ -773,7 +1095,7 @@ input[aria-invalid='true'] {
 
 .field label {
   font-size: 13px;
-  color: #cbd5e1;
+  color: var(--muted);
 }
 
 .value {
@@ -783,13 +1105,13 @@ input[aria-invalid='true'] {
 
 .value--big {
   font-size: 16px;
-  color: var(--yellow);
+  color: var(--text);
 }
 
 .ticks {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   padding: 0 2px;
 }
@@ -818,7 +1140,7 @@ input[aria-invalid='true'] {
 }
 
 .range--lst {
-  accent-color: var(--yellow);
+  accent-color: var(--accent-hi);
 }
 
 .checks {
@@ -844,7 +1166,7 @@ input[aria-invalid='true'] {
 
 .check:hover,
 .radio:hover {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--surface-2);
 }
 
 .check input,
@@ -871,24 +1193,66 @@ input[aria-invalid='true'] {
   flex-direction: column;
 }
 
+/* Nhóm mở/đóng: chỉ một đường phân cách mảnh phía trên, không đóng khung. */
 details.sub {
-  margin-top: 6px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 4px 8px 8px;
+  margin-top: var(--space-1);
+  border-top: 1px solid var(--border);
+  padding: var(--space-1) 0 var(--space-2);
 }
 
+/* Tiêu đề nhóm: dấu mở/đóng + tên nhóm + một câu giới thiệu ngắn. */
 details.sub > summary {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  column-gap: var(--space-2);
+  align-content: center;
+  padding: var(--space-2) 2px;
+  list-style: none;
   cursor: pointer;
-  padding: 4px 2px;
+  color: var(--text);
+}
+
+details.sub > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.sub > summary::before {
+  content: '▸';
+  grid-row: 1;
+  align-self: start;
+  text-align: center;
+  line-height: 1.45;
+  transform-origin: 50% 55%;
+  color: var(--muted);
+  transition: transform 0.15s ease-out;
+}
+
+details.sub[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+details.sub > summary:hover .sub__title {
+  color: var(--accent-hi);
+}
+
+.sub__title,
+.sub__teaser {
+  grid-column: 2;
+}
+
+.sub__title {
+  font-size: 13.5px;
   font-weight: 600;
-  font-size: 13px;
-  color: #cbd5e1;
+}
+
+.sub__teaser {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--muted);
 }
 
 .worldmap {
   margin-top: 6px;
-  border: 1px solid var(--border);
   border-radius: 8px;
   overflow: hidden;
   line-height: 0;
@@ -915,7 +1279,8 @@ details.sub > summary {
   height: 22px;
   border: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--veil);
+  color: var(--text);
   cursor: pointer;
   line-height: 1;
 }
@@ -935,40 +1300,49 @@ details.sub > summary {
   margin: 0;
 }
 
-.site-footer__credit {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1.2px;
+.site-footer__sig {
+  font-size: 13px;
   color: var(--muted);
 }
 
-.site-footer__contact {
+.site-footer__sig strong {
+  color: var(--text);
+}
+
+.site-footer__contact,
+.site-footer__club {
   margin-top: 6px !important;
-  font-size: 12.5px;
-  color: #8792ab;
+  font-size: 13px;
+  color: var(--muted);
 }
 
-.site-footer a {
-  color: #93c5fd;
-  text-decoration: none;
-  border-bottom: 1px dotted rgba(147, 197, 253, 0.6);
+/* Liên kết chân trang (review-1 E1): kiểu liên kết thường — chữ sáng, gạch chân xám; cam chỉ khi rê chuột hoặc có
+   tiêu điểm, để một dòng dài không thành thêm một mảng cam trên màn hình điện thoại. */
+.site-footer a,
+.site-footer .link-btn {
+  color: var(--text);
+  font-size: 13px;
+  text-decoration: underline;
+  text-decoration-color: var(--border-control);
+  text-underline-offset: 3px;
 }
 
-.site-footer a:hover {
-  color: #bfdbfe;
-  border-bottom-style: solid;
+.site-footer a:is(:hover, :focus-visible),
+.site-footer .link-btn:is(:hover, :focus-visible) {
+  color: var(--accent-hi);
+  text-decoration-color: currentColor;
 }
 
 /* ------------------------------------------------------------------ Chú thích nổi */
 .tooltip {
   position: fixed;
-  z-index: 60;
+  z-index: var(--z-toast);
   max-width: 300px;
   padding: 6px 9px;
   border-radius: 8px;
-  background: rgba(8, 13, 27, 0.96);
-  border: 1px solid #3a4b78;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  background: color-mix(in srgb, var(--surface-2) 96%, transparent);
+  border: 1px solid var(--border-control);
+  box-shadow: var(--shadow-pop);
   font-size: 12.5px;
   pointer-events: none;
 }
@@ -988,14 +1362,14 @@ details.sub > summary {
   width: min(720px, calc(100vw - 24px));
   max-height: calc(100vh - 40px);
   padding: 0;
-  border: 1px solid #33456f;
+  border: 1px solid var(--border);
   border-radius: 14px;
   background: var(--surface);
   color: var(--text);
 }
 
 .dialog::backdrop {
-  background: rgba(2, 5, 12, 0.7);
+  background: var(--scrim);
 }
 
 .dialog__head {
@@ -1021,12 +1395,12 @@ details.sub > summary {
 .dialog__content h3 {
   margin: 16px 0 6px;
   font-size: 15px;
-  color: #93c5fd;
+  color: var(--text);
 }
 
 .dialog__content p,
 .dialog__content li {
-  color: #d5dcea;
+  color: var(--text);
 }
 
 .dialog__content ul {
@@ -1043,11 +1417,11 @@ details.sub > summary {
 .dialog__content h4 {
   margin: 14px 0 4px;
   font-size: 13.5px;
-  color: #e2e8f0;
+  color: var(--text);
 }
 
 .dialog__content strong {
-  color: #f1f5f9;
+  color: var(--text);
 }
 
 .swatch--inline {
@@ -1070,9 +1444,9 @@ details.sub > summary {
   margin: 0;
   padding: 8px 12px 6px;
   border: 1px solid var(--border);
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--border-control);
   border-radius: 8px;
-  background: rgba(79, 157, 255, 0.06);
+  background: var(--surface-2);
   min-width: 0;
 }
 
@@ -1090,7 +1464,7 @@ details.sub > summary {
   overflow-x: auto;
   overflow-y: hidden;
   padding: 2px 0;
-  color: #f8fafc;
+  color: var(--text);
 }
 
 .math--display .katex-display {
@@ -1113,7 +1487,7 @@ details.sub > summary {
   padding: 5px 12px 5px 0;
   text-align: left;
   font-weight: normal;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  border-bottom: 1px solid var(--border);
 }
 
 .keys th {
@@ -1137,7 +1511,7 @@ kbd {
   display: inline-block;
   min-width: 24px;
   padding: 1px 6px;
-  border: 1px solid #3a4b78;
+  border: 1px solid var(--border-control);
   border-bottom-width: 2px;
   border-radius: 5px;
   background: var(--surface-3);
@@ -1152,14 +1526,14 @@ kbd {
   top: 0;
   right: 0;
   bottom: 0;
-  z-index: 40;
+  z-index: var(--z-drawer);
   width: 410px;
   max-width: 100vw;
   overflow: auto;
   padding: 0 14px 20px;
-  background: #0b1222;
+  background: var(--surface);
   border-left: 1px solid var(--border);
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-pop);
 }
 
 .learn__head {
@@ -1170,7 +1544,7 @@ kbd {
   justify-content: space-between;
   align-items: center;
   padding: 12px 0 8px;
-  background: #0b1222;
+  background: var(--surface);
 }
 
 .learn__head h2 {
@@ -1182,8 +1556,8 @@ kbd {
   margin: 6px 0 10px;
   padding: 8px 10px;
   border-radius: 8px;
-  background: rgba(79, 157, 255, 0.12);
-  border: 1px solid rgba(79, 157, 255, 0.4);
+  background: var(--surface-3);
+  border: 1px solid var(--border-control);
   font-weight: 600;
 }
 
@@ -1225,7 +1599,7 @@ kbd {
 }
 
 .learn__badge[data-kind='try'] {
-  color: var(--yellow);
+  color: var(--muted);
 }
 
 .learn__q {
@@ -1253,8 +1627,9 @@ kbd {
   margin: 4px 0;
   padding: 6px 8px;
   border-radius: 6px;
-  background: rgba(255, 213, 79, 0.08);
-  color: #fde68a;
+  border-left: 3px solid var(--border-control);
+  background: var(--surface-2);
+  color: var(--text);
   font-size: 13px;
 }
 
@@ -1262,15 +1637,145 @@ kbd {
   margin: 4px 0;
   padding: 6px 8px;
   border-radius: 6px;
-  background: rgba(74, 222, 128, 0.08);
-  color: #bbf7d0;
+  border-left: 3px solid var(--ok);
+  background: var(--surface-2);
+  color: var(--text);
   font-size: 13px;
+}
+
+/* ------------------------------------------------------------------ Chế độ trình chiếu (body.present)
+   Ẩn bảng điều khiển, thanh số liệu và chân trang; giữ chú giải; khung nhìn chiếm hết chiều cao;
+   chữ nền 20 px và chữ phụ dùng --muted thay cho --subtle (đọc được trên máy chiếu). */
+body.present {
+  --subtle: var(--muted);
+  /* review-4 H1: 12 px × 2,35 = 28 px — tên sao trên máy chiếu ít nhất 28 px (trước: × 1,8 = 21,6 px). */
+  --lbl-k: 2.35;
+  font-size: 20px;
+}
+
+/* ---- Luồng P (review-4 H1): chữ trên máy chiếu ------------------------------------------------------------------
+   Tên sao trắng (không xám) và ít nhất 28 px; tên 88 chòm nền to lên vừa đủ nhưng vẫn là lớp nền. */
+body.present .lbl--catalog,
+body.present .lbl--star {
+  color: var(--text);
+  font-weight: 600;
+}
+
+body.present .lbl--allsky {
+  font-size: 15px;
+}
+
+/* Dải cốt lõi dưới giản đồ chân trời: to, yên lặng — đọc được từ cuối phòng (review-1 H1). */
+body.present .view__foot {
+  justify-content: center;
+  padding: var(--space-3) var(--space-4);
+}
+
+body.present .view__key {
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+body.present .panels,
+body.present .databar,
+body.present .site-footer {
+  display: none !important;
+}
+
+body.present .topbar {
+  height: var(--topbar-h);
+  padding-block: var(--space-1);
+}
+
+body.present .brand__logo {
+  width: 40px;
+  height: 40px;
+}
+
+body.present .layout {
+  height: calc(100dvh - var(--topbar-h));
+  max-width: none;
+  padding-bottom: var(--space-3);
+}
+
+body.present .views {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+}
+
+/* review-4 H1: tiêu đề khung đọc được từ cuối phòng (20 → 30 px; thiên cầu vẫn nhỏ hơn một bậc). */
+body.present .view__head h2 {
+  font-size: 30px;
+}
+
+body.present #view-sphere .view__head h2 {
+  font-size: 26px;
+}
+
+/* Máy chiếu (review-2 H1): bỏ phần vỏ cỡ máy tính — phụ đề khung, nút nhỏ trong khung (phím C vẫn đặt lại góc
+   nhìn) và cả thẻ thông tin (chữ ~13 px không đọc được từ cuối phòng). Hai khung nhìn chia hết bề ngang. */
+body.present .view__sub,
+body.present .view__tools,
+body.present .view__hint,
+body.present .infocard {
+  display: none;
+}
+
+body.present .views,
+body.present .views:has(> .infocard:not(.is-collapsed)) {
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+}
+
+body.present .view__head {
+  min-height: 0;
+  padding-block: var(--space-2);
+}
+
+body.present .legend {
+  gap: var(--space-2) var(--space-5);
+  font-size: 20px;
+  color: var(--text);
+}
+
+body.present .swatch--line {
+  width: 28px;
+  height: 5px;
+}
+
+/* ------------------------------------------------------------------ Thông báo chất lượng (góc, không chặn) */
+.qnotice {
+  position: fixed;
+  left: var(--space-3);
+  bottom: var(--space-3);
+  z-index: var(--z-toast);
+  max-width: calc(100vw - 2 * var(--space-3));
+  pointer-events: none;
+}
+
+.qnotice__chip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  box-shadow: var(--shadow-pop);
+  font-size: 12.5px;
+  color: var(--muted);
+  pointer-events: auto;
+}
+
+.qnotice__text {
+  min-width: 0;
 }
 
 /* ------------------------------------------------------------------ Màn hình vừa */
 @media (max-width: 1400px) {
   .panels {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    columns: 2;
   }
 }
 
@@ -1296,7 +1801,7 @@ kbd {
   }
 
   .brand__org {
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .brand__name {
@@ -1308,8 +1813,8 @@ kbd {
     padding: 12px 10px 18px;
   }
 
-  .site-footer__credit {
-    font-size: 11px;
+  .site-footer__sig {
+    font-size: 13px;
   }
 
   .formula-grid {
@@ -1325,10 +1830,42 @@ kbd {
     display: none;
   }
 
+  /* Nút chỉ có biểu tượng: vùng chạm 44 × 44 px và viền mảnh cho thấy đúng vùng chạm đó (review-3 D2 — trước
+     đây viền trong suốt, mắt chỉ thấy vòng tròn biểu tượng 20 px nên tưởng nút chỉ ~30 px). */
   .btn--top {
     padding: 4px;
-    min-width: 34px;
-    border-color: transparent;
+    min-width: var(--tap);
+    min-height: var(--tap);
+    border-color: var(--border);
+  }
+
+  /* Vùng chạm ≥ 44 px trên điện thoại */
+  .btn,
+  .btn--small,
+  .chip,
+  .tab,
+  select,
+  input[type='text'],
+  input[type='date'],
+  .check,
+  .radio,
+  details.sub > summary {
+    min-height: var(--tap);
+  }
+
+  .icon-btn,
+  .figure-chip__x {
+    width: var(--tap);
+    height: var(--tap);
+  }
+
+  .figure-chip__x {
+    margin: -8px -4px -8px 0;
+    background: transparent;
+  }
+
+  .range {
+    min-height: var(--tap);
   }
 
   .layout {
@@ -1348,7 +1885,7 @@ kbd {
 
   .tab {
     flex: 1;
-    min-height: 36px;
+    min-height: var(--tap);
     border: 0;
     border-radius: 8px;
     background: transparent;
@@ -1363,10 +1900,12 @@ kbd {
     box-shadow: inset 0 -2px 0 var(--accent);
   }
 
+  /* Điện thoại: cảnh 3D cao hơn (review-1 B4) — dải số liệu ở ngay dưới, dòng cốt lõi nằm trong khung. */
+  /* review-3 B4: khung vừa với cảnh (vòm + đĩa rộng hơn cao), không còn dải trời trống phía trên vòm; dòng cốt lõi
+     "φ = … · Độ cao thiên cực …" và đầu dải số liệu nằm trong màn hình đầu 375 × 812. */
   .views {
     grid-template-columns: 1fr;
-    height: 56vh;
-    min-height: 320px;
+    height: clamp(360px, calc(100vw + 80px), 70svh);
   }
 
   .views[data-active='sphere'] #view-horizon,
@@ -1379,9 +1918,26 @@ kbd {
     display: none;
   }
 
+  /* review-4 B4: đầu khung không còn nút (nút nổi trong cảnh) và thẻ chọn khung đã gọi tên khung — ẩn hẳn. Nút
+     công cụ là biểu tượng 44 px ở góc trên phải, xếp dọc, ngoài vòm trời. */
   .view__head {
-    justify-content: flex-end;
-    padding: 4px 6px;
+    display: none;
+  }
+
+  .view__tools {
+    top: var(--space-1);
+    right: var(--space-1);
+    flex-direction: column;
+  }
+
+  .view-tool {
+    width: var(--tap);
+    height: var(--tap);
+    padding: 0;
+  }
+
+  .view-tool__text {
+    display: none;
   }
 
   .infocard {
@@ -1395,12 +1951,58 @@ kbd {
     padding: 8px 10px;
   }
 
-  .view__hint {
+  .view__foot {
+    padding: 10px var(--space-2) var(--space-1);
+  }
+
+  .view__key {
+    font-size: 15px;
+  }
+
+  /* Điện thoại: gợi ý chỉ hiện tới lần chạm đầu tiên, để dành chiều cao cho cảnh. */
+  .view__hint:not(.is-new) {
     display: none;
   }
 
   .infocard__head {
     cursor: default;
+  }
+
+  /* Thu gọn trên điện thoại (review-3 B4): MỘT dòng mảnh — chấm màu, tên, "A …, h …", nút mở/đóng 44 px — thay cho
+     một thẻ lớn gần như trống. Chạm vào dòng để mở đầy đủ. */
+  .infocard.is-collapsed {
+    padding: 0 2px 0 10px;
+  }
+
+  .infocard.is-collapsed .infocard__head {
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+
+  .infocard.is-collapsed .infocard__dot {
+    margin-top: 0;
+  }
+
+  .infocard.is-collapsed .infocard__title {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 14px;
+  }
+
+  .infocard.is-collapsed:not(.is-empty) .infocard__brief {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
   }
 
   .infocard[style] {
@@ -1409,19 +2011,34 @@ kbd {
     right: 8px !important;
   }
 
+  /* Thẻ đang chọn cách dòng φ một khoảng rõ (fix-2 #7): 12 px trời + đường kẻ của chân khung + 10 px đệm trên,
+     thay vì 8 px + 4 px khiến dòng φ dính sát dưới thẻ. */
+  .views[data-active='horizon'] .infocard {
+    bottom: calc(var(--foot-h, 0px) + 12px);
+  }
+
   .legend {
-    font-size: 11.5px;
+    font-size: 12px;
     gap: 4px 10px;
   }
 
+  .databar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2) var(--space-3);
+    padding: var(--space-2) var(--space-3);
+  }
+
   .data__item {
-    min-width: 0;
-    flex: 1 1 30%;
-    padding: 4px 8px;
+    max-width: none;
+  }
+
+  .data__item--end {
+    margin-right: 0;
   }
 
   .data__item:last-child {
-    flex-basis: 100%;
+    grid-column: 1 / -1;
   }
 
   .panels {
@@ -1433,6 +2050,7 @@ kbd {
 
   .panels > .panel {
     display: none;
+    margin-bottom: 0;
     max-height: 48vh;
     overflow: auto;
   }
@@ -1457,10 +2075,184 @@ kbd {
   }
 }
 
+/* Rất hẹp: logo + tên ngắn; "Ôn tập" giữ chữ (hành động chính), các nút khác chỉ biểu tượng có tên truy cập
+   và chú thích (title). Trình chiếu không có ích trên điện thoại nên ẩn (phím F vẫn dùng được). */
+@media (max-width: 480px) {
+  .brand__org,
+  .brand__name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .brand__short {
+    display: block;
+    max-width: 9ch;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--text);
+  }
+
+  .topbar__actions {
+    gap: 2px;
+  }
+
+  .btn--top-present {
+    display: none;
+  }
+
+  .btn--top.btn--top-main {
+    padding: 4px 8px 4px 4px;
+    border-color: var(--border-control);
+  }
+
+  .btn--top-main .btn__text {
+    display: inline;
+  }
+}
+
+/* ------------------------------------------------------------------ Máy chiếu / màn hình rất rộng */
+@media (min-width: 1600px) {
+  html,
+  body {
+    font-size: 15px;
+  }
+
+  .data__k {
+    font-size: 12.5px;
+  }
+
+  .data__v {
+    font-size: 18px;
+  }
+
+  .kv__v {
+    font-size: 15px;
+  }
+
+  .value {
+    font-size: 16px;
+  }
+
+  .value--big {
+    font-size: 20px;
+  }
+
+  .legend {
+    font-size: 14px;
+  }
+
+  .view__head h2 {
+    font-size: 17px;
+  }
+
+  #view-sphere .view__head h2 {
+    font-size: 16px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  * {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
     transition: none !important;
   }
+}
+
+/* Trạng thái chờ tải cảnh 3D */
+.view__loading {
+  margin: auto;
+  padding: var(--space-4);
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------ Dòng giải thích dưới hộp kiểm (chỉ khi đang bật) */
+.check__hint {
+  margin: 0 0 var(--space-1) 29px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* ------------------------------------------------------------------ Câu nghĩa ngắn dưới số liệu và trạng thái trống của thẻ */
+.data__n,
+.kv__note {
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--muted);
+}
+
+.kv__note {
+  flex-basis: 100%;
+}
+
+.infocard__empty {
+  margin: var(--space-1) 0 var(--space-1);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.infocard:not(.is-empty) .infocard__empty,
+.infocard.is-empty .infocard__body,
+.infocard.is-empty .infocard__kind,
+.infocard.is-empty .infocard__dot,
+.infocard.is-empty .icon-btn {
+  display: none;
+}
+
+.infocard.is-empty .infocard__title {
+  color: var(--muted);
+}
+
+.pole-line {
+  margin: 0 0 var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-left: 3px solid var(--border-control);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: var(--surface-2);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+body.present .data__n,
+body.present .kv__note {
+  font-size: 14px;
+}
+
+/* ------------------------------------------------------------------ Tô sáng liên kết (ux-brief §6)
+ * Ô số đang liên kết với hình 3D: chữ đậm + gạch chân cam. Không dựa vào màu đơn thuần (color-theory ›
+ * functional-color): độ đậm và nét gạch vẫn đọc được khi không phân biệt màu. Cam là màu nhấn giao diện,
+ * không phải màu của cảnh (vàng = xích đạo trời, cam đứt nét = hoàng đạo). */
+.is-linkable {
+  border-radius: var(--radius-sm);
+}
+
+.is-linked .data__v,
+.is-linked .kv__v,
+.is-linked .status,
+.pole-line.is-linked {
+  font-weight: 700;
+  text-decoration-line: underline;
+  /* Màu của hình đang tô sáng (ui/emphasis.ts đặt --link-color từ scene/colors.ts, review-3 F2); chữ đậm là tín hiệu
+     không dựa vào màu. */
+  text-decoration-color: var(--link-color, var(--accent));
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.is-linked .data__k,
+.is-linked > dt {
+  color: var(--text);
 }
 
 /* ------------------------------------------------------------------ Thiên thể sâu & bảng tra cứu */
@@ -1478,7 +2270,7 @@ kbd {
   overflow-x: auto;
   margin: 6px 0;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
 }
 
 .data-table {
@@ -1492,7 +2284,7 @@ kbd {
   padding: 6px 10px;
   text-align: left;
   vertical-align: top;
-  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  border-bottom: 1px solid var(--border);
 }
 
 .data-table th {
@@ -1511,12 +2303,12 @@ kbd {
 }
 
 .data-table tbody tr:hover {
-  background: rgba(79, 157, 255, 0.06);
+  background: var(--surface-2);
 }
 
 .data-table a,
 .link-btn {
-  color: #93c5fd;
+  color: var(--accent);
   text-decoration: none;
 }
 
@@ -1534,7 +2326,7 @@ kbd {
 }
 
 .site-footer__links {
-  margin-top: 6px !important;
+  margin-top: var(--space-1);
 }
 
 .link-btn {
@@ -1543,4 +2335,2926 @@ kbd {
   background: none;
   font-size: 12px;
   cursor: pointer;
+}
+
+/* ===== Simple mode (redesign-2 S) ===== */
+/* Hai chế độ giao diện (docs/redesign-2/simple-mode.md). body.mode-simple: một giản đồ chân trời lớn là "số một",
+   bên cạnh (máy tính) hoặc bên dưới (điện thoại) là dải điều khiển gọn ba nhóm theo thứ tự khái niệm.
+   body.mode-full: giao diện đầy đủ như trước. Mọi màu lấy từ token trong :root. */
+
+/* ---- Công tắc Cơ bản | Đầy đủ (thanh trên cùng) */
+.modeswitch {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: 2px;
+  margin-left: auto;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+/* Nhãn "Chế độ" chỉ còn là tên truy cập của nhóm (review-1 #8: công tắc phân đoạn tự giải thích; chữ xám 11 px
+   không thêm gì cho mắt). */
+.modeswitch__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.modeswitch__opt {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  border-radius: 8px;
+  color: var(--muted);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.modeswitch__opt:hover {
+  color: var(--text);
+  background: var(--veil);
+}
+
+/* Ô radio gốc vẫn nhận tiêu điểm và phím mũi tên; chỉ ẩn về mặt thị giác. */
+.modeswitch__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.modeswitch__opt:has(.modeswitch__input:checked) {
+  background: var(--surface-3);
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.modeswitch__opt:has(.modeswitch__input:focus-visible) {
+  box-shadow: var(--focus);
+}
+
+/* ---- Dải điều khiển gọn: chỉ có ở chế độ Cơ bản */
+.simple {
+  display: none;
+}
+
+body.mode-simple .simple {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  background: var(--surface-quiet);
+  border-radius: var(--radius);
+  min-width: 0;
+}
+
+.simple__group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.simple__group legend {
+  padding: 0 0 var(--space-2);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.simple__slider {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: var(--space-1) var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.simple__slider label {
+  color: var(--muted);
+}
+
+.simple__value {
+  justify-self: end;
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.simple__slider .range {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.simple .chip[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-a12);
+  color: var(--text);
+}
+
+.simple__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+
+/* Chạy/tạm dừng: cùng hình thức với nút trong bảng Hoạt ảnh (đang chạy = nút phụ yên lặng, đang dừng = cam). */
+.simple__play {
+  min-width: 132px;
+  font-size: 15px;
+}
+
+.simple__play[aria-pressed='true'] {
+  border-color: var(--border-control);
+  background: var(--surface-3);
+  font-weight: 600;
+}
+
+/* Chậm | Nhanh: hai ô radio dạng phân đoạn, cùng ngôn ngữ với công tắc chế độ. */
+.simple__speed {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.simple__seg {
+  position: relative;
+  min-height: 30px;
+  padding: 0 var(--space-3);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.simple__seg input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.simple__seg:has(input:checked) {
+  background: var(--surface-3);
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.simple__seg:has(input:focus-visible) {
+  box-shadow: var(--focus);
+}
+
+.simple__next {
+  margin-top: auto;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.simple__next p {
+  margin: 0;
+}
+
+.simple__more {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.simple__zones {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.simple__zones .swatch--zone {
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.simple__zonekey {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  margin: var(--space-2) 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.simple__zonekey li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ---- Ẩn ở chế độ Cơ bản: thiên cầu, thẻ chọn khung nhìn, chú giải, dải số liệu, bốn bảng, Ôn tập, Trình chiếu */
+body.mode-simple #view-sphere,
+body.mode-simple .viewtabs,
+body.mode-simple .legend,
+body.mode-simple .databar,
+body.mode-simple .panels,
+body.mode-simple .btn--top-main,
+body.mode-simple .btn--top-present,
+body.mode-simple .learn {
+  display: none !important;
+}
+
+/* Thẻ thông tin rút gọn: tên, tên tiếng Việt, độ cao h, phương vị A và viên trạng thái. */
+body.mode-simple .infocard__kind,
+body.mode-simple .infocard__body > h4,
+body.mode-simple .infocard__body > dl:first-of-type,
+body.mode-simple .infocard__body > dl:nth-of-type(4),
+body.mode-simple .infocard__body .kv:is(
+    [data-emphasis='rise'],
+    [data-emphasis='transit'],
+    [data-emphasis='set'],
+    [data-emphasis='above'],
+    [data-emphasis='lowest'],
+    [data-emphasis='highest']
+  ) {
+  display: none !important;
+}
+
+/* ---- Máy tính: giản đồ chân trời lớn bên trái, dải điều khiển 320 px bên phải; tất cả trong màn hình đầu. */
+@media (min-width: 901px) {
+  body.mode-simple .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: stretch;
+  }
+
+  body.mode-simple .views {
+    grid-template-columns: minmax(0, 1fr);
+    height: clamp(420px, calc(100svh - 100px), 900px);
+  }
+
+  body.mode-simple .simple {
+    max-height: clamp(420px, calc(100svh - 100px), 900px);
+    overflow: auto;
+  }
+
+  /* Chân dải chừa chỗ cho chân dung Usui-chan (góc dưới phải màn hình) và dải "chế độ giải thích" cạnh nó: dòng
+     cuối của dải không bao giờ nằm dưới hai lớp nổi này (review-1 #7). */
+  body.mode-simple .simple {
+    padding-bottom: calc(56px + var(--space-4));
+  }
+
+  /* Lời chào (bong bóng phía trên chân dung) THAY cho dòng chân dải trong lúc mở, không đè lên chữ của nó
+     (review-1 #7). visibility, không phải display: không có gì nhảy chỗ khi lời chào đóng. Thẻ đang chọn thì vẫn
+     hiện: lời chào nằm dưới thẻ (fix-2 #9; guide.ts đổi sang dải mảnh nếu không đủ chỗ). Dải lời chào mảnh (màn
+     hình thấp) nằm dưới chân dải nên không cần. */
+  body.mode-simple:has(.guide-hello--pose) .simple__next,
+  body.mode-simple:has(.guide-hello--toast) .simple__next {
+    visibility: hidden;
+  }
+}
+
+/* ---- Thẻ thông tin nằm trong dải điều khiển (Cơ bản, màn hình rộng; main.ts › placeCard, review-1 #1): một khối
+   trong luồng, ngay dưới nhóm 3 — kết quả của "bấm vào một ngôi sao" nằm cạnh các điều khiển, không nổi trên cảnh. */
+.simple__dock:empty {
+  display: none;
+}
+
+.infocard.infocard--docked {
+  position: static;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+  padding: var(--space-2) var(--space-2) var(--space-3) var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: none;
+  mask-image: none;
+}
+
+.infocard.infocard--docked.is-collapsed {
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3);
+}
+
+.infocard--docked .infocard__head,
+.infocard--docked.is-collapsed .infocard__head {
+  align-items: center;
+  cursor: pointer;
+}
+
+.infocard--docked .infocard__dot {
+  margin-top: 0;
+}
+
+/* ---- Lời mời hành động đầu tiên (review-1 #4): cỡ chữ thân, chữ trắng, đầu dải — trước bước 1. */
+.simple__cue {
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+/* Lời chào của Usui-chan đang mở: nó THAY cho lời mời (mỗi lúc một lời nhắn); lời mời hiện ra khi lời chào đóng.
+   display (không phải visibility): không để lại một khoảng trống ở đầu dải, và nhóm 3 không bị đẩy xuống dưới bong
+   bóng lời chào trên máy tính. */
+body.guide-hello-open .simple__cue {
+  display: none;
+}
+
+@media (min-width: 1600px) {
+  body.mode-simple .layout {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+}
+
+/* ---- Điện thoại / máy tính bảng dọc */
+@media (max-width: 900px) {
+  .modeswitch__opt,
+  .simple__seg {
+    min-height: var(--tap);
+  }
+
+  .modeswitch__opt {
+    padding: 0 10px;
+  }
+
+  /* Vòm lớn ngay màn hình đầu (review-4 B4): không có dải thẻ khung nhìn, nên khung cao hơn ở Đầy đủ. */
+  body.mode-simple .views {
+    height: clamp(380px, calc(100vw + 130px), 72svh);
+  }
+
+  body.mode-simple .simple {
+    gap: var(--space-4);
+    padding: var(--space-3);
+  }
+}
+
+/* Đầy đủ trên màn hình hẹp: công tắc xuống hàng thứ hai của thanh trên (đủ chỗ cho các nút 44 px). */
+@media (max-width: 640px) {
+  body.mode-full .topbar {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+
+  /* Hàng thứ hai nhẹ (không viền, không nền) để không thành thêm một dải thẻ ngang hàng với thẻ khung nhìn. */
+  body.mode-full .modeswitch {
+    order: 3;
+    flex: 1 0 100%;
+    justify-content: flex-end;
+    margin-left: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+}
+
+/* Cơ bản trên điện thoại rất hẹp: logo đại diện thương hiệu (tên đầy đủ vẫn có cho trình đọc màn hình), nhường
+   chỗ cho công tắc và ba nút 44 px trên cùng một hàng. */
+@media (max-width: 480px) {
+  body.mode-simple .brand__short {
+    display: none;
+  }
+
+  .modeswitch__opt {
+    padding: 0 8px;
+    font-size: 13px;
+  }
+}
+
+/* Cơ bản: ẩn tên 88 chòm sao nền (hạng thấp nhất, xem labels.ts) — người mới chỉ cần sao sáng, đường nối mờ và
+   các vòng đang học; tên chòm vẫn hiện khi bấm vào sao (thẻ thông tin) và ở chế độ Đầy đủ. visibility (không phải
+   display) vì CSS2DRenderer tự ghi display lên từng nhãn. */
+body.mode-simple .lbl--allsky {
+  visibility: hidden;
+}
+
+/* ===== Codex (redesign-2 C) ===== */
+/* Bộ khung "codex" bằng kiểu chữ và cấu trúc, không bằng hiệu ứng: nhãn danh mục chữ hoa nhỏ, một đường kẻ mảnh,
+   trang đọc rộng ~65ch, cột "số liệu" bên phải trên màn hình rộng. Cam chỉ dành cho thứ bấm được: mục đang chọn và
+   hành động (chữ trên cam = --on-accent). Dấu "mới", tiến độ và trạng thái dùng trắng/xám trung tính
+   (fix-1: docs/redesign-2/fix-1-codex.md). */
+
+/* Nút Codex và huy hiệu số mục mới (không bật lên, không lấy tiêu điểm). */
+.btn--codex {
+  position: relative;
+}
+
+.codex-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  /* Trung tính (review-1 #8): huy hiệu không bấm được, nên không dùng cam — cam chỉ dành cho hành động. */
+  background: var(--text);
+  color: var(--bg);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Liên kết "?" cạnh thuật ngữ: nhỏ, nhạt; vùng chạm mở rộng tới 44 px bằng ::after (mắt chỉ thấy vòng 16 px). */
+.term {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin-left: 5px;
+  padding: 0;
+  border: 1px solid var(--border-control);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: 1px;
+  cursor: pointer;
+}
+
+.term::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+}
+
+.term:hover,
+.term:focus-visible {
+  border-color: var(--accent-hi);
+  color: var(--accent-hi);
+}
+
+.check-row,
+.pole-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+}
+
+.check-row > :first-child,
+.pole-row > :first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.check-row > .term {
+  margin: 6px 4px 0 0;
+}
+
+.pole-row > .term {
+  margin: 10px 2px 0 0;
+}
+
+/* Hộp thoại (game feel 2026-10-05: ô danh mục bên trái, lưới thẻ hoặc trang đọc bên phải). Mọi chữ trong USACodex
+   ≥ 13 px, kể cả nhãn trên sơ đồ (hình đầu trang luôn rộng ≥ 300 px = 1:1 với viewBox). */
+.cdx {
+  --cdx-ease: cubic-bezier(0.22, 1, 0.36, 1); /* ease-out, không vượt đích (không nảy) */
+  width: min(1200px, calc(100vw - 24px));
+  height: min(800px, calc(100vh - 40px));
+  overflow: hidden;
+}
+
+.cdx[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.cdx__head {
+  position: static;
+  align-items: flex-start;
+}
+
+.cdx__head h2 {
+  font-variant-numeric: tabular-nums;
+}
+
+.cdx__sub {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cdx__body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(240px, 268px) minmax(0, 1fr);
+}
+
+/* Cột trái: tiến độ chung (thanh 6 px, trung tính) và ô danh mục */
+.cdx-nav {
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-3) var(--space-5);
+  border-right: 1px solid var(--border);
+  background: var(--surface-quiet);
+}
+
+.cdx-progress {
+  padding: 0 var(--space-1) var(--space-4);
+}
+
+.cdx-progress__text {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.cdx-progress__bar,
+.cdx-tile__bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.cdx-progress__bar::before,
+.cdx-tile__bar::before {
+  content: '';
+  display: block;
+  width: calc(var(--p, 0) * 100%);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--text-quiet);
+}
+
+.cdx-tiles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cdx-tile {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  column-gap: 10px;
+  row-gap: 7px;
+  align-items: center;
+  width: 100%;
+  min-height: 58px;
+  padding: 8px 12px 8px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.cdx-tile:hover {
+  border-color: var(--border-control);
+  background: var(--surface-2);
+}
+
+/* Danh mục đang mở: cam (thứ bấm được, đang chọn) — viền, vạch trái và nền nhạt. */
+.cdx-tile[aria-current='true'] {
+  border-color: var(--accent);
+  background: var(--accent-a12);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.cdx-tile__icon {
+  position: relative;
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+}
+
+.cdx-tile__icon .cdx-glyph {
+  width: 22px;
+  height: 22px;
+  color: var(--text);
+}
+
+/* Danh mục có mục mới: chấm trắng ở góc biểu tượng (cùng dấu chấm "mới" của thẻ; chữ cho trình đọc màn hình). */
+.cdx-tile[data-new] .cdx-tile__icon::after {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+
+.cdx-tile__name {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.cdx-tile__count {
+  grid-column: 3;
+  grid-row: 1;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.cdx-tile__bar {
+  grid-column: 2 / span 2;
+  grid-row: 2;
+  height: 3px;
+}
+
+.cdx-glyph {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--text-quiet);
+}
+
+.cdx-mark {
+  display: block;
+}
+
+/* Cột phải: lưới thẻ của danh mục HOẶC trang đọc */
+.cdx-main {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.cdx.is-reading .cdx-catview,
+.cdx:not(.is-reading) .cdx-page {
+  display: none;
+}
+
+.cdx-catview {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.cdx-catview__head {
+  max-width: 65ch;
+  margin-bottom: var(--space-4);
+}
+
+.cdx-catview__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.cdx-catview__title .cdx-glyph {
+  width: 24px;
+  height: 24px;
+  color: var(--text);
+}
+
+.cdx-catview__blurb {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.cdx-catview__count {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+/* Lưới thẻ: 140–180 px mỗi thẻ trên máy tính, hai cột trên điện thoại. */
+.cdx-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cdx-grid[hidden] {
+  display: none;
+}
+
+.cdx-grid > li {
+  display: flex;
+  min-width: 0;
+}
+
+.cdx-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 8px 8px 10px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.cdx-card:hover {
+  border-color: var(--accent-hi);
+}
+
+.cdx-card__thumb {
+  display: block;
+  aspect-ratio: 3 / 2;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.cdx-card__thumb svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Ảnh nhỏ bỏ chữ thay vì thu nhỏ chữ (sàn 13 px): nhãn và la bàn chỉ có trên hình lớn của trang đọc. */
+.cdx-card__thumb .cdx-svg__t,
+.cdx-card__thumb .cdx-svg__compass {
+  display: none;
+}
+
+.cdx-card__name {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.cdx-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cdx-card__mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+}
+
+/* Mới: viền sáng và thẻ "MỚI" trung tính (trắng/xám, không cam: thẻ không phải hành động riêng). */
+.cdx-card[data-state='new'] {
+  border-color: var(--text);
+  box-shadow:
+    0 0 0 1px var(--text),
+    0 0 18px color-mix(in srgb, var(--text) 16%, transparent);
+}
+
+.cdx-card[data-state='new'] .cdx-card__mark {
+  color: var(--text);
+}
+
+.cdx-card[data-state='new'] .cdx-card__state {
+  padding: 1px 7px;
+  border: 1px solid var(--muted);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+/* Chưa khám phá: thẻ tối, viền đứt, ảnh mất màu, ổ khóa + "chưa khám phá". Vẫn bấm và đọc được (tên ≥ 7:1). */
+.cdx-card[data-state='locked'] {
+  border-style: dashed;
+  border-color: var(--border-control);
+  background: var(--surface-quiet);
+}
+
+.cdx-card[data-state='locked'] .cdx-card__thumb svg {
+  filter: grayscale(1);
+  opacity: 0.4;
+}
+
+.cdx-card[data-state='locked'] .cdx-card__name {
+  color: var(--muted);
+}
+
+.cdx-card[data-state='locked'] .cdx-card__meta {
+  color: var(--subtle);
+}
+
+/* Đã đọc: bình thường; dấu tích, chữ "đã đọc" chỉ cho trình đọc màn hình (đỡ lặp lại trên mọi thẻ). */
+.cdx-card[data-state='read'] .cdx-card__state {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Trang đọc. Hẹp: một cột (đầu trang → hình → bài → số liệu → hành động → liên quan). Rộng (≥ 760 px bên trong
+   khung đọc): bài ~65ch bên trái, cột "số liệu" 326 px bên phải (hình đầu trang rộng đúng 300 px = cỡ chữ thật). */
+.cdx-page {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  container-type: inline-size;
+}
+
+.cdx-page__in {
+  display: flex;
+  flex-direction: column;
+}
+
+.cdx-page__head,
+.cdx-page__main {
+  max-width: 65ch;
+}
+
+.cdx-page__aside {
+  display: contents;
+}
+
+.cdx-page__head {
+  order: 0;
+}
+
+.cdx-page__aside > .cdx-figure {
+  order: 1;
+  margin: var(--space-4) 0 0;
+}
+
+.cdx-page__main {
+  order: 2;
+}
+
+.cdx-facts {
+  order: 3;
+}
+
+.cdx-page__sim {
+  order: 4;
+}
+
+.cdx-page__related {
+  order: 5;
+}
+
+/* Thẻ công thức chỉ là bản tóm tắt cho cột bên; thân bài đã có công thức đúng chỗ của nó. */
+.cdx-facts--formula {
+  display: none;
+}
+
+@container (min-width: 760px) {
+  .cdx-page__in {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 326px;
+    grid-template-rows: auto 1fr;
+    column-gap: var(--space-6);
+    align-items: start;
+  }
+
+  .cdx-page__head {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .cdx-page__main {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .cdx-page__aside {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .cdx-page__aside > .cdx-figure {
+    margin: 0;
+  }
+
+  .cdx-facts--formula {
+    display: block;
+  }
+
+  .cdx-page__aside .cdx-page__sim {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  .cdx-page__aside .cdx-page__sim .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cdx-page__aside .cdx-page__related h4 {
+    margin-top: 0;
+  }
+}
+
+/* "← Danh mục": luôn hiện, quay về lưới thẻ và trả tiêu điểm cho thẻ vừa đọc. */
+.cdx-page__back {
+  min-height: 36px;
+  margin: 0 0 var(--space-3) calc(-1 * var(--space-3));
+  border-color: transparent;
+  font-size: 14px;
+  color: var(--text-quiet);
+}
+
+.cdx-page__back:hover {
+  color: var(--text);
+}
+
+.cdx-page__title {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.cdx-page__title:focus {
+  outline: none;
+}
+
+.cdx-page__aka {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.cdx-page__state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: var(--space-2) 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cdx-page__state .cdx-mark {
+  flex: none;
+}
+
+.cdx-page__state.is-locked {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--space-2) var(--space-3);
+  border: 1px dashed var(--border-control);
+  border-radius: var(--radius-sm);
+}
+
+/* Dòng "Đã mở khóa": chỉ trong lần mở đầu tiên của một mục mới. Trung tính, đậm. */
+.cdx-unlocked {
+  padding: 2px 10px 2px 8px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  font-weight: 700;
+}
+
+.cdx-page__lede {
+  margin: var(--space-4) 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.cdx-page__rule {
+  margin: var(--space-4) 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.cdx-page__body {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.cdx-page__body p {
+  margin: 0 0 var(--space-3);
+}
+
+.cdx-page__body .formula-grid {
+  grid-template-columns: 1fr;
+}
+
+.cdx-page__body .katex {
+  font-size: 1.08em;
+}
+
+.cdx .formula figcaption {
+  font-size: 13px;
+}
+
+.cdx-figure {
+  position: relative;
+  max-width: 420px;
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.cdx-figure figcaption {
+  margin-top: var(--space-1);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+/* Ổ khóa của nhịp mở khóa: trạng thái nghỉ = đã biến mất (giảm chuyển động hoặc sau hoạt ảnh không còn gì). */
+.cdx-unlock {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cdx-unlock__svg {
+  width: 40px;
+  height: 40px;
+  padding: 14px;
+  box-sizing: content-box;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  color: var(--text);
+}
+
+.cdx-unlock__hole {
+  fill: var(--bg);
+}
+
+.cdx-unlock__shackle {
+  transform-box: view-box;
+  transform-origin: 8px 11px;
+}
+
+/* Nhịp mở khóa ~860 ms, kích hoạt → theo sau, mọi đường cong ease-out, không nảy:
+   0–60 ms     hình đầu trang hơi nhỏ (0,96) và mất màu, ổ khóa đóng (chữ của bài đã hiện đầy đủ)
+   60–340 ms   quai ổ khóa xoay mở (kích hoạt)
+   220–840 ms  hình phóng về 1, lấy lại màu, viền sáng mềm lên rồi tắt (theo sau)
+   300–640 ms  ổ khóa mờ đi
+   520–860 ms  dòng "Đã mở khóa" hiện dần dưới tiêu đề (theo sau cuối)
+   Giảm chuyển động: quy tắc chung tắt mọi hoạt ảnh → trạng thái nghỉ (dòng chữ hiện ngay, không ổ khóa). */
+@media (prefers-reduced-motion: no-preference) {
+  .cdx-page.is-unlocking .cdx-unlock__shackle {
+    animation: cdx-shackle 280ms var(--cdx-ease) 60ms both;
+  }
+
+  .cdx-page.is-unlocking .cdx-unlock {
+    animation: cdx-lock-out 340ms var(--cdx-ease) 300ms both;
+  }
+
+  .cdx-page.is-unlocking .cdx-figure {
+    animation: cdx-reveal 620ms var(--cdx-ease) 220ms both;
+  }
+
+  .cdx-page.is-unlocking .cdx-figure > svg {
+    animation: cdx-color 420ms var(--cdx-ease) 220ms both;
+  }
+
+  .cdx-page.is-unlocking .cdx-unlocked {
+    animation: cdx-line 340ms var(--cdx-ease) 520ms both;
+  }
+
+  .codex-badge.is-glow {
+    animation: cdx-badge-glow 600ms var(--cdx-ease, ease-out) 1;
+  }
+}
+
+@keyframes cdx-shackle {
+  from {
+    transform: none;
+  }
+
+  to {
+    transform: translateY(-2px) rotate(-32deg);
+  }
+}
+
+@keyframes cdx-lock-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes cdx-reveal {
+  0% {
+    transform: scale(0.96);
+    box-shadow: 0 0 0 0 transparent;
+  }
+
+  55% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--text) 45%, transparent),
+      0 0 28px color-mix(in srgb, var(--text) 22%, transparent);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 1px transparent,
+      0 0 28px transparent;
+  }
+}
+
+@keyframes cdx-color {
+  from {
+    filter: grayscale(1) brightness(0.7);
+  }
+
+  to {
+    filter: none;
+  }
+}
+
+@keyframes cdx-line {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Huy hiệu: một nhịp sáng mềm khi số mục mới tăng (chỉ bóng sáng, không dịch chuyển). */
+@keyframes cdx-badge-glow {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--text) 0%, transparent);
+  }
+
+  30% {
+    box-shadow: 0 0 10px 3px color-mix(in srgb, var(--text) 55%, transparent);
+  }
+
+  100% {
+    box-shadow: 0 0 16px 6px color-mix(in srgb, var(--text) 0%, transparent);
+  }
+}
+
+.cdx-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.cdx-svg__dome {
+  fill: none;
+  stroke: var(--border-control);
+  stroke-width: 1;
+}
+
+.cdx-svg__rule {
+  stroke: var(--muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.cdx-svg__me,
+.cdx-svg__star {
+  fill: var(--text);
+}
+
+.cdx-svg__t {
+  font-family: var(--font);
+  font-size: 13px;
+  fill: var(--text);
+  /* Viền nền quanh chữ: nét vẽ đi qua không cắt chữ. */
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.cdx-svg__sky,
+.cdx-svg__frame {
+  fill: var(--bg);
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.cdx-svg__tick {
+  stroke: var(--muted);
+  stroke-width: 1;
+}
+
+.cdx-svg__compass {
+  color: var(--scene-dir);
+}
+
+.cdx-svg__veil {
+  fill: var(--bg);
+  fill-opacity: 0.85;
+}
+
+/* Cột số liệu */
+.cdx-aside__h,
+.cdx-page__related h4 {
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cdx-facts {
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-quiet);
+}
+
+.cdx-facts dl {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 6px var(--space-3);
+  margin: 0;
+  font-size: 14px;
+}
+
+.cdx-facts dt {
+  color: var(--muted);
+}
+
+.cdx-facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.cdx-facts__src {
+  margin: var(--space-2) 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--subtle);
+}
+
+.cdx-facts .formula-grid {
+  grid-template-columns: 1fr;
+  margin: 0;
+}
+
+.cdx-facts .formula {
+  margin: 0;
+}
+
+@container (min-width: 760px) {
+  .cdx-facts {
+    margin-top: 0;
+  }
+}
+
+.cdx-svg__t--muted {
+  fill: var(--muted);
+}
+
+.cdx-svg__t--key {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.cdx-svg__t--dir {
+  font-weight: 700;
+  fill: var(--scene-dir);
+}
+
+.cdx-page__sim {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+.cdx-page__simnote {
+  flex: 1 1 220px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.cdx-page__related h4 {
+  margin-top: var(--space-5);
+}
+
+.cdx-page__related ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cdx-rel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.cdx-rel:hover {
+  border-color: var(--accent-hi);
+}
+
+.cdx-rel.is-locked {
+  border-style: dashed;
+  color: var(--muted);
+}
+
+.cdx-rel__mark {
+  display: grid;
+  flex: none;
+  color: var(--muted);
+}
+
+.cdx-rel[data-state='new'] .cdx-rel__mark {
+  color: var(--text);
+}
+
+/* Điện thoại: toàn màn hình. Ô danh mục thành dải cuộn ngang (cuộn bên trong, trang không cuộn ngang), thẻ hai cột,
+   trang đọc thay chỗ cả hai; vùng chạm 44 px. */
+@media (max-width: 700px) {
+  .cdx {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .cdx__body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .cdx-nav {
+    grid-row: 1;
+    min-width: 0;
+    overflow: visible;
+    padding: var(--space-3) 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cdx-main {
+    grid-row: 2;
+  }
+
+  .cdx.is-reading .cdx-nav {
+    display: none;
+  }
+
+  .cdx-progress {
+    padding: 0 var(--space-4) var(--space-3);
+  }
+
+  .cdx-tiles {
+    flex-direction: row;
+    gap: var(--space-2);
+    padding: 3px var(--space-4) 4px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--space-4);
+    scrollbar-width: none;
+  }
+
+  .cdx-tiles > li {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+
+  .cdx-tile {
+    width: auto;
+    min-width: 150px;
+    min-height: 54px;
+  }
+
+  .cdx-tile__name {
+    white-space: nowrap;
+  }
+
+  .cdx-catview {
+    padding: var(--space-4) var(--space-4) var(--space-6);
+  }
+
+  .cdx-catview__title {
+    font-size: 20px;
+  }
+
+  .cdx-catview__blurb {
+    font-size: 14px;
+  }
+
+  .cdx-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .cdx-page {
+    padding: var(--space-2) var(--space-4) var(--space-6);
+  }
+
+  .cdx-page__back,
+  .cdx-rel {
+    min-height: var(--tap);
+  }
+
+  .cdx-page__back {
+    margin-left: calc(-1 * var(--space-2));
+  }
+
+  .cdx-page__title {
+    font-size: 22px;
+  }
+
+  .cdx-page__sim .btn {
+    width: 100%;
+  }
+
+  /* Vùng chạm 44 px: ::after tính từ hộp đệm 14 px (16 px trừ viền 1 px), nên −15 px chứ không phải −14 px (42 px,
+     review-4 #15). Vòng nhìn thấy vẫn 16 px. */
+  .term::after {
+    inset: -15px;
+  }
+
+  .check-row > .term {
+    margin-top: 14px;
+  }
+}
+
+.term-wrap {
+  white-space: nowrap;
+}
+
+/* Rất hẹp: thêm nút Codex làm thanh trên chật hơn một vùng chạm 44 px. "Ôn tập" bỏ biểu tượng (chữ vẫn còn) để tên
+   ngắn của ứng dụng không bị bẻ thành bốn dòng. */
+@media (max-width: 480px) {
+  .btn--top-main .btn__icon {
+    display: none;
+  }
+
+  .btn--top.btn--top-main {
+    padding: 4px 10px;
+  }
+
+  .topbar {
+    gap: 6px;
+    padding-inline: 8px;
+  }
+
+  .brand {
+    gap: 6px;
+  }
+}
+
+/* ===== Usui-chan guide (redesign-2 G) ===== */
+/* Người hướng dẫn Usui-chan (docs/redesign-2/guide.md). Chân dung tròn ở góc; lời chào một lần; chế độ giải thích.
+   Bề mặt tối, viền mảnh, Arial. Cam chỉ dành cho nút bấm và vòng sáng "đang giải thích" của chân dung. Mọi màu
+   lấy từ token trong :root. Hoạt ảnh chỉ khai báo trong prefers-reduced-motion: no-preference (giảm chuyển động =
+   mọi thứ hiện ngay). */
+
+/* --- Chân dung: máy tính → góc dưới phải màn hình (không che công cụ khung nhìn, thẻ Polaris hay số liệu) */
+.guide-avatar {
+  position: fixed;
+  right: var(--space-4);
+  bottom: var(--space-4);
+  z-index: 34; /* dưới tấm đáy (35) và ngăn Ôn tập (40) */
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 2px solid var(--border-control);
+  border-radius: 50%;
+  background: var(--surface-2);
+  box-shadow: var(--shadow-pop);
+  cursor: pointer;
+}
+
+.guide-avatar__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.guide-avatar:hover {
+  border-color: var(--accent-hi);
+}
+
+.guide-avatar:focus-visible {
+  outline: none;
+  box-shadow: var(--focus);
+}
+
+/* Đang giải thích: vòng cam (trạng thái của một nút bấm, đúng quy tắc thương hiệu) */
+.guide-avatar[aria-pressed='true'] {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--bg), 0 0 0 5px var(--accent);
+}
+
+/* --- Lời chào lần đầu: bong bóng phía trên chân dung, đuôi chỉ xuống chân dung */
+.guide-hello {
+  position: fixed;
+  right: var(--space-4);
+  bottom: calc(var(--space-4) + 56px + var(--space-3));
+  z-index: 36;
+  width: min(320px, calc(100vw - 2 * var(--space-4)));
+  padding: var(--space-4);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: var(--shadow-pop);
+  transform-origin: calc(100% - 28px) 100%;
+}
+
+.guide-hello::after {
+  content: '';
+  position: absolute;
+  right: 22px;
+  bottom: -7px;
+  width: 12px;
+  height: 12px;
+  border: solid var(--border-control);
+  border-width: 0 1px 1px 0;
+  background: var(--surface-2);
+  transform: rotate(45deg);
+}
+
+.guide-hello__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.guide-hello__face {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+/* Ảnh toàn thân (chỉ màn hình rộng, chế độ Cơ bản): đứng trên một "đốm sáng" nhẹ để cờ và váy đen tách khỏi nền */
+.guide-hello--pose .guide-hello__head {
+  align-items: flex-end;
+}
+
+/* fix-2 #9: ảnh 120 → 88 px và đệm 14 px — lời chào gọn lại (≈ 276 px) để nằm DƯỚI thẻ đang chọn ở 1440 × 900 thay vì
+   che nó. */
+.guide-hello--pose {
+  padding: 14px var(--space-4);
+}
+
+.guide-hello__pose {
+  flex: none;
+  width: 88px;
+  height: auto;
+  margin: calc(-1 * var(--space-2)) 0 0 calc(-1 * var(--space-2));
+  border-radius: var(--radius);
+  background: radial-gradient(ellipse at 50% 55%, var(--surface-3) 0%, var(--surface-3) 45%, transparent 72%);
+}
+
+.guide-hello__title {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.guide-hello__body {
+  margin: 0 0 var(--space-2);
+}
+
+/* Lời mời hành động đầu tiên (fix-2 #2): bầu trời là việc số một, nên dòng này đậm hơn thân lời chào. */
+.guide-hello__star {
+  margin: 0 0 var(--space-3);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.guide-hello__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.guide-hello__actions .btn {
+  min-height: 40px;
+  padding-inline: 14px;
+}
+
+/* Đầy đủ, màn hình rộng: lời chào nằm ngang bên trái chân dung (trên dải số liệu), đuôi chỉ sang phải */
+.guide-hello--wide {
+  right: calc(var(--space-4) + 56px + var(--space-3));
+  bottom: var(--space-4);
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  grid-template-areas: 'head head actions' 'body body actions' 'star star actions';
+  column-gap: var(--space-4);
+  width: min(800px, calc(100vw - 2 * var(--space-4) - 56px - var(--space-3)));
+  padding: var(--space-3) var(--space-4);
+  transform-origin: 100% calc(100% - 28px);
+}
+
+.guide-hello--wide .guide-hello__head {
+  grid-area: head;
+  margin-bottom: 2px;
+}
+
+.guide-hello--wide .guide-hello__face {
+  width: 32px;
+  height: 32px;
+}
+
+.guide-hello--wide .guide-hello__body {
+  grid-area: body;
+  margin: 0;
+}
+
+.guide-hello--wide .guide-hello__star {
+  grid-area: star;
+  margin: 2px 0 0;
+}
+
+.guide-hello--wide .guide-hello__actions {
+  grid-area: actions;
+  align-self: center;
+  flex-wrap: nowrap;
+}
+
+.guide-hello--wide::after {
+  right: -7px;
+  bottom: 22px;
+  border-width: 1px 1px 0 0;
+}
+
+/* Cơ bản, màn hình rộng nhưng thấp (không đủ chỗ cho ảnh toàn thân dưới thẻ đang chọn): lời chào là một dải mảnh
+   NGAY TRÊN chân dung, trong cột của dải điều khiển, đuôi chỉ xuống chân dung. Nó thay cho dòng chân dải (ẩn trong
+   lúc mở) — không còn nằm trên dòng gợi ý "Kéo để xoay" dưới giản đồ như trước (fix-2 #2; review-1 #7). */
+.guide-hello.guide-hello--toast {
+  right: var(--space-4);
+  bottom: calc(var(--space-4) + 56px + var(--space-3));
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: min(320px, calc(100vw - 2 * var(--space-4)));
+  padding: 2px 2px 2px var(--space-1);
+  border-radius: var(--radius);
+  transform-origin: calc(100% - 28px) 100%;
+}
+
+@media (min-width: 1600px) {
+  .guide-hello.guide-hello--toast {
+    width: 360px;
+  }
+}
+
+.guide-hello__go {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  min-height: 40px;
+  padding: var(--space-1);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.guide-hello__go:hover {
+  background: var(--veil);
+}
+
+.guide-hello--toast .guide-hello__face {
+  width: 32px;
+  height: 32px;
+}
+
+.guide-hello--toast .guide-hello__title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+/* Chế độ giải thích: dải thông báo nằm ở chân màn hình, nơi có dòng gợi ý "kéo để xoay" — dòng này nhường chỗ
+   (bong bóng của khung nhìn nói cùng điều đó) thay vì bị dải đè lên (review-1 #7). */
+body.guide-explain .view__hint {
+  visibility: hidden;
+}
+
+/* --- Dải thông báo chế độ giải thích: cạnh chân dung */
+.guide-banner {
+  position: fixed;
+  right: calc(var(--space-4) + 56px + var(--space-3));
+  bottom: calc(var(--space-4) + 6px);
+  z-index: 36;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  max-width: calc(100vw - 2 * var(--space-4) - 56px - var(--space-3));
+  padding: 4px 4px 4px var(--space-4);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 14px;
+  box-shadow: var(--shadow-pop);
+}
+
+.guide-banner[hidden] {
+  display: none;
+}
+
+.guide-banner__text {
+  margin: 0;
+}
+
+.guide-banner__close {
+  flex: none;
+  border-radius: var(--radius-pill);
+}
+
+/* Điều khiển đang được giải thích, và gợi ý "rê vào đây được" — viền xám, không dùng cam */
+body.guide-explain [data-guide]:hover {
+  cursor: help;
+}
+
+body.guide-explain [data-guide-on] {
+  outline: 2px dashed var(--muted);
+  outline-offset: 2px;
+}
+
+/* --- Bong bóng lời giải thích: neo cạnh điều khiển (JS đặt left/top và --arrow-x) */
+.guide-tip {
+  position: fixed;
+  z-index: var(--z-toast);
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  align-items: start;
+  width: min(340px, calc(100vw - 2 * var(--space-2)));
+  padding: var(--space-3);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  line-height: 1.5;
+  box-shadow: var(--shadow-pop);
+}
+
+.guide-tip[hidden] {
+  display: none;
+}
+
+.guide-tip::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--arrow-x, 50%) - 6px);
+  width: 12px;
+  height: 12px;
+  border: solid var(--border-control);
+  border-width: 0;
+  background: var(--surface-2);
+  transform: rotate(45deg);
+}
+
+.guide-tip[data-side='below']::before {
+  top: -7px;
+  border-width: 1px 0 0 1px;
+}
+
+.guide-tip[data-side='above']::before {
+  bottom: -7px;
+  border-width: 0 1px 1px 0;
+}
+
+.guide-tip[data-side='inside']::before {
+  display: none;
+}
+
+.guide-tip__face {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.guide-tip__text {
+  margin: 0;
+}
+
+.guide-tip__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-2);
+}
+
+.guide-tip__actions:not(:has(> :not([hidden]))) {
+  display: none;
+}
+
+.guide-tip__actions > [hidden] {
+  display: none;
+}
+
+.guide-tip__codex {
+  min-height: 32px;
+  font-size: 14px;
+}
+
+.guide-tip__close {
+  margin: -4px -4px 0 0;
+}
+
+/* --- Chuyển động: chân dung gật một lần (kích hoạt) → bong bóng vào từ phía chân dung (theo sau, 120 ms) */
+@keyframes guide-nod {
+  0% {
+    transform: none;
+  }
+  35% {
+    transform: translateY(-4px) rotate(-5deg);
+  }
+  70% {
+    transform: translateY(0) rotate(2deg);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes guide-pop {
+  from {
+    opacity: 0;
+    transform: translate(6px, 8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes guide-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .guide-avatar.is-greeting {
+    animation: guide-nod 420ms ease-out 1;
+  }
+
+  .guide-hello.is-in {
+    animation: guide-pop 180ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms both;
+  }
+
+  .guide-banner.is-in,
+  .guide-tip.is-in {
+    animation: guide-pop 140ms ease-out both;
+  }
+}
+
+/* --- Trình chiếu: không có Usui-chan */
+body.present .guide-avatar,
+body.present .guide-hello,
+body.present .guide-banner,
+body.present .guide-tip {
+  display: none;
+}
+
+/* --- Máy tính bảng và điện thoại: chân dung vào góc trên trái của khung nhìn (bầu trời trống ở đó; công cụ khung
+   nhìn ở góc phải, thẻ thông tin ở đáy), nên không bao giờ che điều khiển khi trang cuộn. Lời chào và dải thông báo
+   thành tấm đáy màn hình, không che bầu trời. */
+@media (max-width: 900px) {
+  .guide-avatar {
+    position: absolute;
+    top: var(--space-2);
+    left: var(--space-2);
+    right: auto;
+    bottom: auto;
+    z-index: 6;
+    width: 48px;
+    height: 48px;
+    box-shadow: none;
+  }
+
+  .guide-hello,
+  .guide-banner {
+    left: var(--space-2);
+    right: var(--space-2);
+    bottom: var(--space-2);
+    width: auto;
+    max-width: 480px;
+    margin-inline: auto;
+    transform-origin: 50% 100%;
+  }
+
+  .guide-hello {
+    font-size: 16px;
+  }
+
+  .guide-hello::after {
+    display: none;
+  }
+
+  .guide-hello__actions .btn {
+    flex: 1 1 auto;
+    min-height: var(--tap);
+  }
+
+  .guide-banner {
+    justify-content: space-between;
+    border-radius: var(--radius-lg);
+    font-size: 15px;
+    padding: 6px 6px 6px var(--space-3);
+  }
+
+  .guide-banner__close {
+    min-height: var(--tap);
+    min-width: var(--tap);
+    border-radius: var(--radius);
+  }
+}
+
+/* Lời chào trên điện thoại (review-1 #3): một dải mảnh trong khung nhìn, ngay TRÊN thẻ đang chọn (--card-h) và
+   dòng φ (--foot-h), nên không che chữ nào; vùng trời bị che chỉ cao ~60 px. Bấm vào chân dung/lời chào = bật chế độ
+   giải thích; × = để sau. */
+@media (max-width: 900px) {
+  .guide-hello.guide-hello--toast {
+    position: absolute;
+    left: var(--space-2);
+    right: var(--space-2);
+    top: auto;
+    bottom: calc(var(--foot-h, 0px) + var(--card-h, 0px) + var(--space-2) * 2 + 4px);
+    z-index: 7;
+    width: auto;
+    max-width: 480px;
+    transform-origin: 50% 100%;
+  }
+
+  .guide-hello--toast::after {
+    display: none;
+  }
+
+  .guide-hello__go,
+  .guide-hello__x {
+    min-height: var(--tap);
+  }
+}
+
+@media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .guide-hello.is-in {
+    animation-name: guide-rise;
+  }
+}
+
+/* Điện thoại hẹp: bong bóng giải thích là tấm đáy, nằm trên dải thông báo (JS bỏ left/top neo) */
+@media (max-width: 600px) {
+  .guide-tip--sheet {
+    left: var(--space-2);
+    right: var(--space-2);
+    bottom: calc(var(--space-2) + 56px + var(--space-2));
+    width: auto;
+    font-size: 16px;
+  }
+
+  .guide-tip--sheet::before {
+    display: none;
+  }
+
+  .guide-tip--sheet .btn,
+  .guide-tip--sheet .icon-btn,
+  .guide-tip--sheet .guide-tip__codex {
+    min-height: var(--tap);
+    min-width: var(--tap);
+  }
+
+  .guide-tip--sheet .guide-tip__close {
+    margin: -8px -8px 0 0;
+  }
+}
+
+/* ===== Fix round 1: scene ===== */
+/* fix-1 #5: chữ hướng B/N/Đ/T trắng trung tính — màu lục chỉ còn nghĩa "đường chân trời" (viền đĩa). Áp cho cả hình
+   minh họa trong Codex (cùng biến). */
+:root {
+  --scene-dir: var(--text);
+}
+
+/* fix-1 #2: nhãn "… đang ở dưới chân trời (h = …)" khi đối tượng chọn bị mặt đất che. Chip tối như nhãn số đo, viền
+   trái ĐỨT NÉT màu hồng của đường thẳng đứng/cung h (màu do JS đặt) — cùng ngôn ngữ với dấu "bóng" đứt nét. */
+.lbl--under {
+  font-size: calc(13px * var(--lbl-k, 1));
+  font-weight: 650;
+  color: var(--text);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border-left: 3px dashed;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+}
+
+/* Màn hình 901–1200 px ở chế độ Đầy đủ: thanh trên cùng không đủ chỗ cho bảy nút có chữ nên "Giới thiệu" rơi xuống dòng
+   thứ hai và tên ứng dụng bị cắt. Hai nút ít dùng nhất (Trợ giúp "?", Giới thiệu "i") chỉ còn biểu tượng; tên truy cập
+   (aria-label) và tooltip vẫn giữ nguyên. */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .btn--top-aux .btn__text {
+    display: none;
+  }
+}
+
+/* 901–1100 px: thêm "Đặt lại" (↺) chỉ còn biểu tượng để thanh trên cùng vẫn một dòng. */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .btn--top-reset .btn__text {
+    display: none;
+  }
+}
+
+/* ===== Owner decisions 2026-10-05: reward and polish ===== */
+/* docs/redesign-2/decisions-2026-10-05.md. Một mục chỉ ở đây; quy tắc cũ chỉ đổi tại chỗ khi bắt buộc. */
+
+/* 2. Hộp xác nhận "Đặt lại mô phỏng?": nhỏ, hai dòng "Sẽ đặt lại / Vẫn giữ", "Hủy" (phụ) trước "Đặt lại" (chính, cam). */
+.dialog--confirm {
+  width: min(440px, calc(100vw - 24px));
+}
+
+.confirm__line {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+.confirm__foot {
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.confirm__btn {
+  min-height: var(--tap);
+  min-width: 96px;
+  padding: 8px 18px;
+}
+
+/* 3. Viên trạng thái "Cận cực / Mọc và lặn / Không mọc" (review-2 #12): nền bề mặt trung tính, chữ thường, và một chấm
+   9 px màu vùng (scene/colors.ts qua --zone-*). Màu chỉ đánh dấu, không tô nền: viên không còn mượn màu vùng khi lớp
+   vùng đang tắt và chú giải vùng không hiện. Chữ #f2f2f2 trên --surface-3: 13,9:1; chấm tím/lục lam/đỏ: 3,7 / 6,2 / 4,1:1. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 10px 2px 8px;
+  font-size: 13px;
+  background: var(--surface-3);
+  color: var(--text);
+  border: 1px solid var(--border-control);
+}
+
+.status::before {
+  content: '';
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--status-dot, var(--muted));
+}
+
+.status--circumpolar {
+  --status-dot: var(--zone-circumpolar);
+}
+
+.status--riseSet {
+  --status-dot: var(--zone-riseset);
+}
+
+.status--neverRise {
+  --status-dot: var(--zone-neverrise);
+}
+
+/* 4. Sàn 13 px cho chữ giải thích ngoài USACodex (review-2 #5): ghi chú từng dòng của thẻ thông tin, chú thích dải số
+   liệu, phụ đề khung nhìn, gợi ý dưới hộp kiểm và trong bảng, chú giải màu, dòng gợi ý dưới giản đồ, lời nhắn ô nhập,
+   chú thích rê chuột và nút trong bong bóng của Usui-chan. Cùng độ đặc hiệu với quy tắc gốc và đứng sau chúng nên thắng
+   cả các bản trong @media; bản trình chiếu (body.present …) vẫn to hơn. Nhãn trong cảnh 3D có cỡ riêng (gỡ chồng chéo),
+   chữ trong USACodex thuộc phần USACodex: không đổi ở đây. */
+.infocard__vi,
+.infocard__kind,
+.infocard__mag,
+.infocard h4,
+.kv dt,
+.kv__x,
+.kv__note,
+.data__k,
+.data__n,
+.view__sub,
+.view__hint,
+.check__hint,
+.hint,
+.note,
+.sub__teaser,
+.field-msg,
+.field-error,
+.legend,
+.legend-zones,
+.tooltip,
+.guide-tip__use {
+  font-size: 13px;
+}
+
+
+/* ===== Full-mode focus layout (owner decision 2026-10-05) ===== */
+/* Chế độ Đầy đủ trên màn hình rộng (≥ 1101 px, ngoài trình chiếu): giản đồ chân trời là "số một" rõ rệt và lấp phần
+   lớn màn hình; thiên cầu thành cột phụ hẹp bên phải (thẻ thông tin mở ra nằm ngay dưới nó). Dải số liệu thu gọn
+   thành một dải mảnh vẫn giữ φ và độ cao thiên cực; bảng điều khiển nằm sau nút "Bảng điều khiển" và mở thành cột
+   bên phải, đẩy khung nhìn hẹp lại (không che cảnh). Xem docs/redesign-2/focus-layout.md và src/ui/focusLayout.ts.
+   Điện thoại, 901–1100 px, chế độ Cơ bản và trình chiếu: hai nút ẩn, mọi thứ như trước. */
+.focusbar {
+  display: contents;
+}
+
+.focus-toggle {
+  display: none;
+}
+
+@media (min-width: 1101px) {
+  body.mode-full:not(.present) {
+    /* Cột thiên cầu ≈ 30 % bề ngang khung nhìn; cột bảng điều khiển khi mở. */
+    --focus-side-w: clamp(260px, 30%, 460px);
+    --focus-panel-w: clamp(330px, 25vw, 400px);
+  }
+
+  /* Cả ứng dụng nằm trong màn hình đầu: khung nhìn co giãn, chú giải và dải số liệu theo chiều cao tự nhiên. */
+  body.mode-full:not(.present) .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    grid-template-areas: 'views' 'legend' 'bar';
+    gap: var(--space-2) var(--space-3);
+    height: calc(100svh - var(--focus-top, 61px));
+    min-height: 560px;
+    padding-bottom: var(--space-3);
+  }
+
+  body.mode-full.focus-panels-open:not(.present) .layout {
+    grid-template-columns: minmax(0, 1fr) var(--focus-panel-w);
+    grid-template-areas: 'views panels' 'legend panels' 'bar panels';
+  }
+
+  /* Giản đồ chân trời chiếm hết chiều cao cột trái; thiên cầu ở cột phải. Thẻ thông tin mở ra: dưới thiên cầu. */
+  body.mode-full:not(.present) .views,
+  body.mode-full:not(.present) .views:has(> .infocard:not(.is-collapsed)) {
+    grid-area: views;
+    height: auto;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) var(--focus-side-w);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  body.mode-full:not(.present) #view-horizon {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+
+  body.mode-full:not(.present) #view-sphere {
+    grid-column: 2;
+    grid-row: 1 / -1;
+  }
+
+  body.mode-full:not(.present) .views:has(> .infocard:not(.is-collapsed)) #view-sphere {
+    grid-row: 1;
+  }
+
+  body.mode-full:not(.present) .infocard:not(.is-collapsed) {
+    position: static;
+    grid-column: 2;
+    grid-row: 2;
+    width: auto;
+    min-width: 0;
+    max-height: 44svh;
+    background: var(--surface-quiet);
+    border: 0;
+    box-shadow: none;
+  }
+
+  body.mode-full:not(.present) .infocard:not(.is-collapsed) .infocard__head {
+    cursor: default;
+  }
+
+  /* Thẻ thu gọn nổi ở góc dưới của cột thiên cầu, không rộng hơn cột. */
+  body.mode-full:not(.present) .infocard.is-collapsed {
+    max-width: calc(var(--focus-side-w) - 20px);
+  }
+
+  body.mode-full:not(.present) .legend {
+    grid-area: legend;
+    padding-inline: var(--space-1);
+  }
+
+  /* ---- Dải dưới khung nhìn: [Số liệu] φ · độ cao thiên cực · LST … [Bảng điều khiển] -------------------------- */
+  /* Mép phải chừa chỗ cho chân dung Usui-chan (cố định ở góc dưới phải màn hình) khi bảng điều khiển đóng. */
+  body.mode-full:not(.present) .focusbar {
+    grid-area: bar;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    min-width: 0;
+    margin-right: calc(56px + var(--space-3));
+    padding: var(--space-1);
+    background: var(--surface-quiet);
+    border-radius: var(--radius);
+  }
+
+  body.mode-full.focus-panels-open:not(.present) .focusbar {
+    margin-right: 0;
+  }
+
+  body.mode-full.focus-data-open:not(.present) .focusbar {
+    align-items: flex-start;
+  }
+
+  body.mode-full:not(.present) .focus-toggle {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap);
+    padding: 0 var(--space-3) 0 var(--space-4);
+    border: 1px solid var(--border-control);
+    border-radius: 8px;
+    background: var(--surface-2);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  body.mode-full:not(.present) .focus-toggle:hover {
+    background: var(--surface-3);
+  }
+
+  /* Đang mở: viền cam như nút bật/tắt của khung nhìn (cam = trạng thái của một nút bấm). */
+  body.mode-full:not(.present) .focus-toggle[aria-expanded='true'] {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+
+  body.mode-full:not(.present) .focus-toggle--panels {
+    margin-left: auto;
+  }
+
+  /* Chevron: dải số liệu mở LÊN (▴ khi đóng, ▾ khi mở); bảng điều khiển mở SANG TRÁI từ mép phải (◂ / ▸). */
+  .focus-toggle .chevron {
+    transition: transform 0.15s ease-out;
+  }
+
+  .focus-toggle--data[aria-expanded='false'] .chevron {
+    transform: rotate(180deg);
+  }
+
+  .focus-toggle--panels[aria-expanded='false'] .chevron {
+    transform: rotate(90deg);
+  }
+
+  .focus-toggle--panels[aria-expanded='true'] .chevron {
+    transform: rotate(-90deg);
+  }
+
+  body.mode-full:not(.present) .focusbar .databar {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: var(--space-1) var(--space-2);
+    background: transparent;
+  }
+
+  /* Thu gọn: một dòng, khóa và giá trị cạnh nhau, không có câu nghĩa. φ và độ cao thiên cực đứng cạnh nhau nên
+     đẳng thức vẫn thấy được; rê chuột vẫn tô sáng liên kết (cùng ô, cùng data-emphasis).
+     Quyết định của chủ dự án 2026-10-05: φ và độ cao thiên cực đã có ở dòng chú thích ngay dưới giản đồ chân trời, nên
+     dải thu gọn không lặp lại chúng mà cho LST và đối tượng đang chọn (một dòng). */
+  body.mode-full:not(.focus-data-open):not(.present) .focusbar .databar {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--space-5);
+    overflow: hidden;
+  }
+
+  body.mode-full:not(.focus-data-open):not(.present) .databar .data__item:not([data-emphasis='lst'], [data-emphasis='selected']) {
+    display: none;
+  }
+
+  body.mode-full:not(.focus-data-open):not(.present) .databar .data__item {
+    flex: none;
+    flex-direction: row;
+    align-items: baseline;
+    gap: var(--space-2);
+    max-width: none;
+    margin-right: 0;
+  }
+
+  body.mode-full:not(.focus-data-open):not(.present) .databar .data__n {
+    display: none;
+  }
+
+  body.mode-full:not(.focus-data-open):not(.present) .databar .data__k {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  /* ---- Bảng điều khiển: cột phải, thẻ chọn ở đầu, mỗi lần một bảng (như điện thoại), cuộn trong cột -------- */
+  body.mode-full:not(.present) .panels {
+    display: none;
+  }
+
+  body.mode-full.focus-panels-open:not(.present) .panels {
+    grid-area: panels;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-height: 0;
+    columns: auto;
+  }
+
+  body.mode-full:not(.present) .paneltabs {
+    display: flex;
+    flex: none;
+    gap: 4px;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+
+  body.mode-full:not(.present) .paneltabs .tab {
+    flex: 1;
+    min-height: var(--tap);
+    padding: 0 var(--space-1);
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  body.mode-full:not(.present) .paneltabs .tab:hover {
+    color: var(--text);
+  }
+
+  body.mode-full:not(.present) .paneltabs .tab[aria-selected='true'] {
+    background: var(--surface-3);
+    color: var(--text);
+    box-shadow: inset 0 -2px 0 var(--accent);
+  }
+
+  /* Đáy bảng chừa chỗ cho chân dung Usui-chan: dòng cuối cuộn được lên trên nó. */
+  body.mode-full:not(.present) .panels > .panel {
+    display: none;
+    flex: 0 1 auto;
+    min-height: 0;
+    margin: 0;
+    padding-bottom: calc(56px + var(--space-5));
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-control) transparent;
+  }
+
+  body.mode-full:not(.present) .panels[data-active='location'] > .panel[data-panel='location'],
+  body.mode-full:not(.present) .panels[data-active='animation'] > .panel[data-panel='animation'],
+  body.mode-full:not(.present) .panels[data-active='display'] > .panel[data-panel='display'],
+  body.mode-full:not(.present) .panels[data-active='stars'] > .panel[data-panel='stars'] {
+    display: block;
+  }
+}
+
+/* Lời chào lần đầu của Usui-chan trong bố cục tập trung: một dải ngang nằm đúng trên vùng chú giải + dải số liệu (như
+   trước đây nó nằm trên dải số liệu), không che bầu trời của hai khung nhìn hay thẻ Polaris. Đầu lời chào bên trái,
+   lời nhắn và gợi ý ở giữa, hai nút bên phải; đuôi vẫn chỉ sang chân dung. */
+@media (min-width: 1101px) {
+  body.mode-full:not(.present) .guide-hello--wide {
+    left: var(--space-4);
+    right: calc(var(--space-4) + 56px + var(--space-3));
+    bottom: var(--space-3);
+    width: auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'head body actions' 'head star actions';
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+  }
+
+  body.mode-full:not(.present) .guide-hello--wide .guide-hello__head {
+    margin: 0;
+  }
+
+  body.mode-full:not(.present) .guide-hello--wide .guide-hello__body {
+    line-height: 1.4;
+  }
+
+  body.mode-full:not(.present) .guide-hello--wide::after {
+    bottom: 50%;
+    margin-bottom: -6px;
+  }
+}
+
+@media (min-width: 1101px) and (prefers-reduced-motion: reduce) {
+  .focus-toggle .chevron {
+    transition: none;
+  }
+}
+
+/* Dải thu gọn: ô "Đối tượng đang chọn" viết trên một dòng (bình thường là hai dòng, white-space: pre-line). */
+@media (min-width: 1101px) {
+  body.mode-full:not(.focus-data-open):not(.present) .databar [data-emphasis='selected'] .data__v {
+    white-space: normal;
+  }
+}
+
+/* ==== fix-3 ui ==== */
+/* Vòng sửa 3, luồng giao diện (docs/redesign-2/review-3.md, mục #2 và #4–#11). Mọi quy tắc của vòng này nằm ở đây và
+   ghi đè các quy tắc phía trên; màu chỉ qua token trong :root. */
+
+/* #2. Bố cục tập trung mở cả "Số liệu" lẫn "Bảng điều khiển" và có đối tượng đang chọn: thẻ thông tin nằm dưới thiên
+   cầu ở cột 2 từng ép thiên cầu còn ~90 px (review-4 ảnh 06). Hàng thiên cầu giữ tối thiểu đầu khung (~70 px, tiêu
+   đề + phụ đề hai dòng) + 220 px cảnh; thẻ nhận phần còn lại và tự cuộn bên trong. Hàng thẻ không bao giờ thấp hơn
+   dòng tiêu đề của nó (tên đối tượng + hai nút). */
+@media (min-width: 1101px) {
+  body.mode-full:not(.present) .views:has(> .infocard:not(.is-collapsed)) {
+    grid-template-rows: minmax(292px, 1fr) minmax(56px, auto);
+  }
+
+  body.mode-full:not(.present) .infocard:not(.is-collapsed) {
+    min-height: 0;
+    overflow: auto;
+  }
+}
+
+/* #11. Thẻ thông tin dài hơn vùng của nó: mép dưới chỉ mờ nhẹ rồi che hẳn, cộng dấu "↓ Còn nữa" (lớp has-more do
+   infoCard.ts đặt khi còn nội dung bên dưới, bỏ khi đã cuộn tới đáy). Trước đây mặt nạ mờ dần làm dòng cuối (vd.
+   "MỌC – LẶN") còn 3,1:1. Nay phần mờ chỉ phủ tối đa 30 % màu nền: chữ phụ --muted vẫn ≥ 4,9:1 trên nền thẻ; dưới đó
+   là một dải đặc giữ dấu "Còn nữa", chữ đã bị che hẳn chứ không mờ dở. --infocard-bg: nền thật của thẻ ở từng bố cục. */
+.infocard {
+  --infocard-bg: var(--surface);
+}
+
+@media (min-width: 1200px) {
+  .infocard:not(.is-collapsed) {
+    --infocard-bg: var(--surface-quiet);
+  }
+}
+
+@media (min-width: 1101px) {
+  body.mode-full:not(.present) .infocard:not(.is-collapsed) {
+    --infocard-bg: var(--surface-quiet);
+  }
+}
+
+.infocard__more {
+  display: none;
+  position: sticky;
+  bottom: 0;
+  height: 0;
+  z-index: 1;
+}
+
+.infocard.has-more:not(.is-collapsed):not(.is-empty) .infocard__more {
+  display: block;
+}
+
+/* Dải che: 12 px mờ (0 → 30 %), rồi đặc tới mép dưới thẻ (gồm cả lề dưới 10 px của thẻ). */
+.infocard__more::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  right: -12px;
+  bottom: -10px;
+  height: 48px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0,
+    color-mix(in srgb, var(--infocard-bg) 30%, transparent) 12px,
+    var(--infocard-bg) 13px
+  );
+  pointer-events: none;
+}
+
+.infocard__more-btn {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-height: 28px;
+  padding: 2px 12px;
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-pill);
+  background: var(--surface-3);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.infocard__more-btn:hover {
+  border-color: var(--accent-hi);
+}
+
+/* Vùng chạm 44 px (điện thoại) quanh viên 28 px, không làm dải che cao thêm. */
+.infocard__more-btn::after {
+  content: '';
+  position: absolute;
+  inset: -8px -4px;
+}
+
+/* #4. Lời chào trên điện thoại mở đầu bằng việc đầu tiên nên làm ("Thử chạm vào một ngôi sao nhé…", như lời chào trên
+   máy tính); câu dài hơn nên xuống ba dòng. Dòng sát hơn một chút và bỏ đệm dọc của nút để dải vẫn chỉ che ≤ 15 %
+   bầu trời, vẫn nằm trên thẻ đang chọn và dòng φ (vị trí neo theo --card-h, --foot-h không đổi). */
+@media (max-width: 900px) {
+  .guide-hello--toast .guide-hello__title {
+    line-height: 1.25;
+  }
+
+  .guide-hello--toast .guide-hello__go {
+    padding-block: 0;
+  }
+}
+
+/* #5. "Hủy" là lựa chọn mặc định của hộp "Đặt lại mô phỏng?": tiêu điểm đặt bằng mã khi mở hộp, nên khi người dùng mở
+   bằng chuột trình duyệt không coi đó là :focus-visible và vòng tiêu điểm không hiện. Hai nút của hộp hiện vòng cam
+   (cùng màu và khoảng hở với --focus) với mọi kiểu tiêu điểm. Dùng outline (không phải box-shadow) để vòng vẫn
+   thấy trong chế độ màu cưỡng bức. */
+#dlg-reset .confirm__btn:focus {
+  outline: 2px solid var(--accent-hi);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* #6. Thanh trên của chế độ Đầy đủ trên điện thoại: từng cao ba hàng (~150 px) với "Cơ bản / Đầy đủ" đứng một mình ở
+   hàng ba, còn "Ôn tập" có viền sáng hơn trông như đang được chọn (review-4 ảnh 12). Nay hai hàng gọn (≤ 104 px ở
+   375 px): hàng 1 là thương hiệu và công tắc chế độ (như Cơ bản), hàng 2 là dải nút biểu tượng 44 px chia đều bề
+   ngang. "Ôn tập" chỉ còn biểu tượng bút chì (tên vẫn là aria-label, chú thích ở title), viền như các nút cạnh nó. */
+@media (max-width: 640px) {
+  body.mode-full .topbar {
+    flex-wrap: wrap;
+    row-gap: var(--space-1);
+    padding-block: var(--space-1);
+  }
+
+  body.mode-full .brand {
+    flex: 1 1 auto;
+  }
+
+  /* Công tắc ở hàng 1, bên phải: giữ viền của công tắc phân đoạn, bỏ đệm để hàng chỉ cao 46 px. */
+  body.mode-full .modeswitch {
+    order: 0;
+    flex: none;
+    margin-left: auto;
+    padding: 0;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  body.mode-full .topbar__actions {
+    order: 1;
+    flex: 1 0 100%;
+    gap: var(--space-1);
+  }
+
+  body.mode-full .topbar__actions .btn--top {
+    flex: 1 1 0;
+  }
+
+  body.mode-full .btn--top.btn--top-main {
+    padding: 4px;
+    border-color: var(--border);
+  }
+
+  body.mode-full .btn--top-main .btn__icon {
+    display: inline-grid;
+  }
+
+  body.mode-full .btn--top-main .btn__text {
+    display: none;
+  }
+}
+
+/* #7. Khoảnh khắc mở khóa của USACodex (review-4 ảnh 09: viên "✓ Đã mở khóa" nặng ngang phụ đề, không thấy là phần
+   thưởng). Giữ giọng điềm tĩnh, chỉ cho nó "đáp" một lần:
+   - viên "Đã mở khóa" sáng mềm (bóng trắng trung tính, không cam: không phải nút bấm) đúng lúc nó hiện ra, 520–900 ms,
+     nên cả nhịp vẫn kết thúc trong 900 ms;
+   - thanh tiến độ (chung và từng danh mục) trượt tới giá trị mới trong ~400 ms, cùng đường cong ease-out
+     (codex/ui.ts chỉ ghi giá trị khi hộp đang mở, nên lần mở sau thanh trượt từ giá trị lần xem trước).
+   Giảm chuyển động: không khai báo gì → viên và thanh hiện ngay ở trạng thái cuối.
+   Thẻ đã đọc: dấu tích ✓ (glyphs.ts) cộng chữ "đã đọc" nay hiện ra (trước chỉ dành cho trình đọc màn hình): một dấu
+   tích 12 px đứng một mình quá mờ để thấy là một trạng thái. Cả ba trạng thái giờ cùng dạng "dấu + chữ", không dựa
+   vào màu: ổ khóa + "chưa khám phá" (viền đứt), chấm + "MỚI" (viền sáng), ✓ + "đã đọc". */
+@media (prefers-reduced-motion: no-preference) {
+  .cdx-page.is-unlocking .cdx-unlocked {
+    animation:
+      cdx-line 340ms var(--cdx-ease) 520ms both,
+      cdx-pill-glow 380ms var(--cdx-ease) 520ms both;
+  }
+
+  .cdx-progress__bar::before,
+  .cdx-tile__bar::before {
+    transition: width 400ms var(--cdx-ease);
+  }
+}
+
+@keyframes cdx-pill-glow {
+  0% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+
+  40% {
+    box-shadow:
+      0 0 0 1px var(--text),
+      0 0 16px 2px color-mix(in srgb, var(--text) 35%, transparent);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+.cdx-card[data-state='read'] .cdx-card__state {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+}
+
+/* #8. Chú giải màu của viên "Trạng thái" (review-4 ảnh 03, 04): chấm lục lam của viên chỉ có nghĩa nhờ chú giải vùng,
+   mà lớp vùng tắt theo mặc định. Rê chuột lên (hoặc Tab tới) nút "?" cạnh "Trạng thái", hoặc rê lên viên, hiện một
+   chú thích liệt kê ba trạng thái, mỗi cái với chấm màu vùng (--zone-*, trùng scene/colors.ts) và chữ của nó. */
+.kv--stack[data-emphasis='status'] {
+  position: relative;
+}
+
+.status-key {
+  display: none;
+  position: absolute;
+  top: calc(100% - 4px);
+  left: 0;
+  z-index: 3;
+  flex-direction: column;
+  gap: 6px;
+  width: max-content;
+  max-width: min(280px, 100%);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  box-shadow: var(--shadow-pop);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.35;
+  white-space: normal;
+  pointer-events: none;
+}
+
+.kv:has(.term:hover) .status-key,
+.kv:has(.term:focus-visible) .status-key,
+.status:hover + .status-key {
+  display: flex;
+}
+
+.status-key__head,
+.status-key__foot {
+  color: var(--muted);
+}
+
+.status-key__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-key__item::before {
+  content: '';
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--status-dot);
+}
+
+/* #10. Chữ giải thích từng nằm sát sàn 13 px (đo được ~12,5–13 px, review-3 #10). Câu nghĩa ngắn dưới mỗi dòng của
+   thẻ thông tin là chữ người mới thật sự đọc: 14 px. Dòng gợi ý dưới giản đồ chân trời và các bộ đếm, chú thích hình
+   của USACodex: 13,5–14 px. Bản trình chiếu (body.present …) có độ đặc hiệu cao hơn nên vẫn to hơn. */
+.kv__note {
+  font-size: 14px;
+}
+
+.view__hint {
+  font-size: 13.5px;
+}
+
+.cdx-card__meta {
+  font-size: 13.5px;
+}
+
+.cdx-catview__count,
+.cdx-tile__count,
+.cdx-figure figcaption {
+  font-size: 14px;
+}
+
+/* ==== fix-3 scene ==== */
+/* fix-3 #3: khung nhìn hẹp (điện thoại) — nhãn "… đang ở dưới chân trời (h = …)" xuống hai dòng thay vì dài hơn chỗ
+   trống cạnh dấu "bóng": đặt được bên cạnh vòng đứt nét thay vì bị đẩy vào trong mép và che chính dấu đó. */
+@media (max-width: 600px) {
+  .lbl--under {
+    white-space: normal;
+    max-width: 12em;
+    text-wrap: balance;
+    line-height: 1.25;
+  }
+}
+
+/* ==== fix-4 ui ==== */
+/* review-4 #5. Thanh trên ở điện thoại (≤ 640 px), cả hai chế độ: mỗi nút có chữ chú thích nhỏ dưới biểu tượng (bút
+   chì, sách, "?" và "i" không tự giải thích được). Chữ là chính tên của nút (.btn__text: "Ôn tập", "Đặt lại",
+   "USACodex", "Trợ giúp", "Giới thiệu"), cỡ 12 px cho nhãn điều khiển (13 px không đủ chỗ cho "USACodex" khi năm nút
+   chia 375 px). Hàng 1: thương hiệu + công tắc chế độ; hàng 2: dải nút chia đều bề ngang. Cơ bản cũng xuống hai hàng
+   (bốn nút có chữ không vừa cạnh công tắc), nên tên ngắn của ứng dụng hiện lại ở hàng 1. */
+@media (max-width: 640px) {
+  body.mode-full .topbar,
+  body.mode-simple .topbar {
+    flex-wrap: wrap;
+    row-gap: var(--space-1);
+    padding-block: var(--space-1);
+  }
+
+  body.mode-full .brand,
+  body.mode-simple .brand {
+    flex: 1 1 auto;
+  }
+
+  /* Công tắc ở hàng 1, bên phải, không đệm (như Đầy đủ ở fix-3 #6): hàng chỉ cao 46 px. */
+  body.mode-simple .modeswitch {
+    margin-left: auto;
+    padding: 0;
+  }
+
+  body.mode-full .topbar__actions,
+  body.mode-simple .topbar__actions {
+    order: 1;
+    flex: 1 0 100%;
+    gap: var(--space-1);
+  }
+
+  body.mode-full .topbar__actions .btn--top,
+  body.mode-simple .topbar__actions .btn--top {
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 2px;
+    min-width: var(--tap);
+    min-height: var(--tap);
+    padding: 3px 2px;
+  }
+
+  body.mode-full .topbar__actions .btn--top .btn__icon,
+  body.mode-simple .topbar__actions .btn--top .btn__icon {
+    display: inline-grid;
+  }
+
+  body.mode-full .topbar__actions .btn--top .btn__text,
+  body.mode-simple .topbar__actions .btn--top .btn__text {
+    display: block;
+    max-width: 100%;
+    font-size: 12px;
+    line-height: 1.15;
+    color: var(--muted);
+    text-align: center;
+    white-space: normal;
+  }
+}
+
+/* ≤ 480 px: tên ngắn của ứng dụng hiện lại trong Cơ bản (hàng 1 nay chỉ có logo và công tắc). */
+@media (max-width: 480px) {
+  body.mode-simple .brand__short {
+    display: block;
+  }
+}
+
+/* Rất hẹp (< 360 px, năm nút ở Đầy đủ): "USACodex" 12 px rộng hơn ô ~52 px, nên chú thích xuống 11 px và bỏ đệm ngang
+   thay vì tràn khỏi viền nút. Từ 360 px trở lên vẫn 12 px. */
+@media (max-width: 359px) {
+  body.mode-full .topbar__actions .btn--top,
+  body.mode-simple .topbar__actions .btn--top {
+    padding-inline: 0;
+  }
+
+  body.mode-full .topbar__actions .btn--top .btn__text,
+  body.mode-simple .topbar__actions .btn--top .btn__text {
+    font-size: 11px;
+  }
+}
+
+/* review-4 #4a. Dải "↓ Còn nữa": trước đây chỉ mờ tới 30 % rồi đặc ngay, nên dòng bị cắt ngang (vd. "Xích kinh α …" ở
+   1280 × 800) hiện nửa trên nét chữ với gần đủ độ tương phản rồi đứt hẳn. Nay dải mờ tuyến tính tới 100 % nền thẻ trên
+   --more-fade px, rồi mới đặc: dòng nằm ở chỗ cắt nhạt dần về không, không còn mép chữ sắc. Dòng nằm trọn phía trên
+   dải không đổi. Hai biến để UAT (fix-4.mjs) đọc lại hình dạng dải. */
+.infocard__more {
+  --more-band: 60px;
+  --more-fade: 30px;
+}
+
+.infocard__more::before {
+  height: var(--more-band);
+  background: linear-gradient(to bottom, transparent 0, var(--infocard-bg) var(--more-fade));
 }

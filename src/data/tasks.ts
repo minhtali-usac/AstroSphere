@@ -3,6 +3,7 @@
 import { classify, hourAngleDeg } from '../astro';
 import type { Actions, AppState, Store } from '../state';
 import { lstOf } from '../state';
+import { ensureConstellation, PLACES, selectHip, zones } from '../scenario';
 
 export interface TaskContext {
   store: Store;
@@ -24,23 +25,8 @@ export interface Task {
   explain: string;
 }
 
-const HANOI = { lat: 21.03, lon: 105.85 };
-const HCM = { lat: 10.82, lon: 106.63 };
-
-function ensureConstellation(ctx: TaskContext, id: string) {
-  if (!ctx.actions.hasConstellation(id)) ctx.actions.addConstellation(id);
-}
-
-function selectHip(ctx: TaskContext, hip: number) {
-  const star = ctx.store.state.stars.find((x) => x.hip === hip);
-  if (star) ctx.actions.select({ kind: 'user', id: star.id });
-}
-
-function zones(ctx: TaskContext, on: boolean) {
-  ctx.actions.setToggle('zoneCircumpolar', on);
-  ctx.actions.setToggle('zoneRiseSet', on);
-  ctx.actions.setToggle('zoneNeverRise', on);
-}
+const HANOI = PLACES.hanoi;
+const HCM = PLACES.hcm;
 
 const near = (target: number, tol: number) => (v: number) => Math.abs(v - target) <= tol;
 

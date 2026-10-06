@@ -10,7 +10,7 @@
 // Trong một dòng: **chữ đậm**, \( TeX \) công thức trong dòng, {{#màu}} ô màu.
 // Công thức được dựng bằng KaTeX (đóng gói kèm ứng dụng, chỉ tải khi mở hộp thoại lần đầu).
 
-import { fmtDegSigned, fmtHMS, fmtNum } from '../astro';
+import { fmtDegSigned, fmtHMS, fmtMag, fmtNum } from '../astro';
 import { COMETS, DSOS, dsoDesignation } from '../data/deepSky';
 import { t, tList } from '../i18n';
 import { fmtLightYears } from '../selection';
@@ -35,7 +35,7 @@ function inline(text: string): (Node | string)[] {
   return out;
 }
 
-function renderLines(lines: string[]): HTMLElement {
+export function renderLines(lines: string[]): HTMLElement {
   const root = h('div', { class: 'dialog__content' });
   let ul: HTMLUListElement | null = null;
   let table: HTMLTableElement | null = null;
@@ -87,7 +87,7 @@ type Katex = typeof import('katex').default;
 let katexReady: Promise<Katex> | null = null;
 
 /** Tải KaTeX (một lần) rồi dựng mọi công thức còn đang ở dạng mã TeX. */
-function renderMath(root: HTMLElement): void {
+export function renderMath(root: HTMLElement): void {
   const pending = [...root.querySelectorAll<HTMLElement>('.math[data-tex]')];
   if (!pending.length) return;
   katexReady ??= Promise.all([import('katex'), import('katex/dist/katex.min.css')]).then(([mod]) => mod.default);
@@ -104,7 +104,7 @@ function renderMath(root: HTMLElement): void {
     });
 }
 
-function makeDialog(id: string, title: string, lines: string[], custom?: HTMLElement): HTMLDialogElement {
+function makeDialog(id: string, title: string, lines: string[], extra: HTMLElement[] = [], custom?: HTMLElement): HTMLDialogElement {
   const content = custom ?? renderLines(lines);
   const dlg = h(
     'dialog',
@@ -116,7 +116,7 @@ function makeDialog(id: string, title: string, lines: string[], custom?: HTMLEle
       h('button', { type: 'button', class: 'icon-btn', 'aria-label': t('dialog.close'), title: t('dialog.close'), text: '×', onclick: () => dlg.close() }),
     ),
     content,
-    h('footer', { class: 'dialog__foot' }, h('button', { type: 'button', class: 'btn btn--primary', text: t('dialog.ok'), onclick: () => dlg.close() })),
+    h('footer', { class: 'dialog__foot' }, ...extra, h('button', { type: 'button', class: 'btn btn--primary', text: t('dialog.ok'), onclick: () => dlg.close() })),
   );
   // Bấm ra ngoài hộp thoại để đóng
   dlg.addEventListener('click', (e) => {
@@ -155,7 +155,7 @@ function catalogContent(): HTMLElement {
               h('td', { text: o.typeVi }),
               h('td', { class: 'num', text: fmtHMS(o.ra, { seconds: false }) }),
               h('td', { class: 'num', text: fmtDegSigned(o.dec, 1) }),
-              h('td', { class: 'num', text: fmtNum(o.mag, 1) }),
+              h('td', { class: 'num', text: fmtMag(o.mag, 1) }),
               h('td', { class: 'num', text: o.sizeArcmin ? `${fmtNum(o.sizeArcmin, o.sizeArcmin < 10 ? 1 : 0)}′` : '—' }),
               h('td', { class: 'num', text: o.distanceLy ? fmtLightYears(o.distanceLy) : '—' }),
             ),
@@ -201,7 +201,7 @@ function catalogContent(): HTMLElement {
 export function createDialogs() {
   const help = makeDialog('dlg-help', t('help.title'), tList('help.body'));
   const about = makeDialog('dlg-about', t('about.title'), tList('about.body'));
-  const catalog = makeDialog('dlg-catalog', t('catalog.title'), [], catalogContent());
+  const catalog = makeDialog('dlg-catalog', t('catalog.title'), [], [], catalogContent());
   catalog.classList.add('dialog--wide');
   const open = (dlg: HTMLDialogElement) => {
     dlg.showModal();

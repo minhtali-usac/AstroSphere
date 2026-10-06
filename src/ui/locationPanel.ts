@@ -1,10 +1,12 @@
 // Bảng 1: Vị trí quan sát.
 
-import { fmtNum, parseNum } from '../astro';
+import { fmtDeg, fmtNum, parseNum } from '../astro';
 import { SPECIAL_PLACES, VN_PLACES, type Place } from '../data/places';
+import { termLink } from '../codex/triggers';
 import { t } from '../i18n';
 import type { Actions, Store } from '../state';
-import { button, fieldset, h } from './dom';
+import { button, fieldset, guide, h } from './dom';
+import { bindEmphasis } from './emphasis';
 import { WorldMap } from './worldMap';
 
 export function locationPanel(store: Store, actions: Actions): HTMLElement {
@@ -46,6 +48,11 @@ export function locationPanel(store: Store, actions: Actions): HTMLElement {
     oninput: (e: Event) => actions.setLocation(Number((e.target as HTMLInputElement).value), store.state.lon),
   });
 
+  // Dòng "đặt cạnh nhau": vĩ độ vừa chọn và độ cao thiên cực — hai số luôn bằng nhau.
+  const poleLine = h('p', { class: 'pole-line', id: 'pole-line', 'aria-live': 'polite', 'data-emphasis': 'pole' });
+  latSlider.setAttribute('aria-describedby', 'pole-line');
+  bindEmphasis(poleLine, store, actions);
+
   const map = new WorldMap((lat, lon) => actions.setLocation(lat, lon));
 
   const placeBtn = (p: Place) =>
@@ -60,7 +67,7 @@ export function locationPanel(store: Store, actions: Actions): HTMLElement {
     h('h2', { id: 'h-location', class: 'panel__title', text: t('panel.location.title') }),
     h(
       'div',
-      { class: 'coord-grid' },
+      { class: 'coord-grid', 'data-guide': 'latLonInput' },
       h('label', { htmlFor: 'lat-input', text: t('panel.location.lat') }),
       h('div', { class: 'coord-row' }, latInput, h('span', { class: 'unit', text: '°' }), latHem),
       h('label', { htmlFor: 'lon-input', text: t('panel.location.lon') }),
@@ -68,11 +75,13 @@ export function locationPanel(store: Store, actions: Actions): HTMLElement {
     ),
     h('p', { class: 'hint', id: 'lat-help', text: t('panel.location.inputHint') }),
     err,
-    h('div', { class: 'slider-row' }, h('span', { class: 'slider-row__label', text: t('panel.location.latSliderShort') }), latSlider),
-    map.el,
+    h('div', { class: 'slider-row', 'data-guide': 'latSlider' }, h('span', { class: 'slider-row__label', text: t('panel.location.latSliderShort') }), latSlider),
+    // Codex (redesign-2 C): dòng cốt lõi kèm liên kết "?" tới mục độ cao thiên cực = vĩ độ.
+    h('div', { class: 'pole-row' }, poleLine, termLink('latPole', t('data.pole'))),
+    guide('worldMap', map.el),
     h('p', { class: 'hint', text: t('panel.location.mapHint') }),
-    fieldset(t('panel.location.vn'), h('div', { class: 'chips' }, ...VN_PLACES.map(placeBtn))),
-    fieldset(t('panel.location.special'), h('div', { class: 'chips' }, ...SPECIAL_PLACES.map(placeBtn))),
+    guide('places', fieldset(t('panel.location.vn'), h('div', { class: 'chips' }, ...VN_PLACES.map(placeBtn)))),
+    guide('places', fieldset(t('panel.location.special'), h('div', { class: 'chips' }, ...SPECIAL_PLACES.map(placeBtn)))),
   );
 
   const sync = () => {
@@ -82,6 +91,10 @@ export function locationPanel(store: Store, actions: Actions): HTMLElement {
     latHem.value = lat < 0 ? 'S' : 'N';
     lonHem.value = lon < 0 ? 'W' : 'E';
     latSlider.value = String(lat);
+    poleLine.textContent =
+      lat === 0
+        ? t('panel.location.poleLineEquator')
+        : t('panel.location.poleLine', { pole: t(lat > 0 ? 'panel.location.north' : 'panel.location.south'), x: fmtDeg(Math.abs(lat)) });
     err.textContent = '';
     latInput.removeAttribute('aria-invalid');
     lonInput.removeAttribute('aria-invalid');

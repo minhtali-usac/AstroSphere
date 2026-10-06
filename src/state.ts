@@ -2,10 +2,18 @@
 
 import { clamp, gmstDeg, julianDate, norm360 } from './astro';
 import { getCatalogStar, catalogIndexByHip } from './data/catalog';
-import { ALL_FIGURES, constellationName, getTemplate } from './data/constellations';
+import { TEMPLATE_FIGURES, constellationName, getTemplate } from './data/constellations';
 import { DEFAULT_PLACE } from './data/places';
+import { COLORS } from './scene/colors';
+import type { EmphasisKey } from './emphasis';
+
+export type { EmphasisKey } from './emphasis';
 
 export type TrailMode = 'none' | 'short' | 'long';
+/** Chế độ giao diện (redesign-2 R2): Cơ bản cho người mới, Đầy đủ là giao diện trọn vẹn. Khác `AnimMode` (chế độ chạy hoạt ảnh). */
+export type UiMode = 'simple' | 'full';
+export const UI_MODES: readonly UiMode[] = ['simple', 'full'];
+export const isUiMode = (v: unknown): v is UiMode => v === 'simple' || v === 'full';
 export type AnimMode = 'continuous' | 'oneDay' | 'stepHour';
 
 export interface UserStar {
@@ -96,12 +104,21 @@ export interface AppState {
   selected: Selection;
   /** Ngày dùng để đặt Mặt Trời (YYYY-MM-DD). */
   sunDate: string;
+  /**
+   * Tô sáng liên kết (ux-brief §6): con số đang được rê chuột / chọn tiêu điểm, hoặc hình 3D đang được rê chuột.
+   * Hình tương ứng trong hai khung nhìn đậm lên; ô số tương ứng có lớp `is-linked`. null = không tô sáng.
+   */
+  emphasis: EmphasisKey | null;
+  /** Chế độ giao diện: Cơ bản (mặc định cho lần đầu) hoặc Đầy đủ. Lớp `body.mode-*` phản chiếu giá trị này. */
+  uiMode: UiMode;
 }
 
 export const TRAIL_LENGTH_DEG: Record<TrailMode, number> = { none: 0, short: 45, long: 359 };
 export const RATE_MIN = 5;
 export const RATE_MAX = 60;
 export const MAX_USER_STARS = 400;
+/** Số Hipparcos của Polaris (α UMi). */
+export const POLARIS_HIP = 11767;
 
 export const DEFAULT_TOGGLES: Toggles = {
   hourCircle0: true,
@@ -137,7 +154,13 @@ export const DEFAULT_LABELS: LabelToggles = {
   angles: true,
 };
 
-const STAR_COLORS = ['#f87171', '#fb923c', '#facc15', '#4ade80', '#22d3ee', '#60a5fa', '#a78bfa', '#f472b6', '#e2e8f0'];
+/**
+ * Màu của sao ngẫu nhiên và sao nhập tay: tông cát trung tính của mọi thứ người dùng thêm vào (cùng màu hình chòm sao,
+ * COLORS.figure). Bảng chín màu cũ trùng màu ngữ nghĩa của cảnh (hồng = vòng thẳng đứng, cam = hoàng đạo, trắng xám =
+ * kinh tuyến: ΔE OKLab 0); tông này cách mọi màu ngữ nghĩa ≥ 0,098 (quyết định 2026-10-05, TODO "Random and manual
+ * star colours").
+ */
+export const USER_STAR_COLOR = COLORS.figure;
 
 export function todayIso(d = new Date()): string {
   const p = (n: number) => String(n).padStart(2, '0');
@@ -180,7 +203,7 @@ const nextId = (p: string) => `${p}${++idCounter}`;
 
 function buildConstellation(templateId: string): { stars: UserStar[]; figure: Figure } | null {
   const tpl = getTemplate(templateId);
-  const fig = ALL_FIGURES[templateId];
+  const fig = TEMPLATE_FIGURES[templateId];
   if (!tpl || !fig) return null;
   const name = constellationName(templateId);
   const figureId = nextId('f');
@@ -193,7 +216,7 @@ function buildConstellation(templateId: string): { stars: UserStar[]; figure: Fi
       ra,
       dec,
       mag,
-      color: tpl.color,
+      color: COLORS.figure,
       kind: 'constellation',
       labelled: !!cat?.shortName && mag <= 2.1,
       hip: hip || undefined,
@@ -205,7 +228,7 @@ function buildConstellation(templateId: string): { stars: UserStar[]; figure: Fi
     id: figureId,
     templateId,
     name,
-    color: tpl.color,
+    color: COLORS.figure,
     starIds: stars.map((x) => x.id),
     segs: fig.segs.map(([a, b]) => [a, b] as [number, number]),
   };
@@ -220,9 +243,10 @@ export function createInitialState(): AppState {
     lat: DEFAULT_PLACE.lat,
     lon,
     gst,
-    playing: false,
+    // Cảnh mở đầu: bầu trời quay chậm (1 ngày thiên văn trong 60 s). main.ts tạm dừng nếu người dùng giảm chuyển động.
+    playing: true,
     mode: 'continuous',
-    rate: 20,
+    rate: 60,
     runStartLst: gst + lon,
     toggles: { ...DEFAULT_TOGGLES },
     labels: { ...DEFAULT_LABELS },
@@ -232,8 +256,13 @@ export function createInitialState(): AppState {
     trailStart: gst + lon,
     selected: null,
     sunDate: todayIso(now),
+    emphasis: null,
+    uiMode: 'simple',
   };
   // Mặc định chỉ hiện sao thật cùng đường nối và tên chòm sao (tên quốc tế); các lớp khác người dùng tự bật.
+  // Cảnh mở đầu chọn sẵn Polaris (HIP 11767) trong danh mục sao thật — tìm theo số Hipparcos, không theo tên.
+  const polaris = catalogIndexByHip(POLARIS_HIP);
+  if (polaris !== undefined) base.selected = { kind: 'catalog', index: polaris };
   return base;
 }
 
@@ -344,7 +373,7 @@ export class Actions {
         ra: Math.round(ra * 100) / 100,
         dec: Math.round(dec * 100) / 100,
         mag: 1.5,
-        color: STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)],
+        color: USER_STAR_COLOR,
         kind: 'random',
         labelled: false,
       });
@@ -360,7 +389,7 @@ export class Actions {
       ra: norm360(ra),
       dec: clamp(dec, -90, 90),
       mag: 1,
-      color: STAR_COLORS[(count * 3) % STAR_COLORS.length],
+      color: USER_STAR_COLOR,
       kind: 'manual',
       labelled: true,
     };
@@ -404,11 +433,24 @@ export class Actions {
     this.store.set({ trailStart: lstCont(this.s) });
   }
 
+  /** Đặt khóa tô sáng liên kết; không làm gì nếu không đổi (tránh phát sự kiện thừa khi rê chuột). */
+  setEmphasis(k: EmphasisKey | null): void {
+    if (k === this.s.emphasis) return;
+    this.store.set({ emphasis: k });
+  }
+
   select(sel: Selection): void {
     this.store.set({ selected: sel });
   }
 
+  /** Đổi chế độ giao diện (cập nhật bất biến; không làm gì nếu không đổi). */
+  setUiMode(uiMode: UiMode): void {
+    if (!isUiMode(uiMode) || uiMode === this.s.uiMode) return;
+    this.store.set({ uiMode });
+  }
+
+  /** "Đặt lại" đưa mô phỏng về ban đầu nhưng giữ chế độ giao diện người dùng đã chọn. */
   resetAll(): void {
-    this.store.set(createInitialState());
+    this.store.set({ ...createInitialState(), uiMode: this.s.uiMode });
   }
 }

@@ -2,10 +2,10 @@
 
 import { fmtNum, parseDegrees, parseHours } from '../astro';
 import { catalogCount, catalogMagLimit } from '../data/catalog';
-import { constellationName, constellationNameVi, TEMPLATES } from '../data/constellations';
+import { constellationName, templateDescription, TEMPLATES } from '../data/constellations';
 import { t } from '../i18n';
 import { MAX_USER_STARS, type Actions, type Store, type TrailMode } from '../state';
-import { button, checkbox, clear, fieldset, h, newId } from './dom';
+import { button, checkbox, clear, fieldset, guide, h, newId } from './dom';
 
 export function starPanel(store: Store, actions: Actions): HTMLElement {
   const msg = h('p', { class: 'field-msg', role: 'status', 'aria-live': 'polite' });
@@ -18,12 +18,12 @@ export function starPanel(store: Store, actions: Actions): HTMLElement {
   const tplSelect = h(
     'select',
     { id: 'tpl-select', 'aria-label': t('panel.stars.templateAria') },
-    ...TEMPLATES.map((tp) => h('option', { value: tp.id, text: constellationName(tp.id) })),
+    ...TEMPLATES.map((tp) => h('option', { value: tp.id, text: tp.name })),
   );
   const tplNote = h('p', { class: 'hint' });
   const updateNote = () => {
     const tp = TEMPLATES.find((x) => x.id === tplSelect.value);
-    tplNote.textContent = tp ? `${t('panel.stars.nameVi', { name: constellationNameVi(tp.id) })} ${tp.note}` : '';
+    tplNote.textContent = tp ? templateDescription(tp) : '';
   };
   tplSelect.addEventListener('change', updateNote);
   updateNote();
@@ -51,8 +51,10 @@ export function starPanel(store: Store, actions: Actions): HTMLElement {
   const raId = newId('ra');
   const decId = newId('dec');
   const nameId = newId('nm');
-  const raInput = h('input', { type: 'text', id: raId, class: 'num', inputmode: 'decimal', placeholder: '6h45m' });
-  const decInput = h('input', { type: 'text', id: decId, class: 'num', inputmode: 'decimal', placeholder: '−16,7' });
+  // inputmode="text": bàn phím số của iOS không có dấu trừ (δ âm) và chữ h/m (dạng 6h45m).
+  const coordAttrs = { type: 'text', class: 'num', inputmode: 'text', autocapitalize: 'off', autocomplete: 'off', spellcheck: 'false' };
+  const raInput = h('input', { ...coordAttrs, id: raId, placeholder: '6h45m' });
+  const decInput = h('input', { ...coordAttrs, id: decId, placeholder: '−16,7' });
   const nameInput = h('input', { type: 'text', id: nameId, placeholder: t('panel.stars.namePlaceholder'), maxlength: 40 });
   const addManual = () => {
     const raH = parseHours(raInput.value);
@@ -80,38 +82,44 @@ export function starPanel(store: Store, actions: Actions): HTMLElement {
     'section',
     { class: 'panel', id: 'panel-stars', 'aria-labelledby': 'h-stars' },
     h('h2', { id: 'h-stars', class: 'panel__title', text: t('panel.stars.title') }),
-    fieldset(t('panel.stars.templates'), h('div', { class: 'row' }, tplSelect, addTpl), tplNote, figureChips),
-    fieldset(
-      t('panel.stars.addStars'),
-      h(
-        'div',
-        { class: 'row row--wrap' },
-        button(t('panel.stars.random1'), () => (actions.addRandomStars(1) ? say(t('panel.stars.addedRandom', { n: 1 })) : say(t('panel.stars.tooMany', { n: MAX_USER_STARS }), 'err'))),
-        button(t('panel.stars.random10'), () => (actions.addRandomStars(10) ? say(t('panel.stars.addedRandom', { n: 10 })) : say(t('panel.stars.tooMany', { n: MAX_USER_STARS }), 'err'))),
+    guide('templates', fieldset(t('panel.stars.templates'), h('div', { class: 'row' }, tplSelect, addTpl), tplNote, figureChips)),
+    guide(
+      'addStars',
+      fieldset(
+        t('panel.stars.addStars'),
+        h(
+          'div',
+          { class: 'row row--wrap' },
+          button(t('panel.stars.random1'), () => (actions.addRandomStars(1) ? say(t('panel.stars.addedRandom', { n: 1 })) : say(t('panel.stars.tooMany', { n: MAX_USER_STARS }), 'err'))),
+          button(t('panel.stars.random10'), () => (actions.addRandomStars(10) ? say(t('panel.stars.addedRandom', { n: 10 })) : say(t('panel.stars.tooMany', { n: MAX_USER_STARS }), 'err'))),
+        ),
+        h(
+          'div',
+          { class: 'manual' },
+          h('label', { htmlFor: raId, text: t('panel.stars.ra') }),
+          raInput,
+          h('label', { htmlFor: decId, text: t('panel.stars.dec') }),
+          decInput,
+          h('label', { htmlFor: nameId, text: t('panel.stars.name') }),
+          nameInput,
+        ),
+        h('p', { class: 'hint', text: t('panel.stars.manualHint') }),
+        h('div', { class: 'row' }, button(t('panel.stars.addManual'), addManual, { cls: 'btn--primary' }), button(t('panel.stars.clear'), () => {
+          actions.clearStars();
+          say(t('panel.stars.cleared'));
+        }, { cls: 'btn--danger' })),
+        msg,
+        count,
       ),
-      h(
-        'div',
-        { class: 'manual' },
-        h('label', { htmlFor: raId, text: t('panel.stars.ra') }),
-        raInput,
-        h('label', { htmlFor: decId, text: t('panel.stars.dec') }),
-        decInput,
-        h('label', { htmlFor: nameId, text: t('panel.stars.name') }),
-        nameInput,
-      ),
-      h('p', { class: 'hint', text: t('panel.stars.manualHint') }),
-      h('div', { class: 'row' }, button(t('panel.stars.addManual'), addManual, { cls: 'btn--primary' }), button(t('panel.stars.clear'), () => {
-        actions.clearStars();
-        say(t('panel.stars.cleared'));
-      }, { cls: 'btn--danger' })),
-      msg,
-      count,
     ),
-    fieldset(t('panel.stars.realSky'), h('div', { class: 'checks' }, catalogCb.el, linesCb.el)),
-    fieldset(
-      t('panel.stars.trails'),
-      h('div', { class: 'radios', role: 'radiogroup', 'aria-label': t('panel.stars.trails') }, ...trailRadios.map((r) => r.el)),
-      h('div', { class: 'row' }, button(t('panel.stars.resetTrails'), () => actions.resetTrails())),
+    guide('realSky', fieldset(t('panel.stars.realSky'), h('div', { class: 'checks' }, catalogCb.el, linesCb.el))),
+    guide(
+      'trails',
+      fieldset(
+        t('panel.stars.trails'),
+        h('div', { class: 'radios', role: 'radiogroup', 'aria-label': t('panel.stars.trails') }, ...trailRadios.map((r) => r.el)),
+        h('div', { class: 'row' }, button(t('panel.stars.resetTrails'), () => actions.resetTrails())),
+      ),
     ),
   );
 
