@@ -67,6 +67,24 @@
      xích đạo trời trong cảnh. */
   --map-equator: #a3a3a3;
 
+  /* Thử thách SGK (src/games/games.css): màu thiên thể trong hình vẽ của trò chơi. Mặt Trời, mặt đất, chân trời
+     trùng scene/colors.ts; Trái Đất dùng xanh của trục thiên cực. */
+  --sgk-sky: #0d1626;
+  --sgk-night: #1b2433;
+  --sgk-figure: #9a9283;
+  --sgk-sun: #ffcc33;
+  --sgk-moon: #e8e4d8;
+  --sgk-earth: #4f9dff;
+  --sgk-ground: #2d3b27;
+  --sgk-horizon: #4caf50;
+  --sgk-mercury: #b5aca3;
+  --sgk-venus: #e9c46a;
+  --sgk-mars: #e76f51;
+  --sgk-jupiter: #d4a373;
+  --sgk-saturn: #eadca6;
+  --sgk-uranus: #90e0ef;
+  --sgk-neptune: #5b8def;
+
   color-scheme: dark;
 }
 
@@ -3020,6 +3038,38 @@ body.mode-simple .lbl--allsky {
   display: none;
 }
 
+/* Thử thách SGK (src/games): thay chỗ lưới thẻ và trang đọc khi ô "Thử thách SGK" đang mở. */
+.cdx.is-playing .cdx-catview,
+.cdx.is-playing .cdx-page,
+.cdx:not(.is-playing) .cdx-games {
+  display: none;
+}
+
+.cdx-games {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-5) var(--space-6) 0;
+}
+
+.cdx-tiles__sep {
+  margin: var(--space-3) var(--space-1) 2px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cdx-tile--sgk .cdx-tile__icon {
+  background: var(--accent-a12);
+  color: var(--accent-hi);
+}
+
+.cdx-tile--sgk .cdx-tile__icon .cdx-glyph {
+  color: var(--accent-hi);
+}
+
 .cdx-catview {
   flex: 1;
   min-height: 0;
@@ -3775,7 +3825,16 @@ body.mode-simple .lbl--allsky {
     grid-row: 2;
   }
 
-  .cdx.is-reading .cdx-nav {
+  .cdx.is-reading .cdx-nav,
+  .cdx.is-playing .cdx-nav {
+    display: none;
+  }
+
+  .cdx-games {
+    padding: var(--space-3) var(--space-4) 0;
+  }
+
+  .cdx-tiles__sep {
     display: none;
   }
 

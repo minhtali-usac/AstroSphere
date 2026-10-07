@@ -51,6 +51,7 @@ The browser acceptance checks:
 | `astrosphere.focus.v1` | sessionStorage | `{data: boolean, panels: boolean}`: whether the Full-mode focus layout (≥ 1101 px) has the data bar and the control panels open (`src/ui/focusLayout.ts`, guard `isFocusState`). Both start closed |
 | `astrosphere.codex.v1` | localStorage | Codex progress `{discovered: string[], read: string[]}` (entry ids); guard `isCodexProgress` in `src/codex/triggers.ts` |
 | `astrosphere.guide.v1` | localStorage | `{hello: true}` once Usui-chan has said her one-time hello (written as soon as it shows); guard `isGuideState` in `src/guide/state.ts`. UATs that do not test the hello pre-set it in their init scripts |
+| `astrosphere.sgk.v1` | localStorage | Thử thách SGK (`src/games/`): the teacher's picked activities, options (hints, shuffle, quiz count) and best score per activity; guard `isSgkState` in `src/games/progress.ts` |
 
 ## Interface text (i18n)
 
@@ -61,6 +62,7 @@ The browser acceptance checks:
   - The formulas in `help.body` and `about.body` compile in KaTeX.
 - Keys built at runtime (template strings) are invisible to that test. Any new dynamic key family needs its own unit test that checks every generated key exists.
 - **Usui-chan's explanations** (`src/guide/`, see `docs/redesign-2/guide.md`): every interactive control carries `data-guide="<key>"`, and its text is `guide.tip.<key>` in `vi.json`. Write the key as a literal (`'data-guide': '<key>'`, `guide: '<key>'` or `guide('<key>', el)` from `ui/dom.ts`); `src/guide/guide.test.ts` collects them and fails on a missing string, an orphan string or a new non-literal assignment. A new control needs a key and a tip of at most two sentences.
+- **Thử thách SGK** (`src/games/`) is a separate lazy chunk opened from its own tile in the USACodex nav: ten interactive activities for Bài 4 and Bài 5 of the textbook topic «Trái Đất và Bầu Trời». It only reads app data (stars, constellation figures) and never changes the simulation state. Its strings live in `src/i18n/games.vi.json` (same banned-word rule, enforced by `src/games/games.test.ts`) and its styles in `src/games/games.css` (tokens only; its colours are the `--sgk-*` tokens in `:root`).
 - **USACodex** is the user-facing name of the codex (the code, file names and storage key keep `codex`). Its content lives in a second file, `src/i18n/codex.vi.json` (categories, entries, diagram labels). Only the lazy codex chunk (`src/codex/ui.ts`) imports it, so it never enters the entry chunk. The Codex interface strings stay in `vi.json` under `codexUi`.
   - `src/codex/codex.test.ts` applies the same banned-word rule and KaTeX check to it, and checks that every entry has a title, lede and body, that every `related` id, discovery-trigger id, `termLink` id and "Xem trong mô phỏng" action resolves to an entry.
   - Celestial object names (Polaris, Ursa Major, M31…) stay in English; give the Vietnamese name in the text.
