@@ -296,16 +296,17 @@ const focus = focusLayout({
 });
 
 window.addEventListener('open-catalog', () => dialogs.catalog());
-// Chữ ký CLB và liên kết DUY NHẤT về trang CLB (AGENTS.md › Brand).
+// Chữ ký CLB và liên kết DUY NHẤT về Fanpage CLB (AGENTS.md › Brand).
 const footer = h(
   'footer',
   { class: 'site-footer' },
-  h('p', { class: 'site-footer__sig' }, h('strong', { text: t('app.signature') }), ` · ${t('app.slogan')}`),
+  h('p', { class: 'site-footer__sig' }, h('strong', { text: t('app.signature') }), ` - ${t('app.slogan')}`),
   h('p', { class: 'site-footer__contact' }, `${t('app.contact')} `, h('a', { href: `mailto:${t('app.email')}`, text: t('app.email'), 'data-guide': 'email' })),
   h(
     'p',
     { class: 'site-footer__club' },
-    h('a', { href: t('app.clubUrl'), rel: 'noopener', target: '_blank', title: t('app.clubLinkTip'), text: `${t('app.clubLink')} ↗`, 'data-guide': 'clubLink' }),
+    `${t('app.fanpageLabel')} `,
+    h('a', { href: t('app.fanpageUrl'), rel: 'noopener', target: '_blank', title: t('app.fanpageTip'), text: t('app.fanpageUrl'), 'data-guide': 'fanpage' }),
   ),
   h('p', { class: 'site-footer__links' }, h('button', { type: 'button', class: 'link-btn', text: t('app.catalogLink'), 'data-guide': 'catalog', onclick: () => dialogs.catalog() })),
 );

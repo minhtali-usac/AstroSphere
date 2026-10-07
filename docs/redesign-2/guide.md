@@ -138,7 +138,7 @@ Only one element moves at a time (503 · U3 · L10 · 02:42–04:08: limit how m
 | Data bar | `dataLat`, `dataPole`, `dataIncl`, `dataLon`, `dataLst`, `dataGst`, `dataSolar`, `dataSelected` |
 | Simple | `simplePlaces`, `simpleLat`, `simplePlay`, `simpleSpeed`, `simpleAxis`, `simpleEquator`, `simpleZones` |
 | Panels | `panelTabs`; location: `latLonInput`, `latSlider`, `worldMap`, `places`; animation: `play`, `animMode`, `lstSlider`, `stepHour`, `rate`; display: `displayGroup`, `sunDate`, `catalog`; stars: `templates`, `addStars`, `realSky`, `trails` |
-| Footer and notices | `clubLink`, `email`, `catalog`, `quality` |
+| Footer and notices | `fanpage`, `email`, `catalog`, `quality` |
 
 Keys are literal strings (`'data-guide': 'k'`, `guide: 'k'` or `guide('k', el)`). `src/guide/guide.test.ts` collects them from `src/**/*.ts` and checks that:
 - every key has `guide.tip.<key>`;

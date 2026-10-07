@@ -1,17 +1,17 @@
 {
   "app": {
     "org": "CLB Thiên văn USAC",
-    "title": "Hệ thống Mô phỏng Hệ tọa độ",
-    "shortTitle": "Mô phỏng hệ tọa độ",
+    "title": "AstroSphere",
+    "shortTitle": "AstroSphere",
     "logoAlt": "Logo CLB Thiên văn USAC",
     "footer": "HỆ THỐNG ĐƯỢC PHÁT TRIỂN BỞI CLB THIÊN VĂN USAC",
     "contact": "Mọi sự góp ý và liên hệ xin gửi về email:",
     "email": "clb.usac@gmail.com",
-    "signature": "CLB Thiên văn USAC",
-    "slogan": "khoa học cho mọi người",
-    "clubUrl": "https://web-usac.vercel.app/",
-    "clubLink": "Trang web CLB Thiên văn USAC",
-    "clubLinkTip": "Mở trang web của CLB trong thẻ mới",
+    "signature": "CLB THIÊN VĂN USAC",
+    "slogan": "LAN TỎA THIÊN VĂN ĐẾN CỘNG ĐỒNG",
+    "fanpageLabel": "Fanpage CLB Thiên văn USAC:",
+    "fanpageUrl": "https://www.facebook.com/clbusac",
+    "fanpageTip": "Mở Fanpage của CLB trên Facebook trong thẻ mới",
     "catalogLink": "Danh mục thiên thể tham khảo (thiên hà, tinh vân, cụm sao, sao chổi)"
   },
   "top": {
@@ -738,7 +738,7 @@
       "addStars": "Thêm vài ngôi sao ngẫu nhiên, hoặc tự nhập α, δ của ngôi sao bạn quan tâm.",
       "realSky": "Bật tắt các sao thật trong danh mục và nét nối chòm sao.",
       "trails": "Vết sao vẽ lại đường đi của từng ngôi sao. Nhìn vết là thấy ngay các vòng tròn quanh thiên cực.",
-      "clubLink": "Mở trang web của CLB Thiên văn USAC trong thẻ mới.",
+      "fanpage": "Mở Fanpage Facebook của CLB Thiên văn USAC trong thẻ mới.",
       "email": "Gửi góp ý hoặc câu hỏi cho CLB qua thư điện tử.",
       "quality": "Trang vừa tự giảm chi tiết để chạy mượt hơn. Bấm khôi phục nếu máy bạn đủ khỏe.",
       "resetCancel": "Đóng hộp này và giữ nguyên mọi thứ như hiện tại.",
