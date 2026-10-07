@@ -1790,6 +1790,45 @@ body.present .swatch--line {
   min-width: 0;
 }
 
+/* ------------------------------------------------------------------ PWA (src/pwa.ts): thông báo offline / bản mới */
+.pwa-toast {
+  position: fixed;
+  top: calc(var(--topbar-h) + var(--space-2));
+  left: 50%;
+  z-index: var(--z-toast);
+  max-width: calc(100vw - 2 * var(--space-3));
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.pwa-toast__chip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4);
+  border: 1px solid var(--accent-a46);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+  box-shadow: var(--shadow-pop);
+  font-size: 13.5px;
+  line-height: 1.4;
+  color: var(--text);
+  pointer-events: auto;
+}
+
+.pwa-toast__text {
+  min-width: 0;
+  padding-block: 6px;
+}
+
+.pwa-toast__actions:empty {
+  display: none;
+}
+
+.site-footer__install {
+  margin-top: 6px !important;
+}
+
 /* ------------------------------------------------------------------ Màn hình vừa */
 @media (max-width: 1400px) {
   .panels {

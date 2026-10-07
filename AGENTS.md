@@ -53,6 +53,13 @@ The browser acceptance checks:
 | `astrosphere.guide.v1` | localStorage | `{hello: true}` once Usui-chan has said her one-time hello (written as soon as it shows); guard `isGuideState` in `src/guide/state.ts`. UATs that do not test the hello pre-set it in their init scripts |
 | `astrosphere.sgk.v1` | localStorage | Thử thách SGK (`src/games/`): the teacher's picked activities, options (hints, shuffle, quiz count) and best score per activity; guard `isSgkState` in `src/games/progress.ts` |
 
+## PWA (install and offline)
+
+- `public/manifest.webmanifest` + icons in `public/icons/` (rendered from `src/assets/usac-logo.png`).
+- `vite build` writes `dist/sw.js` from `scripts/sw.template.js` (the `pwa` plugin in `vite.config.ts`): it precaches every file in `dist` except `CNAME`, `.vite/` and the KaTeX `.ttf`/`.woff` fonts, under a cache named by a content hash. Never edit `dist/sw.js`.
+- `src/pwa.ts` registers it (production only), shows the footer install button (only when the browser offers install, or on iOS with "Thêm vào MH chính" instructions) and the "Đã có phiên bản mới · Tải lại" notice. A new version waits until the user reloads, so an open tab never loses its lazy chunks.
+- Any new runtime file must live in `dist` (bundled or in `public/`) so it is precached; the app must not fetch from other origins.
+
 ## Interface text (i18n)
 
 - Every user-visible string lives in `src/i18n/vi.json`. Read it with `t('literal.key')` or `tList('literal.key')`.

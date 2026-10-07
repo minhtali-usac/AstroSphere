@@ -7,6 +7,7 @@ import { codexButton, isCodexOpen } from './codex/triggers';
 import { createGuide } from './guide/boot';
 import { t } from './i18n';
 import { startFrameLoop, type FrameView } from './runtime/frameLoop';
+import { initPwa } from './pwa';
 import { createQuality } from './runtime/quality';
 import { fmtDeg, fmtLat, poleAltitude } from './astro';
 import { COLORS } from './scene/colors';
@@ -310,6 +311,8 @@ const footer = h(
   ),
   h('p', { class: 'site-footer__links' }, h('button', { type: 'button', class: 'link-btn', text: t('app.catalogLink'), 'data-guide': 'catalog', onclick: () => dialogs.catalog() })),
 );
+// PWA: nút "Cài về máy" (dòng cuối chân trang, chỉ hiện khi cài được) và dùng offline (src/pwa.ts).
+initPwa(footer);
 
 // ---------------------------------------------------------------- Chế độ trình chiếu (spec K6, K8)
 let presenting = false;
