@@ -100,7 +100,7 @@ const noHScroll = (page) => page.evaluate(() => ({ sw: document.documentElement.
 // ------------------------------------------------------------------ Máy tính 1440×900
 {
   const page = await openPage(1440, 900);
-  const clubLinks = await page.locator('a[href^="https://web-usac.vercel.app"]').evaluateAll((as) => as.map((a) => ({ rel: a.rel, target: a.target })));
+  const clubLinks = await page.locator('a[href^="https://www.facebook.com/clbusac"]').evaluateAll((as) => as.map((a) => ({ rel: a.rel, target: a.target })));
   check('exactly one club link (rel=noopener, target=_blank)', clubLinks.length === 1 && clubLinks[0].rel.includes('noopener') && clubLinks[0].target === '_blank', JSON.stringify(clubLinks));
 
   const order = await page.locator('.topbar__actions .btn .btn__text').allTextContents();
