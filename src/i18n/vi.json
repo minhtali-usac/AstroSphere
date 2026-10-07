@@ -28,6 +28,16 @@
     "about": "Giới thiệu",
     "aboutTip": "Thông tin về mô phỏng, dữ liệu và giấy phép"
   },
+  "pwa": {
+    "install": "⬇ Cài AstroSphere về máy (dùng được khi không có mạng)",
+    "installTip": "Cài như một ứng dụng: có biểu tượng riêng, mở trong cửa sổ riêng và chạy offline",
+    "iosHow": "Trên iPhone/iPad: mở trang bằng Safari, bấm nút Chia sẻ rồi chọn «Thêm vào MH chính».",
+    "ready": "AstroSphere đã sẵn sàng dùng offline trên máy này.",
+    "installed": "Đã cài AstroSphere. Mở từ biểu tượng trên màn hình hoặc danh sách ứng dụng.",
+    "update": "Đã có phiên bản mới của AstroSphere.",
+    "reload": "Tải lại",
+    "dismiss": "Đóng thông báo"
+  },
   "mode": {
     "label": "Chế độ",
     "tip": "Cơ bản: ít nút, dễ bắt đầu. Đầy đủ: mọi bảng điều khiển và số liệu. Lựa chọn được ghi nhớ cho lần sau.",
@@ -696,6 +706,8 @@
       "learn": "Mở các bài Ôn tập ngắn: mỗi bài dựng sẵn bầu trời rồi hỏi bạn một câu. Hợp để tự kiểm tra sau khi đã nghịch thử.",
       "present": "Phóng to cảnh, đường kẻ và chữ để chiếu lên màn hình lớn trong buổi sinh hoạt. Nhấn Esc hoặc bấm lại để thoát.",
       "reset": "Đưa mọi thứ về như lúc mới mở trang: vị trí, thời gian, các lớp hiển thị và góc nhìn. Bạn sẽ được hỏi lại trước, nên bấm nhầm cũng không sao.",
+      "install": "Cài AstroSphere như một ứng dụng trên máy tính hoặc điện thoại. Sau khi cài, mô phỏng, USACodex và Thử thách SGK đều dùng được khi không có mạng.",
+      "pwaReload": "Tải lại trang để dùng phiên bản mới nhất của AstroSphere. Bản mới đã tải sẵn nên vẫn dùng được khi không có mạng.",
       "sgkGames": "Trò chơi tương tác theo SGK Chuyên đề Vật lí, Bài 4 và Bài 5. Giáo viên đánh dấu các hoạt động muốn dùng rồi cho cả lớp chơi lần lượt và xem bảng điểm.",
       "codex": "Sổ tay khái niệm: mỗi điều mới bạn gặp trong mô phỏng sẽ mở khóa một mục. Con số trên nút là số mục mới bạn chưa đọc.",
       "help": "Cách dùng trang, các phím tắt và những công thức chính. Phím H cũng mở được.",
