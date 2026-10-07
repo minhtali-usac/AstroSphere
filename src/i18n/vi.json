@@ -596,8 +596,8 @@
   "about": {
     "title": "Giới thiệu",
     "body": [
-      "Hệ thống mô phỏng được phát triển bởi **Câu lạc bộ Thiên văn USAC**, với định hướng xây dựng một công cụ trực quan hỗ trợ giảng dạy và tự học thiên văn học cơ bản.",
-      "Ứng dụng giúp học sinh, sinh viên trực quan hóa cơ chế vận động biểu kiến của bầu trời và hình thành trực giác về hệ tọa độ thiên văn. Từ mối quan hệ giữa độ cao thiên cực và vĩ độ địa lý, đến sự chuyển đổi giữa hệ tọa độ xích đạo \\((\\alpha, \\delta, H)\\) và hệ tọa độ chân trời \\((A, h)\\), hệ thống giúp giải thích vì sao các thiên thể mọc – lặn, vì sao có những sao luôn ở trên bầu trời và vì sao sao Polaris gần như không bao giờ lặn.",
+      "**AstroSphere** là hệ thống mô phỏng **hệ tọa độ thiên cầu**, do **Nhóm dự án Giáo dục Thiên văn và Khoa học Thực nghiệm – Câu lạc bộ Thiên văn USAC** phát triển, với định hướng xây dựng một công cụ trực quan phục vụ giảng dạy, học tập và tự học thiên văn học cơ bản.",
+      "Hệ thống được thiết kế nhằm giúp học sinh, sinh viên từng bước hình thành trực giác về **hình học của thiên cầu, chuyển động biểu kiến của bầu trời và các hệ tọa độ thiên văn**. Thông qua mô phỏng trực quan mối quan hệ giữa độ cao thiên cực và vĩ độ địa lý, cũng như sự chuyển đổi giữa hệ tọa độ xích đạo \\((\\alpha, \\delta, H)\\) và hệ tọa độ chân trời \\((A, h)\\), AstroSphere giúp người học quan sát và lý giải những hiện tượng cơ bản như thiên thể mọc – lặn, các sao không lặn dưới đường chân trời và vị trí đặc biệt của sao Polaris trên bầu trời.",
       "## Phương pháp & độ chính xác",
       "- Thời gian thiên văn được tính theo các quy ước của IAU 1982; phép chuyển đổi tọa độ được kiểm chứng tự động với thư viện astronomy-engine, với sai số dưới \\(0{,}1^\\circ\\).",
       "- Tọa độ thiên thể được quy chiếu theo kỷ nguyên J2000.0; phiên bản hiện tại chưa hiệu chỉnh các hiệu ứng chuyển động riêng, tuế sai, chương động và khúc xạ khí quyển.",
@@ -605,11 +605,11 @@
       "## Cơ sở dữ liệu & nền tảng",
       "- **Danh mục sao và đường nối chòm sao:** d3-celestial của Olaf Frohn, phát hành theo giấy phép BSD-3; dữ liệu sao có nguồn gốc từ cơ sở dữ liệu HYG.",
       "- **Bản đồ địa lý:** Natural Earth (phạm vi công cộng) thông qua gói world-atlas.",
-      "- **Tên chòm sao tiếng Việt:** Wikipedia tiếng Việt, bài \"Danh sách chòm sao\" (giấy phép CC BY-SA 4.0). Trên bầu trời, sao và chòm sao được ghi theo tên quốc tế (IAU); tên tiếng Việt hiện trong phần chi tiết.",
+      "- **Tên chòm sao tiếng Việt:** Wikipedia tiếng Việt, bài “Danh sách chòm sao” (giấy phép CC BY-SA 4.0). Trên bầu trời, sao và chòm sao được ghi theo tên quốc tế (IAU); tên tiếng Việt được hiển thị trong phần thông tin chi tiết.",
       "- **Đồ họa 3D:** Three.js, phát hành theo giấy phép MIT.",
       "- **Hiển thị công thức:** KaTeX, phát hành theo giấy phép MIT.",
       "- **Tham khảo học thuật & thiết kế:** hệ thống có tham khảo cách tiếp cận trực quan của các công cụ mô phỏng thiên văn giáo dục như Rotating Sky Explorer của NAAP, Đại học Nebraska–Lincoln. Toàn bộ mã nguồn, giao diện và tài nguyên của hệ thống được phát triển độc lập bởi USAC.",
-      "Hệ thống được thiết kế theo hướng offline-first, có thể vận hành hoàn toàn trên trình duyệt mà không yêu cầu kết nối mạng sau khi các tài nguyên cần thiết đã được tải xuống."
+      "Hệ thống được thiết kế theo hướng **offline-first**, có thể vận hành hoàn toàn trên trình duyệt mà không yêu cầu kết nối mạng sau khi các tài nguyên cần thiết đã được tải xuống."
     ]
   },
   "catalog": {
@@ -668,7 +668,10 @@
     "catCountSr": "{n} trên {total} mục đã khám phá",
     "tileNew": "có mục mới",
     "showInSim": "Xem trong mô phỏng",
-    "related": "Liên quan"
+    "related": "Liên quan",
+    "sgkSep": "Trò chơi",
+    "sgkTile": "Thử thách SGK",
+    "sgkCountSr": "{n} trên {total} hoạt động đã hoàn thành"
   },
   "guide": {
     "avatarAria": "Usui-chan: giải thích các nút",
@@ -693,6 +696,7 @@
       "learn": "Mở các bài Ôn tập ngắn: mỗi bài dựng sẵn bầu trời rồi hỏi bạn một câu. Hợp để tự kiểm tra sau khi đã nghịch thử.",
       "present": "Phóng to cảnh, đường kẻ và chữ để chiếu lên màn hình lớn trong buổi sinh hoạt. Nhấn Esc hoặc bấm lại để thoát.",
       "reset": "Đưa mọi thứ về như lúc mới mở trang: vị trí, thời gian, các lớp hiển thị và góc nhìn. Bạn sẽ được hỏi lại trước, nên bấm nhầm cũng không sao.",
+      "sgkGames": "Trò chơi tương tác theo SGK Chuyên đề Vật lí, Bài 4 và Bài 5. Giáo viên đánh dấu các hoạt động muốn dùng rồi cho cả lớp chơi lần lượt và xem bảng điểm.",
       "codex": "Sổ tay khái niệm: mỗi điều mới bạn gặp trong mô phỏng sẽ mở khóa một mục. Con số trên nút là số mục mới bạn chưa đọc.",
       "help": "Cách dùng trang, các phím tắt và những công thức chính. Phím H cũng mở được.",
       "about": "Trang mô phỏng này là gì, ai làm ra nó và nguồn dữ liệu sao lấy từ đâu.",

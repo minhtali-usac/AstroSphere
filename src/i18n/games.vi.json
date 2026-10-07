@@ -1,0 +1,478 @@
+{
+  "hub": {
+    "title": "Thử thách SGK: Trái Đất và Bầu Trời",
+    "sub": "Trò chơi tương tác theo Chuyên đề học tập Vật lí (Kết nối tri thức), Bài 4 và Bài 5",
+    "back": "← USACodex",
+    "backAria": "Quay lại danh mục USACodex",
+    "teacherTitle": "Dành cho giáo viên",
+    "teacherBody": "Đánh dấu các hoạt động muốn dùng trong tiết học rồi bấm «Bắt đầu». Học sinh chơi lần lượt, cuối cùng có bảng điểm. Lựa chọn được ghi nhớ trên máy này.",
+    "pickAll": "Chọn cả bài",
+    "pickNone": "Bỏ chọn cả bài",
+    "playOne": "Chơi ngay",
+    "playOneAria": "Chơi ngay hoạt động {name}",
+    "best": "Tốt nhất {pct}%",
+    "rounds": "{n} lượt",
+    "minutes": "≈ {n} phút",
+    "optionsTitle": "Tùy chọn",
+    "optHints": "Cho phép xem gợi ý",
+    "optShuffle": "Xáo trộn thứ tự câu hỏi và đáp án",
+    "optQuiz": "Số câu đố nhanh mỗi bài",
+    "optQuizAll": "Tất cả",
+    "summary": "Đã chọn {n} hoạt động · khoảng {m} phút",
+    "summaryNone": "Chưa chọn hoạt động nào",
+    "start": "Bắt đầu",
+    "lessons": {
+      "4": "Bài 4 · Xác định phương hướng",
+      "5": "Bài 5 · Chuyển động nhìn thấy của một số thiên thể trên nền trời sao"
+    }
+  },
+  "play": {
+    "exit": "← Bảng chọn",
+    "exitAria": "Dừng chơi và quay lại bảng chọn hoạt động",
+    "activity": "Hoạt động {i}/{n}",
+    "round": "Lượt {i}/{n}",
+    "score": "{n} điểm",
+    "check": "Kiểm tra",
+    "hint": "Gợi ý",
+    "reveal": "Xem đáp án",
+    "next": "Tiếp tục →",
+    "ok2": "Chính xác ngay lần đầu! +2 điểm.",
+    "ok1": "Đúng rồi! +1 điểm.",
+    "answer": "Đáp án:",
+    "doneTitle": "Hoàn thành «{name}»",
+    "doneScore": "{n}/{max} điểm",
+    "nextActivity": "Hoạt động tiếp theo: {name} →",
+    "toResults": "Xem bảng điểm →",
+    "resultsTitle": "Bảng điểm",
+    "resultsTotal": "Tổng cộng: {n}/{max} điểm",
+    "again": "Chơi lại",
+    "toMenu": "Về bảng chọn",
+    "starsAria": "{n} trên 3 sao",
+    "praise": ["Cố gắng thêm một chút nhé!", "Khá lắm!", "Tuyệt vời!"]
+  },
+  "place": {
+    "tray": "Các thẻ cần xếp",
+    "trayEmpty": "Đã xếp hết thẻ",
+    "pick": "Đã chọn «{name}». Bấm vào ô muốn đặt.",
+    "slotAria": "Đặt vào: {name}",
+    "missing": "Còn {n} thẻ chưa xếp.",
+    "wrong": "Có {n} thẻ đặt chưa đúng (viền đỏ). Thử đổi chỗ rồi kiểm tra lại."
+  },
+  "games": {
+    "dipper": {
+      "title": "Nối sao thành chòm",
+      "desc": "Tìm và nối các sao chính của Gấu Lớn, Gấu Bé, Thiên Hậu trên bản đồ sao thật.",
+      "ref": "Bài 4 · Mục II, III, IV",
+      "minutes": 5,
+      "task": "Nối các sao chính của chòm {name} thành hình.",
+      "taskSub": "Bấm lần lượt từng sao để kẻ đường nối. Bấm lại sao đang chọn (hoặc chỗ trống) để nhấc bút.",
+      "undo": "Hoàn tác",
+      "clear": "Xóa hết",
+      "missing": "Còn thiếu {n} đường nối.",
+      "extra": "Có {n} đường nối không thuộc hình (màu đỏ).",
+      "mapAria": "Bản đồ sao vùng trời phía Bắc. Bấm vào sao để nối.",
+      "starAria": "Sao số {i}",
+      "targets": {
+        "dipper": {
+          "name": "Gấu Lớn (7 sao chính, hình cái gáo)",
+          "hint": "Tìm bốn sao sáng tạo thành «lòng gáo» hình thang, rồi ba sao cong ra thành «cán gáo».",
+          "fact": "7 sao chính của Gấu Lớn mang tên α, β, γ, δ, ε, ζ, η. Hai sao α và β ở mép lòng gáo là «sao chỉ đường» tới sao Bắc Cực."
+        },
+        "cas": {
+          "name": "Thiên Hậu (5 sao hình chữ W)",
+          "hint": "Tìm 5 sao sáng gần như cùng độ sáng xếp thành chữ W (hoặc chữ M), ở phía bên kia sao Bắc Cực so với Gấu Lớn.",
+          "fact": "Thiên Hậu (Cassiopeia) có 5 sao chính xếp hình chữ W, nằm đối diện Gấu Lớn qua sao Bắc Cực. Chòm này mọc lúc chập tối tháng 9 và thấy suốt đêm từ cuối thu tới giữa đông."
+        },
+        "umi": {
+          "name": "Gấu Bé (7 sao chính, cái gáo nhỏ)",
+          "hint": "Gấu Bé là một cái gáo nhỏ và mờ hơn Gấu Lớn; ngôi sao sáng ở cuối cán gáo chính là sao Bắc Cực.",
+          "fact": "Gấu Bé cũng có 7 sao chính mang tên giống Gấu Lớn. Sao ở cuối đuôi (α) chính là sao Bắc Cực; khoảng cách giữa các sao của Gấu Bé nhỏ hơn của Gấu Lớn."
+        }
+      }
+    },
+    "polaris": {
+      "title": "Truy tìm sao Bắc Cực",
+      "desc": "Dùng thước đo theo hai cách trong SGK để tìm sao Bắc Cực đang bị giấu.",
+      "ref": "Bài 4 · Mục V",
+      "minutes": 5,
+      "mapAria": "Bản đồ sao vùng trời phía Bắc; sao Bắc Cực đang bị giấu. Bấm vào chỗ em nghĩ là sao Bắc Cực.",
+      "tasks": {
+        "dipper": "Cách 1: Lấy đoạn αβ của Gấu Lớn, kéo dài 5 lần về phía α, rồi bấm vào chỗ em nghĩ là sao Bắc Cực.",
+        "cas": "Cách 2: Kẻ đoạn vuông góc với γδ của Thiên Hậu, lấy khoảng 7 lần γδ, rồi bấm vào chỗ em nghĩ là sao Bắc Cực.",
+        "free": "Vài giờ đã trôi qua, bầu trời quay đi. Dùng cách em thích để tìm lại sao Bắc Cực."
+      },
+      "taskSub": "Bấm «Thêm một đoạn» để thước dài thêm. Sau đó bấm lên bản đồ để đặt dấu, rồi kiểm tra.",
+      "addDipper": "Thêm một đoạn αβ",
+      "addCas": "Thêm một đoạn γδ",
+      "resetRuler": "Thu thước",
+      "count": "Thước: {n} đoạn",
+      "noMark": "Hãy bấm lên bản đồ để đặt dấu trước khi kiểm tra.",
+      "far": "Dấu của em còn cách sao Bắc Cực khoảng {d}°. Đếm lại số đoạn trên thước nhé.",
+      "hints": {
+        "dipper": "Đếm đủ 5 đoạn rồi đặt dấu ở cuối đoạn thứ 5. Sao Bắc Cực là ngôi sao sáng vừa phải gần đó.",
+        "cas": "Thước luôn vuông góc với γδ. Đặt dấu ở khoảng đoạn thứ 7 đến thứ 8.",
+        "free": "Tìm Gấu Lớn hoặc Thiên Hậu trước. Hai chòm này nằm ở hai phía của sao Bắc Cực."
+      },
+      "explain": {
+        "dipper": "Sao Bắc Cực cách sao α khoảng {k} lần đoạn αβ. Vì vậy cách «5 lần» của SGK đưa ta tới rất gần nó.",
+        "cas": "Trên bầu trời thật, sao Bắc Cực cách γδ khoảng {k} lần đoạn γδ. SGK làm tròn thành khoảng 7 lần: đủ để tìm ra sao sáng duy nhất ở vùng đó.",
+        "free": "Dù bầu trời quay, Gấu Lớn và Thiên Hậu luôn quay quanh sao Bắc Cực, nên cách tìm vẫn đúng ở mọi giờ."
+      },
+      "polaris": "Sao Bắc Cực",
+      "mark": "Dấu của em"
+    },
+    "solar": {
+      "title": "Xếp Hệ Mặt Trời",
+      "desc": "Xếp tám hành tinh theo thứ tự từ Mặt Trời, rồi phân loại hành tinh đá và hành tinh khí.",
+      "ref": "Bài 5 · Mục I",
+      "minutes": 4,
+      "orderTask": "Xếp tám hành tinh theo thứ tự từ gần đến xa Mặt Trời.",
+      "orderSub": "Bấm một thẻ rồi bấm vào ô, hoặc kéo thẻ thả vào ô.",
+      "orderHint": "Trái Đất là hành tinh thứ 3. Bốn hành tinh gần Mặt Trời nhất đều nhỏ và cấu tạo chủ yếu từ đá.",
+      "orderExplain": "Thứ tự: Thủy tinh, Kim tinh, Trái Đất, Hỏa tinh, Mộc tinh, Thổ tinh, Thiên Vương tinh, Hải Vương tinh. Vành đai tiểu hành tinh nằm giữa Hỏa tinh và Mộc tinh.",
+      "slot": "Thứ {n}",
+      "sun": "Mặt Trời",
+      "kindTask": "Phân loại: hành tinh nào là hành tinh đá, hành tinh nào là hành tinh khí?",
+      "kindHint": "Hành tinh khí có khối lượng lớn hơn rất nhiều so với hành tinh đá.",
+      "kindExplain": "Thủy tinh, Kim tinh, Trái Đất, Hỏa tinh là hành tinh đá. Mộc tinh, Thổ tinh, Thiên Vương tinh, Hải Vương tinh là hành tinh khí; Mộc tinh và Thổ tinh chủ yếu là khí hydrogen và helium.",
+      "rocky": "Hành tinh đá",
+      "gas": "Hành tinh khí",
+      "planets": {
+        "mercury": "Thủy tinh",
+        "venus": "Kim tinh",
+        "earth": "Trái Đất",
+        "mars": "Hỏa tinh",
+        "jupiter": "Mộc tinh",
+        "saturn": "Thổ tinh",
+        "uranus": "Thiên Vương tinh",
+        "neptune": "Hải Vương tinh"
+      }
+    },
+    "sunpath": {
+      "title": "Đường đi của Mặt Trời",
+      "desc": "Kéo Mặt Trời trên bầu trời lúc bình minh, giữa trưa, hoàng hôn và chọn đường đi theo mùa.",
+      "ref": "Bài 5 · Mục II",
+      "minutes": 5,
+      "observer": "Người quan sát ở vĩ độ 35° Bắc",
+      "dayTasks": {
+        "rise": "Ngày xuân phân: kéo Mặt Trời tới vị trí lúc bình minh.",
+        "noon": "Kéo Mặt Trời tới vị trí cao nhất trong ngày (giữa trưa).",
+        "set": "Kéo Mặt Trời tới vị trí lúc hoàng hôn."
+      },
+      "daySub": "Kéo Mặt Trời dọc đường đi, hoặc chọn Mặt Trời rồi dùng phím mũi tên.",
+      "dayHints": {
+        "rise": "Mặt Trời mọc ở hướng Đông, ngay trên đường chân trời.",
+        "noon": "Giữa trưa, Mặt Trời ở cao nhất, trên hướng chính Nam (với người ở vĩ độ này).",
+        "set": "Mặt Trời lặn ở hướng Tây."
+      },
+      "dayExplain": {
+        "rise": "Bình minh: Mặt Trời nhô lên ở hướng Đông. Ngày xuân phân, Mặt Trời mọc lúc khoảng 6 giờ, đúng hướng chính Đông.",
+        "noon": "Giữa trưa: Mặt Trời ở vị trí cao nhất, đi qua kinh tuyến trời ở hướng chính Nam.",
+        "set": "Hoàng hôn: Mặt Trời hạ thấp dần và lặn ở hướng Tây; ngày xuân phân là khoảng 18 giờ."
+      },
+      "readout": "{time} · độ cao {alt}° · hướng {dir}",
+      "notYet": "Chưa đúng: lúc này Mặt Trời ở {readout}.",
+      "sunAria": "Mặt Trời trên bầu trời",
+      "seasonTasks": {
+        "summer": "Bấm vào đường đi của Mặt Trời ngày Hạ chí (22/6).",
+        "winter": "Bấm vào đường đi của Mặt Trời ngày Đông chí (22/12).",
+        "equinox": "Bấm vào đường đi của Mặt Trời ngày Xuân phân (21/3) hoặc Thu phân (23/9)."
+      },
+      "seasonSub": "Ba đường cong là đường đi của Mặt Trời trong ba ngày khác nhau của năm.",
+      "seasonHint": "Mùa hạ Mặt Trời lên cao hơn, mọc lệch về phía Bắc và ở trên bầu trời lâu hơn.",
+      "seasonExplain": {
+        "summer": "Hạ chí: Mặt Trời mọc lệch Bắc, lên cao nhất và ở trên bầu trời lâu nhất, nên ngày dài đêm ngắn («Đêm tháng năm chưa nằm đã sáng»).",
+        "winter": "Đông chí: Mặt Trời mọc lệch Nam, lên thấp nhất và chỉ ở trên bầu trời một thời gian ngắn, nên ngày ngắn đêm dài («Ngày tháng mười chưa cười đã tối»).",
+        "equinox": "Xuân phân và thu phân: Mặt Trời mọc đúng hướng Đông, lặn đúng hướng Tây; ngày và đêm dài bằng nhau."
+      },
+      "pathAria": "Đường đi số {n}",
+      "pickPath": "Hãy bấm chọn một đường đi trước.",
+      "wrongPath": "Chưa đúng. Đường này là của ngày {name}.",
+      "vnNote": "Ở Việt Nam (vĩ độ nhỏ hơn 23,5°), giữa trưa mùa hạ Mặt Trời lên gần đỉnh đầu, có ngày còn lệch sang phía Bắc một chút.",
+      "pathNames": {
+        "summer": "Hạ chí",
+        "winter": "Đông chí",
+        "equinox": "Xuân phân / Thu phân"
+      },
+      "dirs": ["Bắc", "Đông Bắc", "Đông", "Đông Nam", "Nam", "Tây Nam", "Tây", "Tây Bắc"],
+      "dirShort": { "n": "Bắc", "s": "Nam", "e": "Đông", "w": "Tây" },
+      "polaris": "Sao Bắc Cực",
+      "zenith": "Thiên đỉnh"
+    },
+    "moon": {
+      "title": "Pha Mặt Trăng",
+      "desc": "Đưa Mặt Trăng quanh Trái Đất để tạo ra đúng hình Trăng: không Trăng, lưỡi liềm, bán nguyệt, tròn, khuyết.",
+      "ref": "Bài 5 · Mục III và VI",
+      "minutes": 4,
+      "task": "Kéo Mặt Trăng trên quỹ đạo để có hình Trăng như hình mẫu: {name}.",
+      "taskSub": "Hình bên phải là Mặt Trăng em đang thấy từ Trái Đất. Làm cho nó giống hình mẫu.",
+      "target": "Hình mẫu",
+      "seen": "Em đang thấy",
+      "sunlight": "Ánh sáng Mặt Trời",
+      "earth": "Trái Đất",
+      "moonAria": "Mặt Trăng trên quỹ đạo",
+      "moonText": "Mặt Trăng ở vị trí {pos} trên 8",
+      "hint": "Mặt Trăng luôn được Mặt Trời chiếu sáng một nửa. Trăng tròn khi Trái Đất nằm giữa Mặt Trời và Mặt Trăng; không Trăng khi Mặt Trăng nằm giữa.",
+      "notYet": "Chưa đúng: ở vị trí này là {name}.",
+      "explain": "Vị trí số {pos}: {name}. {why}",
+      "why": {
+        "new": "Mặt Trăng nằm giữa Trái Đất và Mặt Trời, nửa được chiếu sáng quay hết ra phía sau.",
+        "waxCrescent": "Ta chỉ thấy một mép nhỏ của nửa được chiếu sáng.",
+        "firstQuarter": "Ta thấy đúng một nửa của nửa được chiếu sáng, tức nửa hình tròn.",
+        "waxGibbous": "Ta thấy gần hết nửa được chiếu sáng.",
+        "full": "Trái Đất nằm giữa Mặt Trời và Mặt Trăng, ta thấy trọn nửa được chiếu sáng.",
+        "wanGibbous": "Sau rằm, phần sáng thu hẹp dần từ phía bên phải.",
+        "lastQuarter": "Lại thấy nửa hình tròn, nhưng sáng ở phía ngược lại.",
+        "wanCrescent": "Chỉ còn một mép sáng nhỏ trước khi tới lúc không Trăng."
+      },
+      "phases": ["Không Trăng (Trăng mới)", "Trăng lưỡi liềm", "Trăng bán nguyệt", "Trăng khuyết", "Trăng tròn", "Trăng khuyết", "Trăng bán nguyệt", "Trăng lưỡi liềm"]
+    },
+    "venus": {
+      "title": "Sao Hôm – Sao Mai",
+      "desc": "Kéo Kim tinh và Thủy tinh quanh Mặt Trời để thấy vì sao chúng chỉ hiện gần lúc bình minh hoặc hoàng hôn.",
+      "ref": "Bài 5 · Mục IV và VI",
+      "minutes": 5,
+      "tasks": {
+        "evening": "Kéo Kim tinh tới vị trí nó là Sao Hôm và ở xa Mặt Trời nhất trên bầu trời.",
+        "morning": "Bây giờ kéo Kim tinh tới vị trí nó là Sao Mai và ở xa Mặt Trời nhất.",
+        "hidden": "Kéo Kim tinh tới vị trí ta không thể thấy nó vì nó nằm phía sau Mặt Trời.",
+        "mercury": "Đổi sang Thủy tinh: tìm vị trí Thủy tinh ở xa Mặt Trời nhất khi nhìn từ Trái Đất."
+      },
+      "taskSub": "Góc ε là góc giữa Mặt Trời và hành tinh khi nhìn từ Trái Đất. Mỗi khi kéo, ε được đo lại.",
+      "hints": {
+        "evening": "Sao Hôm ở bên trái Mặt Trời trong hình. Góc ε lớn nhất khi đường nhìn từ Trái Đất chạm sát quỹ đạo của Kim tinh.",
+        "morning": "Sao Mai ở bên phải Mặt Trời trong hình.",
+        "hidden": "Khi hành tinh ở phía bên kia Mặt Trời, nó chìm trong ánh sáng chói của Mặt Trời.",
+        "mercury": "Thủy tinh ở gần Mặt Trời hơn nên góc ε lớn nhất của nó nhỏ hơn của Kim tinh."
+      },
+      "explain": {
+        "evening": "Ở bên trái Mặt Trời (phía Đông của Mặt Trời trên bầu trời), Kim tinh lặn sau Mặt Trời nên hiện ra ở phía Tây lúc chiều tối: đó là Sao Hôm. Trong mô hình quỹ đạo tròn này, ε lớn nhất ≈ {max}°; vì quỹ đạo thật hơi dẹt, SGK ghi góc lớn nhất khoảng 48°.",
+        "morning": "Ở bên phải Mặt Trời, Kim tinh mọc trước Mặt Trời và hiện ở phía Đông lúc rạng sáng: đó là Sao Mai. Sao Hôm và Sao Mai là cùng một hành tinh: Kim tinh.",
+        "hidden": "Kim tinh ở gần như cùng hướng với Mặt Trời, nằm phía sau Mặt Trời và chìm trong ánh sáng ban ngày nên ta không thấy.",
+        "mercury": "Thủy tinh không bao giờ ra xa Mặt Trời quá khoảng {max}° trong mô hình quỹ đạo tròn; quỹ đạo thật của Thủy tinh dẹt hơn nhiều nên SGK ghi tối đa khoảng 28°. Vì thế Thủy tinh chỉ thấy được thấp gần chân trời, ngay sau hoàng hôn hoặc trước bình minh."
+      },
+      "angle": "ε = {a}°",
+      "state": {
+        "evening": "Sao Hôm: thấy ở phía Tây lúc chiều tối",
+        "morning": "Sao Mai: thấy ở phía Đông lúc rạng sáng",
+        "glare": "Quá gần Mặt Trời: chìm trong ánh sáng ban ngày"
+      },
+      "notYet": "Chưa đúng: hiện tại ε = {a}° ({state}).",
+      "notMax": "Đúng phía rồi, nhưng ε = {a}° chưa phải lớn nhất. Thử kéo thêm.",
+      "sun": "Mặt Trời",
+      "earth": "Trái Đất",
+      "venus": "Kim tinh",
+      "mercury": "Thủy tinh",
+      "planetAria": "{name} trên quỹ đạo"
+    },
+    "models": {
+      "title": "Địa tâm hay Nhật tâm?",
+      "desc": "Phân loại các ý theo mô hình của Ptolemy và Copernicus, rồi dựng lại mô hình địa tâm.",
+      "ref": "Bài 5 · Mục V",
+      "minutes": 5,
+      "sortTask": "Mỗi ý sau thuộc mô hình nào?",
+      "sortSub": "Bấm một thẻ rồi bấm vào cột, hoặc kéo thả. Có ý đúng với cả hai mô hình.",
+      "sortHint": "Cả hai mô hình đều cho rằng Mặt Trăng quay quanh Trái Đất và các sao cố định trên thiên cầu.",
+      "sortExplain": "Hệ địa tâm (Ptolemy) đặt Trái Đất đứng yên ở trung tâm và được châu Âu chấp nhận hơn 1000 năm. Hệ nhật tâm (Copernicus) đặt Mặt Trời ở trung tâm, Trái Đất vừa tự quay vừa quay quanh Mặt Trời; kính thiên văn của Galilei đã khẳng định mô hình này.",
+      "bins": {
+        "geo": "Địa tâm (Ptolemy)",
+        "helio": "Nhật tâm (Copernicus)",
+        "both": "Cả hai mô hình"
+      },
+      "cards": {
+        "earthCenter": "Trái Đất đứng yên ở trung tâm vũ trụ.",
+        "sunCenter": "Mặt Trời nằm yên ở trung tâm.",
+        "sunAroundEarth": "Mặt Trời quay quanh Trái Đất.",
+        "earthSpins": "Trái Đất tự quay quanh trục khi chuyển động quanh Mặt Trời.",
+        "moonAroundEarth": "Mặt Trăng chuyển động quanh Trái Đất.",
+        "fixedStars": "Các sao ở rất xa và cố định trên thiên cầu.",
+        "thousandYears": "Được châu Âu chấp nhận hơn 1000 năm.",
+        "galileo": "Được kính thiên văn của Galilei khẳng định là đúng."
+      },
+      "orderTask": "Dựng lại mô hình địa tâm của Ptolemy: xếp các thiên thể từ vòng gần Trái Đất nhất ra ngoài.",
+      "orderSub": "Trái Đất ở tâm. Bấm thẻ rồi bấm vòng, hoặc kéo thả.",
+      "orderHint": "Mặt Trăng ở gần Trái Đất nhất. Mặt Trời nằm ở vòng thứ 4, giữa Kim tinh và Hỏa tinh.",
+      "orderExplain": "Mô hình của Ptolemy, từ trong ra: Mặt Trăng, Thủy tinh, Kim tinh, Mặt Trời, Hỏa tinh, Mộc tinh, Thổ tinh; ngoài cùng là thiên cầu của các vì sao.",
+      "ring": "Vòng {n}",
+      "earth": "Trái Đất",
+      "bodies": {
+        "moon": "Mặt Trăng",
+        "mercury": "Thủy tinh",
+        "venus": "Kim tinh",
+        "sun": "Mặt Trời",
+        "mars": "Hỏa tinh",
+        "jupiter": "Mộc tinh",
+        "saturn": "Thổ tinh"
+      }
+    },
+    "seasons": {
+      "title": "Bốn mùa trên quỹ đạo",
+      "desc": "Gắn ngày xuân phân, hạ chí, thu phân, đông chí vào đúng vị trí của Trái Đất quanh Mặt Trời.",
+      "ref": "Bài 5 · Mục VI",
+      "minutes": 4,
+      "placeTask": "Gắn mỗi ngày vào đúng vị trí của Trái Đất trên quỹ đạo.",
+      "placeSub": "Trục Trái Đất luôn nghiêng về cùng một hướng trong không gian. Chữ B đánh dấu đầu Bắc của trục.",
+      "placeHint": "Ngày Hạ chí, đầu Bắc của trục nghiêng về phía Mặt Trời. Trái Đất đi quanh Mặt Trời ngược chiều kim đồng hồ.",
+      "placeExplain": "Hạ chí (22/6): bán cầu Bắc nghiêng về phía Mặt Trời. Đông chí (22/12): bán cầu Bắc nghiêng ra xa. Xuân phân (21/3) và Thu phân (23/9): trục nghiêng sang ngang, Mặt Trời chiếu thẳng góc xuống xích đạo.",
+      "dates": {
+        "march": "Xuân phân 21/3",
+        "june": "Hạ chí 22/6",
+        "september": "Thu phân 23/9",
+        "december": "Đông chí 22/12"
+      },
+      "slotAria": "Vị trí Trái Đất {n}",
+      "clickTasks": {
+        "longest": "Bấm vào vị trí Trái Đất có ngày dài nhất ở bán cầu Bắc.",
+        "equal": "Bấm vào một vị trí Trái Đất có ngày và đêm dài bằng nhau ở mọi nơi.",
+        "southSummer": "Bấm vào vị trí Trái Đất khi bán cầu Nam đang giữa mùa hạ."
+      },
+      "clickSub": "Bấm vào một trong bốn Trái Đất.",
+      "clickHints": {
+        "longest": "Ngày dài nhất khi bán cầu Bắc nghiêng nhiều nhất về phía Mặt Trời.",
+        "equal": "Ngày bằng đêm khi trục không nghiêng về phía Mặt Trời, cũng không nghiêng ra xa.",
+        "southSummer": "Bán cầu Nam nghiêng về phía Mặt Trời khi bán cầu Bắc nghiêng ra xa."
+      },
+      "clickExplain": {
+        "longest": "Ngày Hạ chí, bán cầu Bắc nghiêng về phía Mặt Trời nên Mặt Trời ở trên bầu trời lâu nhất: ngày dài nhất năm.",
+        "equal": "Ngày Xuân phân và Thu phân, đường phân chia ngày – đêm đi qua hai cực, nên mọi nơi có ngày và đêm dài bằng nhau.",
+        "southSummer": "Ngày Đông chí của ta (22/12), bán cầu Nam nghiêng về phía Mặt Trời: Úc và Nam Mỹ đang giữa mùa hạ."
+      },
+      "pickEarth": "Hãy bấm chọn một vị trí Trái Đất trước.",
+      "wrongEarth": "Chưa đúng: vị trí này là ngày {name}.",
+      "earthAria": "Trái Đất ở vị trí {n}",
+      "sun": "Mặt Trời",
+      "north": "B"
+    },
+    "quiz4": {
+      "title": "Đố nhanh Bài 4",
+      "desc": "Câu hỏi trắc nghiệm về bản đồ sao, chòm sao và sao Bắc Cực.",
+      "ref": "Bài 4 · Cả bài",
+      "minutes": 3
+    },
+    "quiz5": {
+      "title": "Đố nhanh Bài 5",
+      "desc": "Câu hỏi trắc nghiệm về Mặt Trời, Mặt Trăng, Kim tinh, Thủy tinh và hai mô hình vũ trụ.",
+      "ref": "Bài 5 · Cả bài",
+      "minutes": 4
+    }
+  },
+  "quiz": {
+    "task": "Chọn một đáp án.",
+    "right": "Chính xác! +2 điểm.",
+    "wrongIs": "Chưa đúng. Đáp án đúng là: {a}.",
+    "b4": [
+      {
+        "q": "Ngày nay, bầu trời được chia thành khoảng bao nhiêu chòm sao?",
+        "a": ["88", "12", "48", "100"],
+        "why": "Các nhà thiên văn đã đặt tên và hình ảnh tưởng tượng cho khoảng 88 chòm sao phủ kín bầu trời."
+      },
+      {
+        "q": "Chòm Gấu Lớn được tạo thành từ bao nhiêu sao chính?",
+        "a": ["7", "5", "4", "12"],
+        "why": "Gấu Lớn có 7 sao chính, tên lần lượt là α, β, γ, δ, ε, ζ, η, xếp thành hình cái gáo."
+      },
+      {
+        "q": "Sao Bắc Cực nằm ở chòm sao nào?",
+        "a": ["Gấu Bé", "Gấu Lớn", "Thiên Hậu", "Thiên Nga"],
+        "why": "Sao Bắc Cực là ngôi sao ở cuối đuôi chòm Gấu Bé."
+      },
+      {
+        "q": "Sao Bắc Cực có phải là ngôi sao sáng nhất bầu trời đêm không?",
+        "a": ["Không, nó chỉ sáng vừa phải, khá khó nhận ra", "Có, nó sáng nhất bầu trời", "Có, nhưng chỉ vào mùa đông", "Không, mắt thường không thấy được nó"],
+        "why": "Nhiều người nhầm tưởng như vậy, nhưng sao Bắc Cực là một sao tương đối mờ; sao sáng nhất bầu trời đêm là Sirius."
+      },
+      {
+        "q": "Vì sao người đứng ở bán cầu Bắc chỉ cần tìm sao Bắc Cực là biết hướng Bắc?",
+        "a": ["Vì nó ở gần cực Bắc của thiên cầu nên gần như không đổi vị trí", "Vì nó là sao sáng nhất phía Bắc", "Vì nó luôn ở ngay trên đỉnh đầu", "Vì nó mọc ở hướng Bắc mỗi tối"],
+        "why": "Sao Bắc Cực gần như đứng yên ở gần cực Bắc của thiên cầu, vào mọi giờ và mọi mùa, nên luôn chỉ hướng Bắc."
+      },
+      {
+        "q": "Khi quan sát từ Trái Đất, các chòm sao chuyển động trên bầu trời theo hướng nào?",
+        "a": ["Từ Đông sang Tây", "Từ Tây sang Đông", "Từ Bắc xuống Nam", "Đứng yên"],
+        "why": "Trái Đất tự quay từ Tây sang Đông nên ta thấy bầu trời sao quay theo chiều ngược lại, từ Đông sang Tây."
+      },
+      {
+        "q": "Chòm Thiên Hậu có hình dạng giống chữ cái nào?",
+        "a": ["Chữ W (hoặc M)", "Chữ L", "Chữ T", "Chữ O"],
+        "why": "5 sao chính của Thiên Hậu nối thành hình chữ W, hoặc chữ M khi chòm ở phía dưới sao Bắc Cực."
+      },
+      {
+        "q": "Vị trí của Thiên Hậu so với Gấu Lớn trên bầu trời như thế nào?",
+        "a": ["Đối diện Gấu Lớn qua sao Bắc Cực", "Nằm ngay cạnh Gấu Lớn", "Nằm bên trong Gấu Lớn", "Ở bán cầu Nam của bầu trời"],
+        "why": "Thiên Hậu và Gấu Lớn nằm ở hai phía của sao Bắc Cực, nên khi một chòm ở thấp thì chòm kia ở cao."
+      },
+      {
+        "q": "Theo SGK, cách 1 tìm sao Bắc Cực dùng đoạn nào của Gấu Lớn và kéo dài bao nhiêu lần?",
+        "a": ["Đoạn αβ, khoảng 5 lần", "Đoạn γδ, khoảng 7 lần", "Đoạn εζ, khoảng 3 lần", "Đoạn αη, khoảng 2 lần"],
+        "why": "Kéo dài đoạn αβ (hai sao ở mép lòng gáo) khoảng 5 lần về phía α thì gặp sao Bắc Cực."
+      },
+      {
+        "q": "Ở một địa điểm trên Trái Đất, vào các mùa khác nhau trong năm ta thấy",
+        "a": ["Những chòm sao khác nhau", "Luôn đúng những chòm sao giống nhau", "Chỉ thấy sao Bắc Cực", "Không thấy chòm sao nào vào mùa hè"],
+        "why": "Do Trái Đất quay quanh Mặt Trời, mỗi mùa ban đêm ta nhìn về một hướng khác của vũ trụ nên thấy các chòm sao khác nhau."
+      }
+    ],
+    "b5": [
+      {
+        "q": "Trái Đất là hành tinh thứ mấy tính từ Mặt Trời?",
+        "a": ["Thứ 3", "Thứ 2", "Thứ 4", "Thứ 1"],
+        "why": "Thứ tự: Thủy tinh, Kim tinh, Trái Đất, Hỏa tinh…"
+      },
+      {
+        "q": "Hằng ngày, nếu đứng nhìn về hướng Bắc, ta thấy Mặt Trời mọc ở đâu?",
+        "a": ["Phía Đông, bên tay phải", "Phía Tây, bên tay phải", "Phía Đông, bên tay trái", "Phía Nam, trước mặt"],
+        "why": "Nhìn về hướng Bắc thì hướng Đông ở bên tay phải: Mặt Trời mọc ở phía Đông và lặn ở phía Tây (bên tay trái)."
+      },
+      {
+        "q": "Vì sao «Đêm tháng năm chưa nằm đã sáng»?",
+        "a": ["Mùa hạ ở bán cầu Bắc Mặt Trời ở trên bầu trời lâu, ngày dài đêm ngắn", "Mặt Trăng sáng hơn vào tháng năm", "Trái Đất ở gần Mặt Trời nhất vào tháng năm", "Mặt Trời mọc ở hướng Tây vào tháng năm"],
+        "why": "Gần ngày Hạ chí, đường đi của Mặt Trời dài và cao nhất nên ngày dài, đêm ngắn."
+      },
+      {
+        "q": "Theo SGK, Mặt Trăng quay quanh Trái Đất với chu kì khoảng",
+        "a": ["29,5 ngày", "24 giờ", "7 ngày", "365 ngày"],
+        "why": "Chu kì khoảng 29,5 ngày, đúng bằng một tháng âm lịch: từ lần không Trăng này tới lần không Trăng sau."
+      },
+      {
+        "q": "Vì sao từ Trái Đất ta luôn thấy cùng một mặt của Mặt Trăng?",
+        "a": ["Chu kì tự quay của Mặt Trăng bằng chu kì nó quay quanh Trái Đất", "Mặt Trăng không tự quay", "Mặt sau của Mặt Trăng không được chiếu sáng", "Trái Đất che mất mặt sau"],
+        "why": "Mặt Trăng tự quay một vòng đúng trong thời gian đi hết một vòng quanh Trái Đất nên luôn hướng một mặt về phía ta."
+      },
+      {
+        "q": "Trăng tròn (ngày rằm) thường mọc lúc nào và ở hướng nào?",
+        "a": ["Khoảng 6 giờ tối, ở hướng Đông", "Khoảng 6 giờ sáng, ở hướng Đông", "Khoảng 12 giờ trưa, ở hướng Nam", "Khoảng 6 giờ tối, ở hướng Tây"],
+        "why": "Trăng tròn ở phía đối diện Mặt Trời: Mặt Trời lặn ở phía Tây thì trăng tròn mọc ở phía Đông, rồi lặn vào khoảng 6 giờ sáng."
+      },
+      {
+        "q": "«Sao Hôm» và «Sao Mai» trong văn hóa dân gian Việt Nam thật ra là",
+        "a": ["Kim tinh", "Hai ngôi sao khác nhau", "Thủy tinh", "Sao Bắc Cực"],
+        "why": "Cả hai đều là Kim tinh: thấy lúc chiều tối thì gọi là Sao Hôm, thấy lúc rạng sáng thì gọi là Sao Mai."
+      },
+      {
+        "q": "Theo SGK, góc lớn nhất giữa Kim tinh và Mặt Trời khi nhìn từ Trái Đất là khoảng",
+        "a": ["48°", "28°", "90°", "180°"],
+        "why": "Kim tinh không ra xa Mặt Trời quá khoảng 48° (Thủy tinh khoảng 28°), nên ta không bao giờ thấy chúng lúc nửa đêm."
+      },
+      {
+        "q": "Ai là người đặt nền móng cho hệ nhật tâm?",
+        "a": ["Copernicus", "Ptolemy", "Galilei", "Newton"],
+        "why": "Copernicus (1473–1543) viết «Commentariolus», đề xuất Mặt Trời ở trung tâm; Galilei sau đó dùng kính thiên văn để củng cố mô hình này."
+      },
+      {
+        "q": "Hành tinh lớn nhất trong Hệ Mặt Trời là",
+        "a": ["Mộc tinh", "Thổ tinh", "Trái Đất", "Hải Vương tinh"],
+        "why": "Mộc tinh và Thổ tinh là hai hành tinh lớn nhất; lớn nhất là Mộc tinh."
+      },
+      {
+        "q": "Theo SGK, quỹ đạo chuyển động biểu kiến của Mặt Trời trong một năm (hoàng đạo) đi qua bao nhiêu chòm sao?",
+        "a": ["12", "7", "88", "4"],
+        "why": "SGK nêu 12 chòm sao hoàng đạo, mỗi tháng Mặt Trời ứng với một chòm. Theo ranh giới chòm sao hiện đại, hoàng đạo còn cắt qua chòm thứ 13 là Xà Phu (Ophiuchus)."
+      },
+      {
+        "q": "Ở nước ta, vào ngày nào trong năm Mặt Trời mọc đúng hướng chính Đông?",
+        "a": ["Ngày xuân phân và thu phân", "Mọi ngày trong năm", "Chỉ ngày hạ chí", "Chỉ ngày đông chí"],
+        "why": "Chỉ vào ngày xuân phân và thu phân, Mặt Trời mọc đúng hướng Đông và lặn đúng hướng Tây; các ngày khác lệch về phía Bắc hoặc Nam."
+      }
+    ]
+  }
+}
