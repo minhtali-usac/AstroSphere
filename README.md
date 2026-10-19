@@ -25,6 +25,7 @@ npm run dev
 | `npm run preview` | Xem thử bản đã đóng gói |
 | `npm test` | Chạy unit test (Vitest) |
 | `npm run data` | Tạo lại dữ liệu sao/chòm sao/lục địa trong `src/data/generated/` từ các gói npm |
+| `npm run fetch-sky` | Lấy lại thị sai Hipparcos (CDS VizieR) và danh sách ngoại hành tinh (NASA Exoplanet Archive) vào `src/data/fetched/` (cần mạng; chạy tự động mỗi thứ Hai bằng `.github/workflows/refresh-sky-data.yml`, mở PR khi dữ liệu đổi) |
 
 ## Chức năng
 
@@ -74,6 +75,15 @@ LST/H, trạng thái mọc – lặn) thì hình tương ứng sáng lên ở c�
 **Trình chiếu** (phím `F`): toàn màn hình cho buổi sinh hoạt — đường nét dày ×2, nhãn lớn ×1,8, ẩn bảng điều khiển, dòng φ = độ cao thiên cực cỡ lớn.
 
 **Hiệu năng**: three.js tải song song sau phần khung giao diện (JS ban đầu ≈ 84 kB gzip; USACodex, Usui-chan và mô hình 3D của Usui-chan chỉ tải khi cần); không vẽ khung bị ẩn hay khi thẻ trình duyệt ở nền; tự hạ chất lượng khi máy yếu (`?quality=fixed` để tắt). Số đo: `docs/redesign/perf.md`.
+
+**Bay vào vũ trụ** (nút trên thanh trên cùng ở chế độ Đầy đủ, hoặc «Bay tới» trong thẻ thông tin của một sao): rời
+Trái Đất và bay tới Mặt Trời, tám hành tinh, Mặt Trăng, bất kỳ sao nào trong ~1300 sao của danh mục và 60 hành tinh đã
+xác nhận quanh 42 sao trong số đó, ở đúng vị trí và khoảng cách thật cho ngày đang mô phỏng. Bắt đầu phía trên nơi người
+quan sát đứng, với trục Trái Đất chỉ về Polaris. Bay ra xa, các sao của một chòm tách ra ở những khoảng cách khác nhau.
+Thiên thể vẽ đa giác thấp; hình dạng và màu là minh họa theo loại, lục địa Trái Đất lấy từ Natural Earth. Mọi giá trị
+không phải số đo đều có nhãn «ước tính» hoặc «ứng dụng tự chọn» (vd. hướng mặt phẳng quỹ đạo của ngoại hành tinh).
+Điều khiển: kéo để xoay quanh, cuộn/chụm để lại gần, bấm đúp để bay tới, W A S D R F để bay tự do, `Esc` để dừng chuyến
+bay rồi về Trái Đất. Mã: `src/scene/flight/`, `src/ui/flight.ts`, `src/ui/flightPanel.ts`.
 
 **Mở rộng**: hoàng đạo (điểm xuân phân, hạ chí, thu phân, đông chí), Mặt Trời theo ngày (độ dài ban ngày, nền trời đổi màu theo ngày/đêm), xích đạo thiên hà và tâm Ngân Hà.
 
@@ -128,4 +138,7 @@ mỗi khung hình chỉ đổi một uniform), nên rất nhẹ.
 
 - Danh mục sao và đường nối chòm sao: [d3-celestial](https://github.com/ofrohn/d3-celestial) (BSD-3-Clause), dữ liệu gốc từ HYG Database.
 - Đường bờ lục địa: Natural Earth (phạm vi công cộng) qua gói `world-atlas` (ISC).
+- Khoảng cách sao: thị sai Hipparcos, bản xử lý mới (van Leeuwen 2007, A&A 474, 653; danh mục I/311), qua CDS VizieR.
+- Ngoại hành tinh: NASA Exoplanet Archive, bảng Planetary Systems Composite Parameters (DOI 10.26133/NEA13). This research has made use of the NASA Exoplanet Archive, which is operated by the California Institute of Technology, under contract with the National Aeronautics and Space Administration under the Exoplanet Exploration Program.
+- Vị trí hành tinh: JPL "Approximate Positions of the Planets" (Standish); Mặt Trăng: Meeus, "Astronomical Algorithms", chương 47. Tính chất hành tinh: NASA NSSDCA Planetary Fact Sheets; hướng trục quay: IAU WGCCRE 2015.
 - Three.js (MIT). `astronomy-engine` (MIT) chỉ dùng trong test.

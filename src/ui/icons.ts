@@ -65,3 +65,28 @@ export function pencilIcon(): SVGSVGElement {
   svg.append(path);
   return svg;
 }
+
+/** Hành tinh có quỹ đạo (nút «Bay vào vũ trụ»): một vòng tròn nhỏ và một elip nghiêng, nét 1,6 px trên khung 16 × 16. */
+export function orbitIcon(): SVGSVGElement {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 16 16');
+  svg.setAttribute('width', '14');
+  svg.setAttribute('height', '14');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '1.6');
+  const planet = document.createElementNS(SVG_NS, 'circle');
+  planet.setAttribute('cx', '8');
+  planet.setAttribute('cy', '8');
+  planet.setAttribute('r', '3');
+  const orbit = document.createElementNS(SVG_NS, 'ellipse');
+  orbit.setAttribute('cx', '8');
+  orbit.setAttribute('cy', '8');
+  orbit.setAttribute('rx', '7');
+  orbit.setAttribute('ry', '2.6');
+  orbit.setAttribute('transform', 'rotate(-25 8 8)');
+  svg.append(planet, orbit);
+  return svg;
+}

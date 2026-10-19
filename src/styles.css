@@ -5356,3 +5356,84 @@ body.present .guide-tip {
   height: var(--more-band);
   background: linear-gradient(to bottom, transparent 0, var(--infocard-bg) var(--more-fade));
 }
+
+/* ------------------------------------------------------------------ «Bay vào vũ trụ» (khung hộp thoại; bảng điều
+   khiển bên trong ở src/scene/flight/flight.css, tải cùng cảnh bay) */
+body.mode-simple .btn--top-flight,
+body.mode-simple .infocard__fly {
+  display: none !important;
+}
+
+.infocard__fly {
+  min-height: var(--tap);
+  margin: var(--space-2) 0 0;
+}
+
+.flight {
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.flight[open] {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.flight::backdrop {
+  background: var(--bg);
+}
+
+.flight__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-quiet);
+}
+
+.flight__title {
+  margin: 0;
+  font-size: 18px;
+  white-space: nowrap;
+}
+
+.flight__hint {
+  flex: 1;
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.flight__close {
+  min-height: var(--tap);
+  margin-left: auto;
+}
+
+.flight__view {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.flight__status {
+  position: absolute;
+  inset: 50% 0 auto;
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+}
+
+@media (max-width: 700px) {
+  .flight__hint {
+    display: none;
+  }
+}
