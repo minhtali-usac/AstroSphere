@@ -26,7 +26,9 @@
     "help": "Trợ giúp",
     "helpTip": "Hướng dẫn sử dụng và phím tắt (phím H)",
     "about": "Giới thiệu",
-    "aboutTip": "Thông tin về mô phỏng, dữ liệu và giấy phép"
+    "aboutTip": "Thông tin về mô phỏng, dữ liệu và giấy phép",
+    "flight": "Bay vào vũ trụ",
+    "flightTip": "Bay tới các hành tinh, các sao và hành tinh quanh sao khác, ở đúng vị trí và khoảng cách thật"
   },
   "pwa": {
     "install": "⬇ Cài AstroSphere về máy (dùng được khi không có mạng)",
@@ -193,7 +195,9 @@
     "ly": "{v} năm ánh sáng",
     "lyMillion": "{v} triệu năm ánh sáng",
     "nameVi": "Tên tiếng Việt",
-    "constellation": "Chòm sao"
+    "constellation": "Chòm sao",
+    "fly": "Bay tới",
+    "flyTip": "Mở chế độ «Bay vào vũ trụ» và bay tới thiên thể này"
   },
   "visibility": {
     "circumpolar": "Cận cực (không bao giờ lặn)",
@@ -615,6 +619,9 @@
       "## Cơ sở dữ liệu & nền tảng",
       "- **Danh mục sao và đường nối chòm sao:** d3-celestial của Olaf Frohn, phát hành theo giấy phép BSD-3; dữ liệu sao có nguồn gốc từ cơ sở dữ liệu HYG.",
       "- **Bản đồ địa lý:** Natural Earth (phạm vi công cộng) thông qua gói world-atlas.",
+      "- **Khoảng cách sao (chế độ «Bay vào vũ trụ»):** thị sai Hipparcos, bản xử lý mới (van Leeuwen 2007, danh mục I/311), qua dịch vụ VizieR của CDS Strasbourg.",
+      "- **Hành tinh ngoài Hệ Mặt Trời:** NASA Exoplanet Archive, bảng Planetary Systems Composite Parameters. Nghiên cứu này sử dụng NASA Exoplanet Archive, do Viện Công nghệ California vận hành theo hợp đồng với NASA trong Chương trình Khám phá Ngoại hành tinh.",
+      "- **Vị trí và tính chất hành tinh:** phần tử quỹ đạo gần đúng của JPL (Standish), bảng dữ kiện hành tinh của NASA NSSDCA, hướng trục quay theo IAU WGCCRE 2015; Mặt Trăng theo Meeus, «Astronomical Algorithms», chương 47.",
       "- **Tên chòm sao tiếng Việt:** Wikipedia tiếng Việt, bài “Danh sách chòm sao” (giấy phép CC BY-SA 4.0). Trên bầu trời, sao và chòm sao được ghi theo tên quốc tế (IAU); tên tiếng Việt được hiển thị trong phần thông tin chi tiết.",
       "- **Đồ họa 3D:** Three.js, phát hành theo giấy phép MIT.",
       "- **Hiển thị công thức:** KaTeX, phát hành theo giấy phép MIT.",
@@ -653,7 +660,7 @@
     },
     "sources": [
       "**Ký hiệu:** \\(q\\) là khoảng cách cận điểm (đơn vị thiên văn), \\(e\\) là tâm sai, \\(i\\) là độ nghiêng quỹ đạo so với mặt phẳng hoàng đạo. Sao chổi chuyển động nhanh trên nền sao nên không được vẽ lên bầu trời mô phỏng.",
-      "**Nguồn:** tọa độ, cấp sao, kích thước của thiên thể sâu từ d3-celestial (BSD-3); khoảng cách tham khảo từ SIMBAD/NED và NASA; quỹ đạo sao chổi từ JPL Small-Body Database và IAU Minor Planet Center (làm tròn)."
+      "**Nguồn:** tọa độ, cấp sao, kích thước của thiên thể sâu từ d3-celestial (BSD-3); khoảng cách tham khảo từ SIMBAD/NED và NASA; quỹ đạo sao chổi từ JPL Small-Body Database và IAU Minor Planet Center (làm tròn). Chế độ «Bay vào vũ trụ»: khoảng cách sao từ thị sai Hipparcos (van Leeuwen 2007, qua VizieR); hành tinh ngoài Hệ Mặt Trời từ NASA Exoplanet Archive."
     ]
   },
   "codexUi": {
@@ -760,7 +767,28 @@
       "resetCancel": "Đóng hộp này và giữ nguyên mọi thứ như hiện tại.",
       "resetConfirm": "Đặt lại vị trí, thời gian, hiển thị, góc nhìn và xóa các sao đã thêm. Chế độ và tiến độ học vẫn được giữ.",
       "focusData": "Mở dải số liệu đầy đủ: kinh độ, giờ sao, giờ Mặt Trời và đối tượng đang chọn. Khi thu gọn, dải vẫn giữ φ và độ cao thiên cực để bạn thấy hai số này luôn bằng nhau.",
-      "focusPanels": "Mở bảng điều khiển bên phải để đổi vị trí, thời gian, lớp hiển thị và thêm sao. Thu gọn lại thì giản đồ chân trời rộng hơn."
+      "focusPanels": "Mở bảng điều khiển bên phải để đổi vị trí, thời gian, lớp hiển thị và thêm sao. Thu gọn lại thì giản đồ chân trời rộng hơn.",
+      "flight": "Rời Trái Đất và bay trong vũ trụ: tới các hành tinh, Mặt Trăng, các sao và những hành tinh đã được phát hiện quanh sao khác, ở đúng vị trí và khoảng cách thật.",
+      "infoFly": "Bay tới thiên thể đang chọn trong chế độ «Bay vào vũ trụ». Bay ra xa, bạn sẽ thấy các sao của một chòm thật ra ở rất xa nhau.",
+      "flightClose": "Đóng chế độ bay và trở về bầu trời nhìn từ Trái Đất. Phím Esc cũng làm được việc này.",
+      "flightView": "Kéo để xoay quanh thiên thể đang chọn, cuộn để lại gần hoặc ra xa. Bấm vào một thiên thể để xem thông tin, bấm đúp để bay tới.",
+      "flightDest": "Chọn một nơi để bay tới. Đường bay đi nhanh khi còn xa và chậm dần khi tới gần.",
+      "flightDestToggle": "Mở hoặc thu gọn danh sách điểm đến.",
+      "flightSearch": "Gõ tên một sao (ví dụ Sirius, Betelgeuse) để bay tới đó.",
+      "flightGo": "Bay tới thiên thể đang xem trong bảng thông tin.",
+      "flightOrbits": "Hiện hoặc ẩn đường quỹ đạo của các hành tinh và Mặt Trăng.",
+      "flightLines": "Hiện hoặc ẩn đường nối chòm sao. Bay ra xa Mặt Trời, các đường này méo đi vì các sao ở những khoảng cách khác nhau.",
+      "flightForward": "Giữ để bay về phía trước. Càng xa các thiên thể, tốc độ càng lớn.",
+      "flightBack": "Giữ để lùi lại."
     }
+  },
+  "flight": {
+    "title": "Bay vào vũ trụ",
+    "hint": "Kéo để xoay quanh · cuộn hoặc chụm hai ngón để lại gần · bấm đúp để bay tới · W A S D R F để bay tự do",
+    "close": "Về Trái Đất",
+    "closeTip": "Đóng chế độ bay và trở lại bầu trời nhìn từ Trái Đất (Esc)",
+    "viewAria": "Khung nhìn bay trong vũ trụ: Hệ Mặt Trời, các sao và hành tinh quanh sao khác",
+    "wait": "Đang dựng vũ trụ…",
+    "failed": "Không mở được chế độ bay trên trình duyệt này."
   }
 }

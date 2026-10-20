@@ -21,6 +21,7 @@ import { resolveSelection, sunEquatorial } from '../selection';
 import { lstOf, type Actions, type AppState, type Store } from '../state';
 import { h, setHidden, setText } from './dom';
 import { bindEmphasis } from './emphasis';
+import { openFlight } from './flight';
 import { chevronIcon } from './icons';
 
 const DIRS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
@@ -190,6 +191,20 @@ export function infoCard(store: Store, actions: Actions) {
       onclick: () => el.scrollBy({ top: Math.max(80, el.clientHeight * 0.8), behavior: reducedMotion() ? 'auto' : 'smooth' }),
     }),
   );
+  // «Bay tới»: mở chế độ bay và bay tới sao trong danh mục hoặc Mặt Trời đang chọn (ẩn với đối tượng khác).
+  const flyBtn = h('button', {
+    type: 'button',
+    class: 'btn infocard__fly',
+    'data-guide': 'infoFly',
+    title: t('info.flyTip'),
+    text: t('info.fly'),
+    hidden: true,
+    onclick: () => {
+      const sel = store.state.selected;
+      if (sel?.kind === 'catalog') openFlight({ kind: 'catalog', index: sel.index });
+      else if (sel?.kind === 'sun') openFlight({ kind: 'sun' });
+    },
+  });
   const el = h(
     'aside',
     { class: 'infocard is-empty', 'aria-label': t('info.aria'), 'data-guide': 'infoCard' },
@@ -212,6 +227,7 @@ export function infoCard(store: Store, actions: Actions) {
     ),
     viName,
     kind,
+    flyBtn,
     empty,
     body,
     more,
@@ -290,6 +306,7 @@ export function infoCard(store: Store, actions: Actions) {
     if (s.selected !== selRef) {
       if (selRef !== undefined && isWide()) setCollapsed(!obj);
       selRef = s.selected;
+      flyBtn.hidden = s.selected?.kind !== 'catalog' && s.selected?.kind !== 'sun';
     }
     if (isEmpty !== wasEmpty) {
       wasEmpty = isEmpty;
