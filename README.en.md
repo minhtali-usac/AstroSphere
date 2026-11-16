@@ -44,6 +44,7 @@ AstroSphere helps learners build intuition for three ideas:
 | 🔗 **Numbers linked to shapes** | Hover a number and the matching part of the drawing lights up in both views, and the other way round. |
 | 📖 **USACodex** | A 44-entry handbook in 7 categories that unlocks as you meet each concept in the simulation. |
 | 🎮 **Thử thách SGK** (Textbook Challenge) | 10 interactive activities for Lessons 4 and 5 of the Vietnamese physics topic "Earth and Sky". The teacher picks the activities; a scoreboard closes the session. |
+| 🚀 **Bay vào vũ trụ** (Fly into space) | Leave Earth and fly to the Sun, the eight planets, the Moon, about 1,300 stars and 60 confirmed exoplanets, all at their real positions and distances. |
 | ✏️ **Ôn tập** (Review) | 12 tasks with hints, explanations and scoring. |
 | 🖥️ **Presentation mode** | Press `F`: full screen, thicker lines and larger labels for a projector. |
 | 💬 **Usui-chan** | The club mascot explains every control when you hover or tap it. |
@@ -80,6 +81,8 @@ AstroSphere helps learners build intuition for three ideas:
 
 **Info card.** α, δ, H, A, h, visibility class, and the sidereal time and azimuth at rising, transit and setting, plus time above the horizon.
 
+**Fly into space.** Open it from the top bar in Full mode, or with "Bay tới" (Fly to) in a star's info card. The flight starts above the observer's location, with Earth's axis pointing at Polaris; as you fly out, the stars of a constellation separate at their different distances. Bodies are drawn low-poly, and their shapes and colours are illustrative by type. Every value that is not a measurement is labelled as an estimate or as chosen by the app (for example the orientation of an exoplanet's orbital plane). Controls: drag to orbit, scroll or pinch to approach, double-click to fly to a body, `W` `A` `S` `D` `R` `F` to fly freely, and `Esc` to stop the flight and then return to Earth.
+
 **Keyboard shortcuts.** `Space` play/pause · `←` `→` back/forward one hour · `+` `−` speed · `N` now · `V` reset trails · `C` reset camera · `L` review tasks · `F` presentation · `H` help · `Esc` close or deselect. (`L` and `F` work in Full mode only.)
 
 ## Accuracy
@@ -115,6 +118,7 @@ npm run dev
 | `npm run build` | Type-check (`tsc`), then bundle into `dist/` |
 | `npm run preview` | Serve the built bundle |
 | `npm run data` | Regenerate the star, constellation and coastline data in `src/data/generated/` |
+| `npm run fetch-sky` | Re-fetch Hipparcos parallaxes (CDS VizieR) and the exoplanet list (NASA Exoplanet Archive) into `src/data/fetched/`. Needs a network connection; `.github/workflows/refresh-sky-data.yml` runs it every Monday and opens a PR when the data changes |
 
 Every push to `main` deploys to GitHub Pages through GitHub Actions (`.github/workflows/deploy.yml`).
 
@@ -133,7 +137,8 @@ src/
   astro/      Pure maths, no UI dependency (unit tested): sidereal time, coordinate
               conversion, visibility classes, ecliptic, Vietnamese number formatting
   scene/      Three.js code (loaded only through scene/boot.ts): both views, sky and
-              horizon layers, trails, label decluttering, semantic colours
+              horizon layers, trails, label decluttering, semantic colours; flight/ (the
+              fly-into-space mode, a lazy chunk)
   runtime/    Frame loop (pauses when hidden) and adaptive quality
   ui/         Control panels, map, info card, dialogs, review tasks, storage, modes
   codex/      USACodex: discovery triggers (in the entry chunk) and the lazy UI
@@ -167,6 +172,9 @@ Feedback and bug reports are welcome: open an [issue](https://github.com/minhtal
 - Star catalogue and constellation lines: [d3-celestial](https://github.com/ofrohn/d3-celestial) by Olaf Frohn (BSD-3-Clause), with star data originating from the HYG Database.
 - Coastlines: [Natural Earth](https://www.naturalearthdata.com/) (public domain) through the `world-atlas` package (ISC).
 - Vietnamese constellation names: Vietnamese Wikipedia, "Danh sách chòm sao" (CC BY-SA 4.0).
+- Star distances: Hipparcos parallaxes, the new reduction (van Leeuwen 2007, A&A 474, 653; catalogue I/311), through CDS VizieR.
+- Exoplanets: NASA Exoplanet Archive, Planetary Systems Composite Parameters table (DOI 10.26133/NEA13). This research has made use of the NASA Exoplanet Archive, which is operated by the California Institute of Technology, under contract with the National Aeronautics and Space Administration under the Exoplanet Exploration Program.
+- Planet positions: JPL "Approximate Positions of the Planets" (Standish); the Moon: Meeus, "Astronomical Algorithms", chapter 47. Planet properties: NASA NSSDCA Planetary Fact Sheets; rotation axes: IAU WGCCRE 2015.
 - 3D graphics: [Three.js](https://threejs.org/) (MIT). Formulas: [KaTeX](https://katex.org/) (MIT).
 - The visual approach draws on educational simulators such as the *Rotating Sky Explorer* (NAAP, University of Nebraska–Lincoln). All code, interface and assets were developed independently by USAC.
 

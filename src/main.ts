@@ -20,6 +20,7 @@ import { button, clear, h, setText } from './ui/dom';
 import { bindHintCaption } from './ui/firstHint';
 import { focusLayout, FOCUS_MIN_WIDTH } from './ui/focusLayout';
 import { pencilIcon } from './ui/icons';
+import { flightButton, initFlight, isFlightOpen } from './ui/flight';
 import { dataBar, infoCard } from './ui/infoCard';
 import { locationPanel } from './ui/locationPanel';
 import { bindUiMode, initialUiMode, modeSwitch } from './ui/mode';
@@ -129,6 +130,7 @@ const topbar = h(
     presentBtn,
     button(t('top.reset'), () => confirmReset.open(), { cls: 'btn--top btn--top-reset', icon: '↺', title: t('top.resetTip'), guide: 'reset' }),
     codexButton(store, actions), // Codex (redesign-2 C)
+    flightButton(), // «Bay vào vũ trụ»
     button(t('top.help'), () => dialogs.help(), { cls: 'btn--top btn--top-aux', icon: '?', title: t('top.helpTip'), guide: 'help' }),
     button(t('top.about'), () => dialogs.about(), { cls: 'btn--top btn--top-aux', icon: 'i', title: t('top.aboutTip'), guide: 'about' }),
   ),
@@ -469,6 +471,8 @@ const loop = startFrameLoop({
   quality,
 });
 mountQualityNotice(quality, app);
+// «Bay vào vũ trụ»: hai khung nhìn chính ngừng vẽ trong lúc bay (hộp thoại che kín chúng).
+initFlight({ store, suspend: (on) => loop.suspend('flight', on) });
 
 // ---------------------------------------------------------------- Chế độ Cơ bản / Đầy đủ (redesign-2 R2)
 // Cơ bản chỉ có giản đồ chân trời: tắt trình chiếu, đóng ngăn Ôn tập, chọn thẻ "Giản đồ chân trời" (để thiên cầu
@@ -529,7 +533,7 @@ const ARROW_OWNERS = '[role=tablist],[role=slider],[role=radiogroup]';
 window.addEventListener('keydown', (e) => {
   // Ưu tiên Esc: 1) hộp thoại gốc, kể cả Codex (trình duyệt tự đóng) → 2) lời chào / chế độ giải thích của
   // Usui-chan → 3) ngăn Ôn tập → 4) bỏ chọn.
-  if (e.ctrlKey || e.metaKey || e.altKey || dialogs.isOpen() || isCodexOpen() || confirmReset.isOpen()) return;
+  if (e.ctrlKey || e.metaKey || e.altKey || dialogs.isOpen() || isCodexOpen() || isFlightOpen() || confirmReset.isOpen()) return;
   const target = e.target instanceof HTMLElement ? e.target : null;
   // Tính "đang gõ" TRƯỚC khi xử lý Esc: Esc trong ô nhập không được bỏ chọn hay đóng ngăn.
   const typing = !!target && (!!target.closest('input,select,textarea') || target.isContentEditable || target.getAttribute('role') === 'slider');

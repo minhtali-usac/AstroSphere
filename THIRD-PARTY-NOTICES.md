@@ -8,9 +8,16 @@ giấy phép MIT trong `LICENSE` và CC BY-NC-SA 4.0 trong `LICENSE-CONTENT.md` 
 | [d3-celestial](https://github.com/ofrohn/d3-celestial) (Olaf Frohn); dữ liệu sao gốc từ HYG Database | `src/data/generated/*.json`: danh mục sao, đường nối chòm sao, thiên thể sâu | BSD-3-Clause (toàn văn bên dưới) |
 | [Natural Earth](https://www.naturalearthdata.com/) qua gói [world-atlas](https://github.com/topojson/world-atlas) | Đường bờ lục địa của bản đồ chọn vị trí | Phạm vi công cộng (dữ liệu); ISC (gói world-atlas) |
 | Wikipedia tiếng Việt, bài «Danh sách chòm sao» | Tên chòm sao tiếng Việt | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.vi) |
+| Thị sai Hipparcos, bản xử lý mới (van Leeuwen 2007, A&A 474, 653; danh mục I/311), qua CDS VizieR | `src/data/fetched/hip-parallax.json`: khoảng cách sao cho chế độ «Bay vào vũ trụ» | Dữ liệu khoa học công khai; trích dẫn nguồn |
+| NASA Exoplanet Archive, bảng Planetary Systems Composite Parameters (DOI 10.26133/NEA13) | `src/data/fetched/exoplanets.json`: ngoại hành tinh đã xác nhận | Dữ liệu công khai; lời ghi nhận bên dưới |
+| JPL "Approximate Positions of the Planets" (Standish); Meeus, "Astronomical Algorithms", chương 47; NASA NSSDCA Planetary Fact Sheets; IAU WGCCRE 2015 | Vị trí và tính chất hành tinh, Mặt Trăng | Công thức và số liệu đã công bố; trích dẫn nguồn |
 | [Three.js](https://threejs.org/) | Đồ họa 3D | MIT |
 | [KaTeX](https://katex.org/) | Hiển thị công thức | MIT |
 | [astronomy-engine](https://github.com/cosinekitty/astronomy) | Chỉ dùng trong unit test để kiểm chứng phép tính | MIT |
+
+## NASA Exoplanet Archive
+
+This research has made use of the NASA Exoplanet Archive, which is operated by the California Institute of Technology, under contract with the National Aeronautics and Space Administration under the Exoplanet Exploration Program.
 
 ## d3-celestial (BSD-3-Clause)
 

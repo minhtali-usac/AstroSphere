@@ -19,6 +19,7 @@ Read this file before changing code. The product brief is `brief_mo_phong_he_toa
 | `npm run build` | `tsc --noEmit` followed by `vite build` into `dist/`. Must pass before every commit |
 | `npm run preview` | Serve `dist/` |
 | `npm run data` | Regenerate `src/data/generated/*.json` from npm packages. **Never hand-edit the generated JSON.** |
+| `npm run fetch-sky` | Network fetch of Hipparcos parallaxes (CDS VizieR, I/311) and confirmed exoplanets (NASA Exoplanet Archive, `pscomppars`) into `src/data/fetched/*.json`. Validates before writing; `meta.retrieved` changes only when the data changes. **Never hand-edit the fetched JSON.** `.github/workflows/refresh-sky-data.yml` runs it every Monday and opens a PR on change (the repo setting "Allow GitHub Actions to create and approve pull requests" must be on). The deploy workflow never fetches. |
 | `node docs/redesign/uat/<name>.mjs` | Browser acceptance checks |
 
 The browser acceptance checks:
@@ -70,6 +71,12 @@ The browser acceptance checks:
 - Keys built at runtime (template strings) are invisible to that test. Any new dynamic key family needs its own unit test that checks every generated key exists.
 - **Usui-chan's explanations** (`src/guide/`, see `docs/redesign-2/guide.md`): every interactive control carries `data-guide="<key>"`, and its text is `guide.tip.<key>` in `vi.json`. Write the key as a literal (`'data-guide': '<key>'`, `guide: '<key>'` or `guide('<key>', el)` from `ui/dom.ts`); `src/guide/guide.test.ts` collects them and fails on a missing string, an orphan string or a new non-literal assignment. A new control needs a key and a tip of at most two sentences.
 - **Thử thách SGK** (`src/games/`) is a separate lazy chunk opened from its own tile in the USACodex nav: ten interactive activities for Bài 4 and Bài 5 of the textbook topic «Trái Đất và Bầu Trời». It only reads app data (stars, constellation figures) and never changes the simulation state. Its strings live in `src/i18n/games.vi.json` (same banned-word rule, enforced by `src/games/games.test.ts`) and its styles in `src/games/games.css` (tokens only; its colours are the `--sgk-*` tokens in `:root`).
+- **«Bay vào vũ trụ»** (`src/scene/flight/`, lazy chunk `scene/flight/boot.ts`, opened by `openFlight()` in `src/ui/flight.ts`):
+  - Strings needed before the chunk loads (button, dialog title, guide tips) live in `vi.json` (`top.flight*`, `info.fly*`, `flight.*`, `guide.tip.flight*`). Everything else lives in `src/i18n/flight.vi.json`, read with `ft()` from `src/scene/flight/text.ts`; `src/scene/flight/text.test.ts` applies the banned-word rule and checks every literal and dynamic key family.
+  - Positions are 64-bit km in J2000 equatorial coordinates with the Sun at the origin; the camera stays at (0,0,0) (floating origin, `origin.ts`) and the renderer uses a logarithmic depth buffer. Planet positions: `src/astro/planets.ts` (JPL Keplerian elements, Meeus Moon), tested against astronomy-engine.
+  - Every value that is not a measurement carries a tag in the info panel: «ước tính» (derived) or «ứng dụng tự chọn» (no data; chosen by the app, e.g. exoplanet orbit orientation, seeded from the name). Surfaces and colours are illustrations; only Earth's continents are data.
+  - While it is open the two main views are suspended (`loop.suspend('flight', …)`); it runs its own rAF loop and quality controller and disposes its WebGL context on close.
+  - Dev hook `window.__flight` (the `FlightView`). Browser check: `node docs/redesign/uat/flight.mjs` against the dev server (`UAT_URL`, `PLAYWRIGHT` env vars).
 - **USACodex** is the user-facing name of the codex (the code, file names and storage key keep `codex`). Its content lives in a second file, `src/i18n/codex.vi.json` (categories, entries, diagram labels). Only the lazy codex chunk (`src/codex/ui.ts`) imports it, so it never enters the entry chunk. The Codex interface strings stay in `vi.json` under `codexUi`.
   - `src/codex/codex.test.ts` applies the same banned-word rule and KaTeX check to it, and checks that every entry has a title, lede and body, that every `related` id, discovery-trigger id, `termLink` id and "Xem trong mô phỏng" action resolves to an entry.
   - Celestial object names (Polaris, Ursa Major, M31…) stay in English; give the Vietnamese name in the text.
@@ -91,6 +98,7 @@ The brand comes from the club site https://web-usac.vercel.app/.
 ## Performance budgets
 
 - Entry JS must stay at or below 90 kB gzip. three.js loads only through `import('./scene/boot')`.
+- The flight-mode chunk stays at or below 35 kB gzip and its fetched data at or below 25 kB gzip (both excluding three.js). `docs/redesign/uat/bundle-size.mjs` enforces all three budgets.
 - Nothing in `update()` or `frame()` may allocate: no `new`, `clone()`, or array literals there. Use scratch objects.
 - Playback must create no new `LineGeometry` and call no `createBuffer`. Update dynamic lines in place with `writeFatLine`.
 - DOM writes during playback are capped at about 15 Hz (the frame loop's `onUiTick`). Write a cell only when its value changed.

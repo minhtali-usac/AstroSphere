@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "data": "node scripts/build-data.mjs"
+    "data": "node scripts/build-data.mjs",
+    "fetch-sky": "node scripts/fetch-sky-data.mjs"
   },
   "license": "MIT",
   "dependencies": {

@@ -42,6 +42,7 @@ AstroSphere giúp người học hình thành trực giác về ba điều:
 | 🔗 **Liên kết số ↔ hình** | Rê chuột vào một con số thì phần hình tương ứng sáng lên ở cả hai khung, và ngược lại. |
 | 📖 **USACodex** | Sổ tay 44 mục trong 7 danh mục, "mở khóa" dần khi bạn gặp khái niệm trong mô phỏng. |
 | 🎮 **Thử thách SGK** | 10 hoạt động tương tác theo Bài 4 và Bài 5, chuyên đề «Trái Đất và Bầu Trời». Giáo viên chọn hoạt động, cuối buổi có bảng điểm. |
+| 🚀 **Bay vào vũ trụ** | Rời Trái Đất, bay tới Mặt Trời, tám hành tinh, Mặt Trăng, khoảng 1.300 sao và 60 ngoại hành tinh đã xác nhận, ở đúng vị trí và khoảng cách thật. |
 | ✏️ **Ôn tập** | 12 nhiệm vụ có gợi ý, giải thích và chấm điểm. |
 | 🖥️ **Trình chiếu** | Phím `F`: toàn màn hình, nét dày, nhãn lớn cho máy chiếu. |
 | 💬 **Usui-chan** | Linh vật của CLB giải thích từng nút bấm khi bạn rê chuột hoặc chạm vào. |
@@ -78,6 +79,8 @@ AstroSphere giúp người học hình thành trực giác về ba điều:
 
 **Thẻ thông tin.** α, δ, H, A, h, trạng thái (cận cực / mọc – lặn / không mọc), LST và phương vị lúc mọc, qua kinh tuyến, lặn, thời gian ở trên chân trời.
 
+**Bay vào vũ trụ.** Nút trên thanh trên cùng ở chế độ Đầy đủ, hoặc «Bay tới» trong thẻ thông tin của một sao. Chuyến bay bắt đầu phía trên nơi người quan sát đứng, với trục Trái Đất chỉ về Polaris; bay ra xa, các sao của một chòm tách ra ở những khoảng cách khác nhau. Thiên thể vẽ đa giác thấp, hình dạng và màu là minh họa theo loại. Mọi giá trị không phải số đo đều có nhãn «ước tính» hoặc «ứng dụng tự chọn» (ví dụ hướng mặt phẳng quỹ đạo của ngoại hành tinh). Điều khiển: kéo để xoay quanh, cuộn hoặc chụm để lại gần, bấm đúp để bay tới, `W` `A` `S` `D` `R` `F` để bay tự do, `Esc` để dừng chuyến bay rồi về Trái Đất.
+
 **Phím tắt.** `Dấu cách` chạy/dừng · `←` `→` lùi/tiến 1 giờ · `+` `−` tốc độ · `N` bây giờ · `V` đặt lại vết · `C` đặt lại góc nhìn · `L` Ôn tập · `F` Trình chiếu · `H` trợ giúp · `Esc` đóng hoặc bỏ chọn. (`L` và `F` chỉ dùng ở chế độ Đầy đủ.)
 
 ## Độ chính xác
@@ -113,6 +116,7 @@ npm run dev
 | `npm run build` | Kiểm tra kiểu (`tsc`) rồi đóng gói vào `dist/` |
 | `npm run preview` | Xem thử bản đã đóng gói |
 | `npm run data` | Tạo lại dữ liệu sao, chòm sao, lục địa trong `src/data/generated/` |
+| `npm run fetch-sky` | Lấy lại thị sai Hipparcos (CDS VizieR) và danh sách ngoại hành tinh (NASA Exoplanet Archive) vào `src/data/fetched/`. Cần mạng; chạy tự động mỗi thứ Hai bằng `.github/workflows/refresh-sky-data.yml` và mở PR khi dữ liệu đổi |
 
 Mỗi lần đẩy lên nhánh `main`, GitHub Actions tự triển khai lên GitHub Pages (`.github/workflows/deploy.yml`).
 
@@ -138,6 +142,7 @@ src/
   scene/        Three.js (chỉ tải qua scene/boot.ts): frames, skyLayer, horizonLayer, trails,
                 celestialSphere, horizonDiagram, view, declutter (nhãn), emphasis (liên kết số ↔ hình),
                 geom (đường cập nhật tại chỗ), colors (màu ngữ nghĩa, không phụ thuộc three)
+                flight/ (chế độ «Bay vào vũ trụ», gói riêng)
   runtime/      frameLoop (vòng lặp, tạm dừng khi ẩn), quality (chất lượng thích ứng)
   ui/           Bảng điều khiển, bản đồ, thẻ thông tin, tooltip, hộp thoại, Ôn tập, storage, emphasis,
                 mode (Cơ bản | Đầy đủ), simpleControls (dải điều khiển chế độ Cơ bản)
@@ -179,6 +184,9 @@ Mọi góp ý và báo lỗi đều được hoan nghênh: mở [Issue](https://
 - Danh mục sao và đường nối chòm sao: [d3-celestial](https://github.com/ofrohn/d3-celestial) của Olaf Frohn (BSD-3-Clause), dữ liệu gốc từ HYG Database.
 - Đường bờ lục địa: [Natural Earth](https://www.naturalearthdata.com/) (phạm vi công cộng) qua gói `world-atlas` (ISC).
 - Tên chòm sao tiếng Việt: Wikipedia tiếng Việt, bài «Danh sách chòm sao» (CC BY-SA 4.0).
+- Khoảng cách sao: thị sai Hipparcos, bản xử lý mới (van Leeuwen 2007, A&A 474, 653; danh mục I/311), qua CDS VizieR.
+- Ngoại hành tinh: NASA Exoplanet Archive, bảng Planetary Systems Composite Parameters (DOI 10.26133/NEA13). This research has made use of the NASA Exoplanet Archive, which is operated by the California Institute of Technology, under contract with the National Aeronautics and Space Administration under the Exoplanet Exploration Program.
+- Vị trí hành tinh: JPL "Approximate Positions of the Planets" (Standish); Mặt Trăng: Meeus, "Astronomical Algorithms", chương 47. Tính chất hành tinh: NASA NSSDCA Planetary Fact Sheets; hướng trục quay: IAU WGCCRE 2015.
 - Đồ họa 3D: [Three.js](https://threejs.org/) (MIT). Công thức: [KaTeX](https://katex.org/) (MIT).
 - Có tham khảo cách tiếp cận trực quan của *Rotating Sky Explorer* (NAAP, Đại học Nebraska–Lincoln). Toàn bộ mã nguồn, giao diện và tài nguyên do USAC phát triển độc lập.
 
