@@ -9,7 +9,8 @@ import { calendarOf, calendarToJd, deltaTUncertainty, equinoxShiftDeg, jdToCalen
 import { fmtDeg, fmtHMS, fmtLat, fmtLon, fmtNum, parseNum } from '../astro/format';
 import { catalogArrays, getCatalogStar } from '../data/catalog';
 import { loadAllFigures } from '../data/constellations';
-import { MOTION_SOURCE } from '../data/motion';
+import { CURATED, MOTION_SOURCE } from '../data/motion';
+import type { HistoryDome } from '../scene/history/dome';
 import type { Store } from '../state';
 import { button, checkbox, guide, h, setText } from '../ui/dom';
 import { computeBodies, type BodyState } from './bodies';
@@ -17,7 +18,7 @@ import { catalogStars, momentOf, nearestToPole, sunStateOf, StarSet, type Moment
 import { PoleChart } from './poleChart';
 import { OLD_PLACES, PRESETS, VN, YEAR_MAX, YEAR_MIN, type Preset } from './presets';
 import { fmt, H, num } from './text';
-import { SkyView, type FigureLines, type Layers, type Pick, type Scene } from './view';
+import { skyColors, SkyView, type FigureLines, type Layers, type Pick, type Scene, type ViewHandlers } from './view';
 
 export interface StartOpts {
   dialog: HTMLDialogElement;
@@ -103,8 +104,11 @@ export function startHistory(o: StartOpts): HistorySession {
   const canvas = h('canvas', { class: 'hsky-canvas', role: 'img', 'aria-label': H.view.aria });
   const tip = h('div', { class: 'hsky-tip', role: 'presentation', hidden: true });
   const summary = h('p', { class: 'sr-only', 'aria-live': 'polite' });
-  const stage = guide('historyView', h('div', { class: 'hsky-stage' }, canvas, tip));
-  const view = new SkyView(canvas, {
+  const glHost = h('div', { class: 'hsky-gl3d', hidden: true });
+  const stage = guide('historyView', h('div', { class: 'hsky-stage' }, canvas, glHost, tip));
+  let dome: HistoryDome | null = null;
+  let mode: '3d' | '2d' = '2d';
+  const handlers: ViewHandlers = {
     onHover(p, x, y) {
       if (!p) {
         tip.hidden = true;
@@ -119,7 +123,8 @@ export function startHistory(o: StartOpts): HistorySession {
       selected = p;
       render();
     },
-  });
+  };
+  const view = new SkyView(canvas, handlers);
 
   function pickName(p: Pick, withMag: boolean): string {
     if (p.kind === 'body') return H.bodies[p.id];
@@ -379,7 +384,7 @@ export function startHistory(o: StartOpts): HistorySession {
     h('legend', { text: H.sec.fixes }),
     fPrec,
     fMotion,
-    MOTION_SOURCE === 'curated' ? h('p', { class: 'hsky-note', text: H.fix.motionCurated }) : null,
+    MOTION_SOURCE === 'curated' ? h('p', { class: 'hsky-note', text: fmt(H.fix.motionCurated, { n: CURATED.length }) }) : null,
     fDt,
   );
 
@@ -499,8 +504,16 @@ export function startHistory(o: StartOpts): HistorySession {
 
   const notes = h('details', { class: 'hsky-notes' }, h('summary', { text: H.notes.title }), h('p', { text: H.notes.body }));
 
+  const main = h('div', { class: 'hsky-main' }, stage, summary);
+  // Kiểu hiển thị: khối 3D (giống giản đồ chân trời ngoài trang chính) hoặc bản đồ phẳng.
+  const btn3d = button(H.view.mode3d, () => setMode('3d'), { cls: 'btn--small' });
+  const btn2d = button(H.view.mode2d, () => setMode('2d'), { cls: 'btn--small' });
+  const btnCam = button(H.view.camera, () => dome?.resetCamera(), { cls: 'btn--small btn--ghost', guide: 'historyCamera' });
+  const modeBar = guide('historyMode', h('div', { class: 'hsky-modes', role: 'group', 'aria-label': H.view.modeAria }, btn3d, btn2d, btnCam));
+  btn3d.disabled = true; // bật khi cảnh 3D dựng xong
+  main.append(modeBar);
   const side = h('div', { class: 'hsky-side' }, presetBox, timeBox, placeBox, fixBox, readout, selBox, poleBox, layerBox, notes);
-  const layout = h('div', { class: 'hsky' }, h('div', { class: 'hsky-main' }, stage, summary), side);
+  const layout = h('div', { class: 'hsky' }, main, side);
   o.host.replaceChildren(layout);
 
   // ------------------------------------------------------------ Vẽ
@@ -527,7 +540,10 @@ export function startHistory(o: StartOpts): HistorySession {
     }
     const pole = nearestToPole(stars, m, s.motion, cat.mag);
     const scene: Scene = { m, lat: s.lat, stars, figures, bodies, layers, marker: mk, poleStar: pole.index, selected };
-    view.draw(scene);
+    if (mode === '3d' && dome) {
+      dome.setBackground(skyColors(bodies[0] ? bodies[0].alt : -90)[0]);
+      dome.draw(scene);
+    } else view.draw(scene);
     chart.draw(stars, m, s.motion, s.year, pole.index);
     readoutUpdate(m, pole);
     selectedUpdate(m);
@@ -621,6 +637,7 @@ export function startHistory(o: StartOpts): HistorySession {
     canvas.style.width = `${size}px`;
     canvas.style.height = `${size}px`;
     view.resize(size, size);
+    dome?.resize(r.width, r.height);
     const pw = Math.floor(poleCanvas.parentElement?.getBoundingClientRect().width ?? 240);
     chart.resize(Math.min(300, pw));
     poleCanvas.style.width = `${Math.min(300, pw)}px`;
@@ -635,6 +652,41 @@ export function startHistory(o: StartOpts): HistorySession {
   syncPlay();
   fit();
   render();
+
+  function setMode(m: '3d' | '2d'): void {
+    if (m === '3d' && !dome) return;
+    mode = m;
+    canvas.hidden = m === '3d';
+    glHost.hidden = m !== '3d';
+    tip.hidden = true;
+    btn3d.setAttribute('aria-pressed', String(m === '3d'));
+    btn2d.setAttribute('aria-pressed', String(m === '2d'));
+    btnCam.hidden = m !== '3d';
+    fit();
+  }
+  btn3d.setAttribute('aria-pressed', 'false');
+  btn2d.setAttribute('aria-pressed', 'true');
+  btnCam.hidden = true;
+
+  // Cảnh 3D: tải lười (dùng chung gói three.js với trang chính). Dựng xong thì chuyển sang 3D, trừ khi trình duyệt không
+  // có WebGL — khi đó giữ bản đồ phẳng.
+  void import('../scene/history/dome')
+    .then((m) => {
+      if (disposed) return;
+      try {
+        dome = new m.HistoryDome(glHost, handlers);
+      } catch (e) {
+        console.warn(e);
+        btn3d.hidden = true;
+        btnCam.hidden = true;
+        return;
+      }
+      btn3d.disabled = false;
+      setMode('3d');
+    })
+    .catch(() => {
+      btn3d.hidden = true;
+    });
 
   // Hình 88 chòm sao: tải lười (≈ 29 kB), vẽ lại khi có.
   void loadAllFigures().then((map) => {
@@ -664,6 +716,7 @@ export function startHistory(o: StartOpts): HistorySession {
       window.clearInterval(playTimer);
       cancelAnimationFrame(raf);
       ro.disconnect();
+      dome?.dispose();
       o.host.replaceChildren();
     },
   };

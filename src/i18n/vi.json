@@ -30,7 +30,7 @@
     "flight": "Bay vào vũ trụ",
     "flightTip": "Bay tới các hành tinh, các sao và hành tinh quanh sao khác, ở đúng vị trí và khoảng cách thật",
     "history": "Bầu trời xưa",
-    "historyTip": "Chọn nơi và ngày trong quá khứ để xem bầu trời người xưa đã thấy: có tính tuế sai, chuyển động riêng của sao và Trái Đất quay chậm dần"
+    "historyTip": "Chọn một nơi và một ngày trong quá khứ để xem bầu trời người xưa đã thấy"
   },
   "pwa": {
     "install": "⬇ Cài AstroSphere về máy (dùng được khi không có mạng)",
@@ -782,9 +782,9 @@
       "flightLines": "Hiện hoặc ẩn đường nối chòm sao. Bay ra xa Mặt Trời, các đường này méo đi vì các sao ở những khoảng cách khác nhau.",
       "flightForward": "Giữ để bay về phía trước. Càng xa các thiên thể, tốc độ càng lớn.",
       "flightBack": "Giữ để lùi lại.",
-      "history": "Quay về quá khứ (hoặc tới tương lai): chọn nơi và ngày để xem bầu trời người xưa đã thấy, có tính tuế sai của trục Trái Đất, chuyển động riêng của sao và việc Trái Đất quay chậm dần.",
+      "history": "Quay về quá khứ để ngước lên bầu trời như người xưa: chọn nơi, ngày và giờ, bạn sẽ thấy sao Bắc Cực, các chòm sao và cả Mặt Trăng của thời đó.",
       "historyClose": "Đóng «Bầu trời xưa» và trở về mô phỏng. Phím Esc cũng làm được việc này.",
-      "historyView": "Bầu trời nhìn lên từ mặt đất: phía Bắc ở trên, phía Đông ở bên trái. Rê chuột hoặc chạm vào một ngôi sao để xem tên, bấm để xem chi tiết.",
+      "historyView": "Kéo để xoay quanh bầu trời, cuộn để lại gần hay ra xa. Rê chuột vào một ngôi sao để xem tên, bấm để xem chi tiết.",
       "historyPresets": "Nhảy tới một thời điểm lịch sử: nơi, ngày và giờ đã được đặt sẵn.",
       "historyYear": "Gõ năm và chọn TCN (trước Công nguyên) hoặc SCN (sau Công nguyên). Trước năm 1582 dùng lịch Julius, từ đó dùng lịch Gregory.",
       "historySlider": "Kéo để lùi hoặc tiến năm. Bầu trời đổi theo ngay: các sao dịch chỗ và cực Bắc thiên cầu dời sang sao khác.",
@@ -800,7 +800,9 @@
       "historyLayers": "Bật tắt đường nối chòm sao, tên sao, hoàng đạo, xích đạo trời và các thiên thể trong hệ Mặt Trời.",
       "historyDaylight": "Bình thường ban ngày không thấy sao. Chọn để hiện cả sao lúc trời sáng, tiện khi muốn xem trọn bầu trời.",
       "historyPole": "Đường chấm là quỹ đạo của cực Bắc thiên cầu quanh cực hoàng đạo, mất gần 26 000 năm một vòng. Chấm cam là cực ở thời điểm đã chọn.",
-      "historyReadout": "Các con số của thời điểm này: ngày lịch, ΔT, sao gần cực nhất, độ nghiêng trục và pha Mặt Trăng."
+      "historyReadout": "Các con số của thời điểm này: ngày lịch, sao Bắc Cực lúc đó, độ nghiêng trục Trái Đất và pha Mặt Trăng.",
+      "historyMode": "Đổi giữa khối 3D giống giản đồ chân trời ngoài trang chính và bản đồ phẳng nhìn thẳng lên trời.",
+      "historyCamera": "Đưa góc nhìn 3D về chỗ ban đầu."
     }
   },
   "flight": {
@@ -814,7 +816,7 @@
   },
   "history": {
     "title": "Bầu trời xưa",
-    "hint": "Chọn nơi và ngày để xem bầu trời người xưa đã thấy · tuế sai, chuyển động riêng của sao và ΔT đều được tính",
+    "hint": "Chọn nơi và ngày, rồi ngước lên như người xưa từng ngước · kéo để xoay, cuộn để lại gần",
     "close": "Về hiện tại",
     "closeTip": "Đóng «Bầu trời xưa» và trở lại mô phỏng (Esc)",
     "wait": "Đang dựng bầu trời xưa…",
