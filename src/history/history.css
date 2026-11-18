@@ -327,3 +327,145 @@
   flex: 1 1 130px;
   min-width: 0;
 }
+
+/* Phần giới thiệu: thẻ nổi giữa hộp thoại, bầu trời vẫn quay phía sau. */
+.hsky {
+  position: relative;
+}
+
+.hsky-introbtn {
+  position: absolute;
+  left: var(--space-3);
+  top: var(--space-3);
+  z-index: 3;
+}
+
+.hsky-intro {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  overflow-y: auto;
+  background: var(--scrim);
+}
+
+.hsky-intro__card {
+  width: min(640px, 100%);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: var(--space-5);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-pop);
+}
+
+.hsky-intro__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hsky-intro__face {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border: 2px solid var(--border-control);
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.hsky-intro__kicker {
+  margin: 0;
+  font-size: 13px;
+  color: var(--accent-hi);
+}
+
+.hsky-intro__title {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.hsky-intro__title:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.hsky-intro__lede {
+  margin: var(--space-3) 0 var(--space-4);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-quiet);
+}
+
+.hsky-intro__why,
+.hsky-intro__how {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+
+.hsky-intro__why li {
+  display: grid;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.hsky-intro__why li span {
+  color: var(--text-quiet);
+}
+
+.hsky-intro__how li {
+  position: relative;
+  padding-left: var(--space-4);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-quiet);
+}
+
+.hsky-intro__how li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.hsky-intro__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+  .hsky-introbtn {
+    top: auto;
+    bottom: var(--space-3);
+  }
+}
+
+/* Nhãn CSS2D của cảnh 3D tự đặt z-index theo độ sâu: nhốt chúng trong khung nhìn để không chui lên trên thẻ giới thiệu. */
+.hsky-main {
+  z-index: 0;
+}
+
+.hsky-intro__actions {
+  position: sticky;
+  bottom: calc(-1 * var(--space-5));
+  margin: 0 calc(-1 * var(--space-5)) calc(-1 * var(--space-5));
+  padding: var(--space-3) var(--space-5);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}

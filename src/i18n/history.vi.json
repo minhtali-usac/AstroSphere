@@ -1,6 +1,34 @@
 {
   "era": { "bc": "TCN", "ad": "SCN", "bcAria": "trước Công nguyên", "adAria": "sau Công nguyên" },
   "cal": { "julian": "lịch Julius", "gregorian": "lịch Gregory" },
+  "intro": {
+    "kicker": "Usui-chan xin chào!",
+    "title": "Chào mừng đến Bầu trời xưa",
+    "lede": "Bầu trời bạn thấy tối nay không giống bầu trời của người xây Kim tự tháp, của Hipparchus hay của người Việt cổ. Ở đây, bạn chọn một nơi và một ngày, rồi ngước lên như họ từng ngước.",
+    "whyTitle": "Vì sao bầu trời đổi theo năm tháng?",
+    "why": [
+      {
+        "title": "Trục Trái Đất đổi hướng",
+        "body": "Trục Trái Đất xoay chậm như con quay, gần 25 800 năm một vòng (tuế sai). Hơn 4 500 năm trước, sao Bắc Cực là Thuban chứ không phải Polaris."
+      },
+      {
+        "title": "Các sao tự di chuyển",
+        "body": "Ngôi sao nào cũng đang chạy trên bầu trời. Arcturus đã dời hơn một độ so với thời Hipparchus, đủ làm vài chòm sao đổi hình."
+      },
+      {
+        "title": "Trái Đất quay chậm dần",
+        "body": "Mỗi thế kỷ ngày dài thêm chút ít. Đến thời đầu Công nguyên, Trái Đất đã quay trễ gần ba giờ so với đồng hồ đều, nên Mặt Trăng và các hành tinh nằm ở chỗ khác."
+      }
+    ],
+    "howTitle": "Cách khám phá",
+    "how": [
+      "Bấm một thời điểm tiêu biểu để nhảy tới đó, hoặc tự chọn năm, nơi và giờ ở các thẻ bên dưới.",
+      "Kéo để xoay quanh bầu trời, cuộn để lại gần. «Nhìn từ người quan sát» đưa bạn vào đúng chỗ Usui-chan đứng.",
+      "Ở thẻ Hiển thị, thử tắt từng điều thay đổi để thấy bầu trời sẽ ra sao nếu nó không xảy ra.",
+      "Chưa hiểu một nút? Bấm chân dung Usui-chan ở góc, rồi rê chuột vào nút đó."
+    ],
+    "start": "Bắt đầu khám phá"
+  },
   "tabs": { "time": "Thời gian", "place": "Vị trí", "anim": "Hoạt ảnh", "display": "Hiển thị", "data": "Số liệu", "aria": "Chọn bảng điều khiển" },
   "anim": {
     "title": "Hoạt ảnh",
@@ -160,6 +188,7 @@
   "hover": { "star": "{name} · cấp sao {mag}", "unnamed": "Sao HIP {hip} · cấp sao {mag}" },
   "view": {
     "mode3d": "Khối 3D",
+    "intro": "Giới thiệu",
     "firstPerson": "Nhìn từ người quan sát",
     "outside": "Nhìn từ ngoài vào",
     "mode2d": "Bản đồ phẳng",

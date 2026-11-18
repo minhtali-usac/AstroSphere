@@ -52,6 +52,7 @@ The browser acceptance checks:
 | `astrosphere.focus.v1` | sessionStorage | `{data: boolean, panels: boolean}`: whether the Full-mode focus layout (≥ 1101 px) has the data bar and the control panels open (`src/ui/focusLayout.ts`, guard `isFocusState`). Both start closed |
 | `astrosphere.codex.v1` | localStorage | Codex progress `{discovered: string[], read: string[]}` (entry ids); guard `isCodexProgress` in `src/codex/triggers.ts` |
 | `astrosphere.guide.v1` | localStorage | `{hello: true}` once Usui-chan has said her one-time hello (written as soon as it shows); guard `isGuideState` in `src/guide/state.ts`. UATs that do not test the hello pre-set it in their init scripts |
+| `astrosphere.history.v1` | localStorage | `{intro: true}` once «Bầu trời xưa» has shown its welcome card (written as soon as it shows); guard `isHistoryState` in `src/history/index.ts`. The «Giới thiệu» button reopens it. UATs that open the dialog and do not test the card should pre-set it |
 | `astrosphere.sgk.v1` | localStorage | Thử thách SGK (`src/games/`): the teacher's picked activities, options (hints, shuffle, quiz count) and best score per activity; guard `isSgkState` in `src/games/progress.ts` |
 
 ## PWA (install and offline)

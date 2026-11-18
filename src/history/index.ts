@@ -14,15 +14,21 @@ import { WorldMap } from '../ui/worldMap';
 import { catalogArrays, getCatalogStar } from '../data/catalog';
 import { loadAllFigures } from '../data/constellations';
 import { CURATED, MOTION_SOURCE } from '../data/motion';
+import avatarUrl from '../assets/guide/usui-avatar.webp';
 import type { HistoryDome } from '../scene/history/dome';
 import type { Store } from '../state';
 import { button, checkbox, fieldset, guide, h, setText } from '../ui/dom';
+import { isPlainObject, readJson, writeJson } from '../ui/storage';
 import { computeBodies, type BodyState } from './bodies';
 import { catalogStars, momentOf, nearestToPole, sunStateOf, StarSet, type Moment, type Settings } from './model';
 import { PoleChart } from './poleChart';
 import { OLD_PLACES, PRESETS, YEAR_MAX, YEAR_MIN, type Preset } from './presets';
 import { fmt, H, num } from './text';
 import { skyColors, SkyView, type FigureLines, type Layers, type Pick, type Scene, type ViewHandlers } from './view';
+
+/** Lần đầu vào «Bầu trời xưa» thì hiện phần giới thiệu; sau đó chỉ hiện khi bấm «Giới thiệu». */
+export const HISTORY_STORAGE_KEY = 'astrosphere.history.v1';
+const isHistoryState = (v: unknown): v is { intro: boolean } => isPlainObject(v) && typeof v.intro === 'boolean';
 
 export interface StartOpts {
   dialog: HTMLDialogElement;
@@ -635,6 +641,8 @@ export function startHistory(o: StartOpts): HistorySession {
   btnFp.setAttribute('aria-pressed', 'false');
   const btnCam = button(H.view.camera, () => dome?.resetCamera(), { cls: 'btn--small btn--ghost', guide: 'historyCamera' });
   const modeBar = guide('historyMode', h('div', { class: 'hsky-modes', role: 'group', 'aria-label': H.view.modeAria }, btn3d, btn2d, btnFp, btnCam));
+  const btnIntro = button(H.view.intro, () => showIntro(), { cls: 'btn--small btn--ghost hsky-introbtn', guide: 'historyIntro' });
+  main.append(btnIntro);
   btn3d.disabled = true; // bật khi cảnh 3D dựng xong
   main.append(modeBar);
   // ------------------------------------------------------------ Các bảng điều khiển (thẻ giống trang chính)
@@ -682,7 +690,47 @@ export function startHistory(o: StartOpts): HistorySession {
   }
   roving = rovingTabs(tabList, (tab) => selectTab(tab.dataset.tab!));
   const side = h('div', { class: 'hsky-side' }, tabList, ...panelList.map((p) => p[2]));
-  const layout = h('div', { class: 'hsky' }, main, side);
+  // ------------------------------------------------------------ Phần giới thiệu
+  let introOpen = false;
+  const introStart = button(H.intro.start, () => hideIntro(), { cls: 'btn--primary' });
+  const intro = h(
+    'section',
+    { class: 'hsky-intro', role: 'region', 'aria-labelledby': 'hsky-intro-h', hidden: true },
+    h(
+      'div',
+      { class: 'hsky-intro__card' },
+      h(
+        'div',
+        { class: 'hsky-intro__head' },
+        h('img', { class: 'hsky-intro__face', src: avatarUrl, alt: '', width: 56, height: 56, decoding: 'async' }),
+        h('div', null, h('p', { class: 'hsky-intro__kicker', text: H.intro.kicker }), h('h2', { id: 'hsky-intro-h', class: 'hsky-intro__title', tabindex: '-1', text: H.intro.title })),
+      ),
+      h('p', { class: 'hsky-intro__lede', text: H.intro.lede }),
+      h('h3', { class: 'hsky-h', text: H.intro.whyTitle }),
+      h('ul', { class: 'hsky-intro__why', role: 'list' }, ...H.intro.why.map((w) => h('li', null, h('strong', { text: w.title }), h('span', { text: w.body })))),
+      h('h3', { class: 'hsky-h', text: H.intro.howTitle }),
+      h('ul', { class: 'hsky-intro__how' }, ...H.intro.how.map((x) => h('li', { text: x }))),
+      h('div', { class: 'hsky-intro__actions' }, introStart),
+    ),
+  );
+  function showIntro(): void {
+    introOpen = true;
+    intro.hidden = false;
+    main.inert = true;
+    side.inert = true;
+    writeJson(HISTORY_STORAGE_KEY, { intro: true });
+    (intro.querySelector('#hsky-intro-h') as HTMLElement).focus({ preventScroll: true });
+    intro.scrollTop = 0;
+  }
+  function hideIntro(): void {
+    if (!introOpen) return;
+    introOpen = false;
+    intro.hidden = true;
+    main.inert = false;
+    side.inert = false;
+    btnIntro.focus({ preventScroll: true });
+  }
+  const layout = h('div', { class: 'hsky' }, main, side, intro);
   o.host.replaceChildren(layout);
 
   // ------------------------------------------------------------ Vẽ
@@ -822,6 +870,7 @@ export function startHistory(o: StartOpts): HistorySession {
   syncPlay();
   fit();
   render();
+  if (!readJson(HISTORY_STORAGE_KEY, isHistoryState, { intro: false }).intro) showIntro();
   // Bầu trời tự quay khi mở (như trang chính); người dùng bật giảm chuyển động thì không tự chạy.
   if (!reduced) togglePlay();
 
@@ -884,8 +933,12 @@ export function startHistory(o: StartOpts): HistorySession {
   });
 
   return {
-    // Bầu trời tự quay nên Esc đóng thẳng hộp thoại (không phải bấm hai lần).
-    escape: () => false,
+    // Esc: đóng phần giới thiệu nếu đang mở; nếu không, hộp thoại đóng thẳng (bầu trời tự quay, không cần dừng trước).
+    escape: () => {
+      if (!introOpen) return false;
+      hideIntro();
+      return true;
+    },
     dispose() {
       disposed = true;
       playDir = 0;
