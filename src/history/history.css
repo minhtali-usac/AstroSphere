@@ -469,3 +469,16 @@
   background: var(--surface);
   border-top: 1px solid var(--border);
 }
+
+.hsky-intro__lede + .hsky-intro__lede {
+  margin-top: calc(-1 * var(--space-2));
+}
+
+.hsky-intro__lede--small {
+  margin: 0 0 var(--space-3);
+  font-size: 13.5px;
+}
+
+.hsky-intro__how li strong {
+  color: var(--text);
+}

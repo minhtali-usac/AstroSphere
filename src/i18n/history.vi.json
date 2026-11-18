@@ -1,35 +1,70 @@
 {
-  "era": { "bc": "TCN", "ad": "SCN", "bcAria": "trước Công nguyên", "adAria": "sau Công nguyên" },
-  "cal": { "julian": "lịch Julius", "gregorian": "lịch Gregory" },
+  "era": {
+    "bc": "TCN",
+    "ad": "SCN",
+    "bcAria": "trước Công nguyên",
+    "adAria": "sau Công nguyên"
+  },
+  "cal": {
+    "julian": "lịch Julius",
+    "gregorian": "lịch Gregory"
+  },
   "intro": {
-    "kicker": "Usui-chan xin chào!",
-    "title": "Chào mừng đến Bầu trời xưa",
-    "lede": "Bầu trời bạn thấy tối nay không giống bầu trời của người xây Kim tự tháp, của Hipparchus hay của người Việt cổ. Ở đây, bạn chọn một nơi và một ngày, rồi ngước lên như họ từng ngước.",
-    "whyTitle": "Vì sao bầu trời đổi theo năm tháng?",
+    "kicker": "Bầu trời xưa",
+    "title": "Khám phá bầu trời qua dòng thời gian",
+    "lede": [
+      "Bầu trời đêm mà chúng ta quan sát ngày nay không hoàn toàn giống với bầu trời của hàng nghìn năm trước. Từ thời những kim tự tháp được xây dựng ở Ai Cập, qua các quan sát thiên văn của Hipparchus, cho đến thời kỳ người Việt cổ quan sát và ghi chép các hiện tượng trên bầu trời, vị trí biểu kiến của các thiên thể đã không ngừng thay đổi.",
+      "Với công cụ này, bạn có thể lựa chọn một địa điểm, một thời điểm trong lịch sử và quan sát bầu trời từ góc nhìn của người sống trong thời đại ấy. Hãy thử trở về quá khứ và khám phá bầu trời mà những thế hệ trước từng nhìn thấy."
+    ],
+    "whyTitle": "Vì sao bầu trời thay đổi theo thời gian?",
+    "whyLede": "Sự biến đổi của bầu trời qua hàng nghìn năm là kết quả của nhiều quá trình thiên văn diễn ra với những thang thời gian khác nhau.",
     "why": [
       {
-        "title": "Trục Trái Đất đổi hướng",
-        "body": "Trục Trái Đất xoay chậm như con quay, gần 25 800 năm một vòng (tuế sai). Hơn 4 500 năm trước, sao Bắc Cực là Thuban chứ không phải Polaris."
+        "title": "Tuế sai trục Trái Đất",
+        "body": "Trục tự quay của Trái Đất không cố định mà chuyển động chậm theo thời gian, tạo thành một chu kỳ tuế sai khoảng 25.772 năm. Vì vậy, vị trí của các thiên cực trên bầu trời cũng thay đổi. Khoảng 4.500 năm trước, Thuban (Alpha Draconis) nằm gần thiên cực Bắc hơn Polaris (Sao Bắc Cực) ngày nay."
       },
       {
-        "title": "Các sao tự di chuyển",
-        "body": "Ngôi sao nào cũng đang chạy trên bầu trời. Arcturus đã dời hơn một độ so với thời Hipparchus, đủ làm vài chòm sao đổi hình."
+        "title": "Chuyển động riêng của các ngôi sao",
+        "body": "Các ngôi sao không đứng yên tuyệt đối trong không gian mà liên tục chuyển động tương đối so với Mặt Trời. Qua hàng nghìn năm, chuyển động này làm thay đổi vị trí biểu kiến và hình dạng tương đối của các chòm sao. Chẳng hạn, Arcturus đã có sự dịch chuyển đáng kể trên thiên cầu kể từ thời Hipparchus."
       },
       {
-        "title": "Trái Đất quay chậm dần",
-        "body": "Mỗi thế kỷ ngày dài thêm chút ít. Đến thời đầu Công nguyên, Trái Đất đã quay trễ gần ba giờ so với đồng hồ đều, nên Mặt Trăng và các hành tinh nằm ở chỗ khác."
+        "title": "Sự biến thiên tốc độ tự quay của Trái Đất",
+        "body": "Tốc độ tự quay của Trái Đất thay đổi theo thời gian, khiến độ dài của ngày không hoàn toàn cố định. Sự khác biệt này tích lũy thành sai lệch giữa thời gian quay thực tế của Trái Đất và thời gian được đo bằng những chiếc đồng hồ đều. Do đó, khi tái dựng bầu trời trong quá khứ, vị trí biểu kiến của Mặt Trăng, Mặt Trời và các hành tinh cũng cần được tính đến sự biến thiên này."
       }
     ],
-    "howTitle": "Cách khám phá",
+    "howTitle": "Hướng dẫn khám phá",
     "how": [
-      "Bấm một thời điểm tiêu biểu để nhảy tới đó, hoặc tự chọn năm, nơi và giờ ở các thẻ bên dưới.",
-      "Kéo để xoay quanh bầu trời, cuộn để lại gần. «Nhìn từ người quan sát» đưa bạn vào đúng chỗ Usui-chan đứng.",
-      "Ở thẻ Hiển thị, thử tắt từng điều thay đổi để thấy bầu trời sẽ ra sao nếu nó không xảy ra.",
-      "Chưa hiểu một nút? Bấm chân dung Usui-chan ở góc, rồi rê chuột vào nút đó."
+      {
+        "title": "Lựa chọn thời điểm",
+        "body": "Sử dụng các mốc thời gian được thiết lập sẵn để nhanh chóng khám phá những giai đoạn lịch sử tiêu biểu, hoặc tự nhập năm, địa điểm và thời gian quan sát theo ý muốn."
+      },
+      {
+        "title": "Điều hướng bầu trời",
+        "body": "Kéo chuột để xoay góc nhìn trên thiên cầu và sử dụng con lăn để phóng to hoặc thu nhỏ vùng quan sát."
+      },
+      {
+        "title": "Thay đổi góc nhìn",
+        "body": "Chế độ Nhìn từ người quan sát cho phép bạn tiếp cận bầu trời theo góc nhìn tại địa điểm và thời điểm đã lựa chọn."
+      },
+      {
+        "title": "Khảo sát các yếu tố thiên văn",
+        "body": "Trong thẻ Hiển thị, bạn có thể bật hoặc tắt từng hiệu ứng để tìm hiểu vai trò của các chuyển động thiên văn đối với sự biến đổi của bầu trời qua thời gian."
+      },
+      {
+        "title": "Tìm hiểu chức năng",
+        "body": "Nếu chưa rõ cách sử dụng một công cụ, hãy nhấn vào chân dung Usui-chan ở góc giao diện, sau đó di chuyển con trỏ đến nút chức năng cần tìm hiểu để xem hướng dẫn."
+      }
     ],
     "start": "Bắt đầu khám phá"
   },
-  "tabs": { "time": "Thời gian", "place": "Vị trí", "anim": "Hoạt ảnh", "display": "Hiển thị", "data": "Số liệu", "aria": "Chọn bảng điều khiển" },
+  "tabs": {
+    "time": "Thời gian",
+    "place": "Vị trí",
+    "anim": "Hoạt ảnh",
+    "display": "Hiển thị",
+    "data": "Số liệu",
+    "aria": "Chọn bảng điều khiển"
+  },
   "anim": {
     "title": "Hoạt ảnh",
     "mode": "Kiểu chạy",
@@ -47,8 +82,20 @@
     "speedValue": "{v} mỗi giây",
     "slow": "Chậm",
     "fast": "Nhanh",
-    "dayRates": ["5 phút", "20 phút", "1 giờ", "3 giờ", "12 giờ"],
-    "yearRates": ["50 năm", "200 năm", "500 năm", "1000 năm", "2500 năm"],
+    "dayRates": [
+      "5 phút",
+      "20 phút",
+      "1 giờ",
+      "3 giờ",
+      "12 giờ"
+    ],
+    "yearRates": [
+      "50 năm",
+      "200 năm",
+      "500 năm",
+      "1000 năm",
+      "2500 năm"
+    ],
     "noteDay": "Bầu trời quay như khi bạn đứng ngắm suốt đêm: sao mọc ở phía Đông, lặn ở phía Tây, các sao gần cực vẽ vòng quanh cực.",
     "noteYears": "Giờ và ngày giữ nguyên, chỉ có năm trôi đi. Hãy nhìn cực Bắc thiên cầu dời sang những ngôi sao khác và hình các chòm sao đổi dần."
   },
@@ -123,7 +170,12 @@
     "jupiter": "Sao Mộc",
     "saturn": "Sao Thổ"
   },
-  "cardinal": { "n": "B", "e": "Đ", "s": "N", "w": "T" },
+  "cardinal": {
+    "n": "B",
+    "e": "Đ",
+    "s": "N",
+    "w": "T"
+  },
   "sunState": {
     "day": "Mặt Trời ở trên chân trời: ban ngày",
     "civil": "Hoàng hôn dân dụng (Mặt Trời dưới chân trời 0–6°)",
@@ -185,7 +237,10 @@
     "label": "Cực hoàng đạo",
     "ticks": "{n} {era}"
   },
-  "hover": { "star": "{name} · cấp sao {mag}", "unnamed": "Sao HIP {hip} · cấp sao {mag}" },
+  "hover": {
+    "star": "{name} · cấp sao {mag}",
+    "unnamed": "Sao HIP {hip} · cấp sao {mag}"
+  },
   "view": {
     "mode3d": "Khối 3D",
     "intro": "Giới thiệu",
