@@ -172,7 +172,7 @@ export function startHistory(o: StartOpts): HistorySession {
   };
 
   /** Áp một phần cài đặt; trả về false (và báo lỗi) nếu ngày không hợp lệ. */
-  function apply(patch: Partial<Settings>, opts: { clamp?: boolean } = {}): boolean {
+  function apply(patch: Partial<Settings>, opts: { clamp?: boolean; fromPlay?: boolean } = {}): boolean {
     const next = { ...s, ...patch };
     next.year = Math.max(YEAR_MIN, Math.min(YEAR_MAX, Math.round(next.year)));
     if (opts.clamp) next.day = clampDay(next.year, next.month, next.day);
@@ -186,6 +186,8 @@ export function startHistory(o: StartOpts): HistorySession {
     }
     err.textContent = '';
     s = next;
+    // Người dùng đổi ngày giờ trong lúc đang chạy: chạy tiếp từ chỗ mới, không kéo về chỗ cũ.
+    if (!opts.fromPlay && playDir) resync();
     syncAll();
     schedule();
     return true;
@@ -235,7 +237,7 @@ export function startHistory(o: StartOpts): HistorySession {
   let playDir = 0;
   let playMode: PlayMode = 'day';
   let dirSign: 1 | -1 = 1;
-  let rateIdx = 2;
+  let rateIdx = 1;
   let playJd = 0;
   let playYearF = 0;
   let playTimer = 0;
@@ -331,13 +333,19 @@ export function startHistory(o: StartOpts): HistorySession {
       playJd += (playDir * DAY_RATES[rateIdx] * dtSec) / 1440;
       const c = jdToCalendar(playJd + 1e-9);
       const mins = Math.floor((c.day - Math.floor(c.day)) * 1440);
-      apply({ year: c.year, month: c.month, day: Math.floor(c.day), hour: Math.floor(mins / 60), minute: mins % 60 });
+      apply({ year: c.year, month: c.month, day: Math.floor(c.day), hour: Math.floor(mins / 60), minute: mins % 60 }, { fromPlay: true });
       return c.year > YEAR_MIN && c.year < YEAR_MAX;
     }
     playYearF += playDir * YEAR_RATES[rateIdx] * dtSec;
     const y = Math.max(YEAR_MIN, Math.min(YEAR_MAX, Math.round(playYearF)));
-    if (y !== s.year) apply({ year: y }, { clamp: true });
+    if (y !== s.year) apply({ year: y }, { clamp: true, fromPlay: true });
     return y > YEAR_MIN && y < YEAR_MAX;
+  }
+
+  /** Lấy lại mốc chạy từ ngày giờ hiện tại. */
+  function resync(): void {
+    playJd = calendarToJd(s.year, s.month, s.day) + (s.hour + s.minute / 60) / 24;
+    playYearF = s.year;
   }
 
   function togglePlay(): void {
@@ -346,14 +354,14 @@ export function startHistory(o: StartOpts): HistorySession {
       return;
     }
     playDir = dirSign;
-    playJd = calendarToJd(s.year, s.month, s.day) + (s.hour + s.minute / 60) / 24;
-    playYearF = s.year;
+    resync();
     syncPlay();
     let last = performance.now();
     const tick = () => {
       if (!playDir || disposed) return;
       const now = performance.now();
-      const ok = stepPlay((now - last) / 1000);
+      // Tối đa 0,1 giây mỗi khung: quay lại từ thẻ nền không bị nhảy cả đêm.
+      const ok = stepPlay(Math.min(0.1, (now - last) / 1000));
       last = now;
       if (!ok) stopPlay();
       else requestAnimationFrame(tick);
@@ -536,13 +544,13 @@ export function startHistory(o: StartOpts): HistorySession {
       const frac = c.day - Math.floor(c.day);
       q = { ...p, year: c.year, month: c.month, day: Math.floor(c.day), hour: Math.floor(frac * 24), minute: Math.floor((frac * 24 - Math.floor(frac * 24)) * 60), lat, lon };
     }
-    stopPlay();
     presetId = p.id;
     marker = p.marker;
     selected = null;
     err.textContent = '';
     placeErr.textContent = '';
     s = { ...s, year: q.year, month: q.month, day: q.day, hour: q.hour, minute: q.minute, lat: q.lat, lon: q.lon };
+    if (playDir) resync();
     syncAll();
     schedule();
   }
@@ -814,6 +822,8 @@ export function startHistory(o: StartOpts): HistorySession {
   syncPlay();
   fit();
   render();
+  // Bầu trời tự quay khi mở (như trang chính); người dùng bật giảm chuyển động thì không tự chạy.
+  if (!reduced) togglePlay();
 
   function setMode(m: '3d' | '2d'): void {
     if (m === '3d' && !dome) return;
@@ -874,7 +884,8 @@ export function startHistory(o: StartOpts): HistorySession {
   });
 
   return {
-    escape: () => stopPlay(),
+    // Bầu trời tự quay nên Esc đóng thẳng hộp thoại (không phải bấm hai lần).
+    escape: () => false,
     dispose() {
       disposed = true;
       playDir = 0;
