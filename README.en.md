@@ -45,6 +45,7 @@ AstroSphere helps learners build intuition for three ideas:
 | 📖 **USACodex** | A 44-entry handbook in 7 categories that unlocks as you meet each concept in the simulation. |
 | 🎮 **Thử thách SGK** (Textbook Challenge) | 10 interactive activities for Lessons 4 and 5 of the Vietnamese physics topic "Earth and Sky". The teacher picks the activities; a scoreboard closes the session. |
 | 🚀 **Bay vào vũ trụ** (Fly into space) | Leave Earth and fly to the Sun, the eight planets, the Moon, about 1,300 stars and 60 confirmed exoplanets, all at their real positions and distances. |
+| ⌛ **Bầu trời xưa** (Sky of the past) | Pick a place and a date from 6001 BC to AD 3000 and see the sky people saw: axial precession, stellar proper motion and the slowing of Earth's rotation (ΔT), each with a switch to compare. Presets include the Great Pyramid, Cổ Loa, Hipparchus and the 1054 guest star. |
 | ✏️ **Ôn tập** (Review) | 12 tasks with hints, explanations and scoring. |
 | 🖥️ **Presentation mode** | Press `F`: full screen, thicker lines and larger labels for a projector. |
 | 💬 **Usui-chan** | The club mascot explains every control when you hover or tap it. |

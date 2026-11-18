@@ -90,3 +90,22 @@ export function orbitIcon(): SVGSVGElement {
   svg.append(planet, orbit);
   return svg;
 }
+
+/** Đồng hồ cát (nút «Bầu trời xưa»): hai nửa tam giác chạm nhau, nét 1,6 px trên khung 16 × 16. */
+export function historyIcon(): SVGSVGElement {
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 16 16');
+  svg.setAttribute('width', '14');
+  svg.setAttribute('height', '14');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  svg.setAttribute('fill', 'none');
+  svg.setAttribute('stroke', 'currentColor');
+  svg.setAttribute('stroke-width', '1.6');
+  svg.setAttribute('stroke-linecap', 'round');
+  svg.setAttribute('stroke-linejoin', 'round');
+  const glass = document.createElementNS(SVG_NS, 'path');
+  glass.setAttribute('d', 'M3.5 2h9M3.5 14h9M4.5 2c0 3.2 2.2 4.4 3.5 6-1.3 1.6-3.5 2.8-3.5 6M11.5 2c0 3.2-2.2 4.4-3.5 6 1.3 1.6 3.5 2.8 3.5 6');
+  svg.append(glass);
+  return svg;
+}

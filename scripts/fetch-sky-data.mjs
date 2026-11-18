@@ -12,6 +12,7 @@ const STARS = join(ROOT, 'src/data/generated/stars.json');
 const OUT_DIR = join(ROOT, 'src/data/fetched');
 const OUT_PLX = join(OUT_DIR, 'hip-parallax.json');
 const OUT_EXO = join(OUT_DIR, 'exoplanets.json');
+const OUT_PM = join(OUT_DIR, 'hip-motion.json');
 
 const VIZIER = 'https://tapvizier.cds.unistra.fr/TAPVizieR/tap/sync';
 const NEA = 'https://exoplanetarchive.ipac.caltech.edu/TAP/sync';
@@ -69,21 +70,26 @@ const fixed = (v, d) => (v === null ? null : Number(v.toFixed(d)));
 const sig = (v, n) => (v === null ? null : Number(v.toPrecision(n)));
 const cmp = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 
+/** Hàng Hipparcos của lần lấy gần nhất (fetchParallax điền; buildMotion đọc) — cùng một truy vấn cho cả hai tệp. */
+const hipRows = new Map();
+const PM_QUERY_TEMPLATE = 'SELECT HIP,Plx,e_Plx,pmRA,pmDE FROM "I/311/hip2" WHERE HIP IN (<catalogue HIP numbers, 400 per request>)';
+
 async function fetchParallax(hips) {
   const sorted = [...hips].sort((a, b) => a - b);
   const rows = [];
   for (let i = 0; i < sorted.length; i += BATCH) {
     const ids = sorted.slice(i, i + BATCH).join(',');
-    const query = `SELECT HIP,Plx,e_Plx FROM "I/311/hip2" WHERE HIP IN (${ids})`;
+    const query = `SELECT HIP,Plx,e_Plx,pmRA,pmDE FROM "I/311/hip2" WHERE HIP IN (${ids})`;
     const url = `${VIZIER}?REQUEST=doQuery&LANG=ADQL&FORMAT=csv&QUERY=${encodeURIComponent(query)}`;
     rows.push(...(await fetchCsv(url)));
   }
-  const byHip = new Map();
+  const byHip = hipRows;
+  byHip.clear();
   for (const r of rows) {
     const hip = num(r.HIP);
     const plx = num(r.Plx);
     if (hip === null || plx === null || !hips.has(hip)) continue;
-    byHip.set(hip, { plx: fixed(plx, 2), ePlx: fixed(num(r.e_Plx), 2) });
+    byHip.set(hip, { plx: fixed(plx, 2), ePlx: fixed(num(r.e_Plx), 2), pmRa: fixed(num(r.pmRA), 2), pmDe: fixed(num(r.pmDE), 2) });
   }
   const hip = [...byHip.keys()].sort((a, b) => a - b);
   return {
@@ -156,6 +162,36 @@ async function fetchExoplanets(hips) {
   };
 }
 
+/** Chuyển động riêng (mas/năm) của cùng các sao: tệp riêng để hip-parallax.json không đổi dạng. */
+function buildMotion() {
+  const hip = [...hipRows.keys()].filter((h) => hipRows.get(h).pmRa !== null && hipRows.get(h).pmDe !== null).sort((a, b) => a - b);
+  return {
+    meta: {
+      retrieved: '',
+      service: 'CDS VizieR TAP (https://tapvizier.cds.unistra.fr/TAPVizieR/tap)',
+      catalogue: 'Hipparcos, the New Reduction (van Leeuwen 2007), I/311',
+      query: PM_QUERY_TEMPLATE,
+      units: 'pmRa = mu_alpha * cos(delta) and pmDe = mu_delta, both in milliarcseconds per year (ICRS, epoch J1991.25)',
+      licence: 'VizieR data are free of use in a scientific context; the original authors and publication must be cited (https://cds.unistra.fr/vizier-org/licences_vizier.html).',
+      citation: 'van Leeuwen F. 2007, A&A 474, 653, "Validation of the new Hipparcos reduction"; VizieR catalogue I/311; VizieR service DOI 10.26093/cds/vizier.',
+    },
+    hip,
+    pmRa: hip.map((h) => hipRows.get(h).pmRa),
+    pmDe: hip.map((h) => hipRows.get(h).pmDe),
+  };
+}
+
+function validateMotion(pm, hips) {
+  const errors = [];
+  if (pm.hip.length < 1000) errors.push(`only ${pm.hip.length} proper-motion rows (need ≥ 1000)`);
+  pm.hip.forEach((h, i) => {
+    if (!hips.has(h)) errors.push(`proper motion HIP ${h} not in stars.json`);
+    if (!Number.isFinite(pm.pmRa[i]) || !Number.isFinite(pm.pmDe[i])) errors.push(`proper motion HIP ${h}: not finite`);
+    else if (Math.hypot(pm.pmRa[i], pm.pmDe[i]) > 20000) errors.push(`proper motion HIP ${h}: implausibly large`);
+  });
+  return errors;
+}
+
 function validate(plx, exo, hips) {
   const errors = [];
   if (plx.hip.length < 1000) errors.push(`only ${plx.hip.length} parallax rows (need ≥ 1000)`);
@@ -193,7 +229,8 @@ async function main() {
   const stars = JSON.parse(await readFile(STARS, 'utf8'));
   const hips = new Set(stars.hip.filter((h) => Number.isInteger(h) && h > 0));
   const [plx, exo] = await Promise.all([fetchParallax(hips), fetchExoplanets(hips)]);
-  const errors = validate(plx, exo, hips);
+  const motion = buildMotion();
+  const errors = [...validate(plx, exo, hips), ...validateMotion(motion, hips)];
   if (errors.length) {
     console.error(`fetch-sky: validation failed, nothing written:\n  ${errors.slice(0, 30).join('\n  ')}`);
     process.exit(1);
@@ -202,9 +239,11 @@ async function main() {
   await mkdir(OUT_DIR, { recursive: true });
   const plxSame = await writeStable(OUT_PLX, plx, today);
   const exoSame = await writeStable(OUT_EXO, exo, today);
+  const pmSame = await writeStable(OUT_PM, motion, today);
   const hosts = new Set(exo.planets.map((p) => p.hip)).size;
   const est = exo.planets.filter((p) => p.radeEstimated).length;
   console.log(`hip-parallax.json: ${plx.hip.length} stars${plxSame ? ' (unchanged)' : ''}`);
+  console.log(`hip-motion.json: ${motion.hip.length} stars${pmSame ? ' (unchanged)' : ''}`);
   console.log(`exoplanets.json: ${exo.planets.length} planets, ${hosts} hosts, ${est} with estimated radius${exoSame ? ' (unchanged)' : ''}`);
 }
 

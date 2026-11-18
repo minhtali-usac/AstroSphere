@@ -1,0 +1,953 @@
+// «Bầu trời xưa» — phần tải lười, mở từ nút trên thanh trên cùng (src/ui/history.ts).
+//
+// Chọn nơi và ngày (kể cả hàng nghìn năm trước), xem bầu trời người xưa đã thấy. Ba điều được tính thêm khi lùi xa:
+// tuế sai của trục Trái Đất, chuyển động riêng của các sao và việc Trái Đất quay chậm dần (ΔT); mỗi điều có công tắc
+// để so sánh "có" và "không". Bầu trời vẽ bằng canvas 2D, không dùng three.js và không đổi trạng thái của mô phỏng chính.
+
+import './history.css';
+import { calendarOf, calendarToJd, deltaTUncertainty, equinoxShiftDeg, jdToCalendar, separationDeg, vectorToRaDec } from '../astro/history';
+import { fmtDeg, fmtHMS, fmtLat, fmtLon, fmtNum, parseNum } from '../astro/format';
+import { SPECIAL_PLACES, VN_PLACES } from '../data/places';
+import { t } from '../i18n';
+import { rovingTabs } from '../ui/tabs';
+import { WorldMap } from '../ui/worldMap';
+import { catalogArrays, getCatalogStar } from '../data/catalog';
+import { loadAllFigures } from '../data/constellations';
+import { CURATED, MOTION_SOURCE } from '../data/motion';
+import avatarUrl from '../assets/guide/usui-avatar.webp';
+import type { HistoryDome } from '../scene/history/dome';
+import type { Store } from '../state';
+import { button, checkbox, fieldset, guide, h, setText } from '../ui/dom';
+import { isPlainObject, readJson, writeJson } from '../ui/storage';
+import { computeBodies, type BodyState } from './bodies';
+import { catalogStars, momentOf, nearestToPole, sunStateOf, StarSet, type Moment, type Settings } from './model';
+import { PoleChart } from './poleChart';
+import { OLD_PLACES, PRESETS, YEAR_MAX, YEAR_MIN, type Preset } from './presets';
+import { fmt, H, num } from './text';
+import { skyColors, SkyView, type FigureLines, type Layers, type Pick, type Scene, type ViewHandlers } from './view';
+
+/** Lần đầu vào «Bầu trời xưa» thì hiện phần giới thiệu; sau đó chỉ hiện khi bấm «Giới thiệu». */
+export const HISTORY_STORAGE_KEY = 'astrosphere.history.v1';
+const isHistoryState = (v: unknown): v is { intro: boolean } => isPlainObject(v) && typeof v.intro === 'boolean';
+
+export interface StartOpts {
+  dialog: HTMLDialogElement;
+  host: HTMLElement;
+  store: Store;
+}
+
+export interface HistorySession {
+  /** Esc: dừng chạy thời gian nếu đang chạy (true = đã dùng phím). */
+  escape(): boolean;
+  dispose(): void;
+}
+
+const displayYear = (year: number): { n: number; era: 'bc' | 'ad' } => (year <= 0 ? { n: 1 - year, era: 'bc' } : { n: year, era: 'ad' });
+const yearLabel = (year: number): string => {
+  const { n, era } = displayYear(year);
+  return `${n} ${H.era[era]}`;
+};
+
+const validDate = (year: number, month: number, day: number): boolean => {
+  const back = jdToCalendar(calendarToJd(year, month, day, calendarOf(year, month, day)));
+  return back.month === month && Math.floor(back.day) === day;
+};
+
+/** Ngày hợp lệ lớn nhất ≤ day (để 29/2 và các ngày cuối tháng không làm hỏng khi đổi năm). */
+function clampDay(year: number, month: number, day: number): number {
+  for (let d = Math.min(31, Math.max(1, day)); d > 1; d--) if (validDate(year, month, d)) return d;
+  return 1;
+}
+
+const pad2 = (n: number) => String(n).padStart(2, '0');
+
+function clockOf(jd: number): string {
+  const f = (((jd + 0.5) % 1) + 1) % 1;
+  const mins = Math.round(f * 1440) % 1440;
+  return `${pad2(Math.floor(mins / 60))}:${pad2(mins % 60)}`;
+}
+
+/** 10583 → "2 g 56 ph 23 s". */
+function durationOf(sec: number): string {
+  const a = Math.abs(sec);
+  const sign = sec < 0 ? '−' : '';
+  if (a >= 3600) {
+    const hh = Math.floor(a / 3600);
+    const mm = Math.floor((a % 3600) / 60);
+    const ss = Math.round(a % 60);
+    return sign + fmt(a >= 7200 ? H.readout.hoursMinutes : H.readout.hoursMinutesSeconds, { h: hh, m: mm, s: ss });
+  }
+  if (a >= 60) return sign + fmt(H.readout.hoursMinutesSeconds, { h: 0, m: Math.floor(a / 60), s: Math.round(a % 60) }).replace(/^0 g /, '');
+  return sign + fmt(H.readout.seconds, { n: num(a, a < 10 ? 1 : 0) });
+}
+
+export function startHistory(o: StartOpts): HistorySession {
+  const { store } = o;
+  const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+  const start = PRESETS[0];
+  let s: Settings = {
+    year: start.year,
+    month: start.month,
+    day: start.day,
+    hour: start.hour,
+    minute: start.minute,
+    lat: start.lat,
+    lon: start.lon,
+    precession: true,
+    motion: true,
+    deltaT: true,
+  };
+  const layers: Layers = { lines: true, names: true, ecliptic: true, equator: false, bodies: true, daylight: false };
+  let marker: Preset['marker'] | undefined = start.marker;
+  let presetId: Preset['id'] | null = start.id;
+  let selected: Pick | null = null;
+  let figures: FigureLines | null = null;
+  let disposed = false;
+  let raf = 0;
+
+  const stars = catalogStars();
+  const cat = catalogArrays();
+  const bodies: BodyState[] = [];
+  const markerSet = new StarSet([0], [0], [0]);
+
+  // ------------------------------------------------------------ Khung nhìn
+  const canvas = h('canvas', { class: 'hsky-canvas', role: 'img', 'aria-label': H.view.aria });
+  const tip = h('div', { class: 'hsky-tip', role: 'presentation', hidden: true });
+  const summary = h('p', { class: 'sr-only', 'aria-live': 'polite' });
+  const glHost = h('div', { class: 'hsky-gl3d', hidden: true });
+  const stage = guide('historyView', h('div', { class: 'hsky-stage' }, canvas, glHost, tip));
+  let dome: HistoryDome | null = null;
+  let mode: '3d' | '2d' = '2d';
+  const handlers: ViewHandlers = {
+    onHover(p, x, y) {
+      if (!p) {
+        tip.hidden = true;
+        return;
+      }
+      setText(tip, pickName(p, true));
+      tip.style.left = `${x + 14}px`;
+      tip.style.top = `${y + 14}px`;
+      tip.hidden = false;
+    },
+    onPick(p) {
+      selected = p;
+      render();
+    },
+  };
+  const view = new SkyView(canvas, handlers);
+
+  function pickName(p: Pick, withMag: boolean): string {
+    if (p.kind === 'body') return H.bodies[p.id];
+    if (p.kind === 'marker') return marker ? H.presets.sn1054.marker : '';
+    const star = getCatalogStar(p.index);
+    const name = star.shortName || star.designation;
+    if (!withMag) return name || `HIP ${star.hip}`;
+    return name ? fmt(H.hover.star, { name, mag: num(star.mag, 1) }) : fmt(H.hover.unnamed, { hip: star.hip, mag: num(star.mag, 1) });
+  }
+
+  // ------------------------------------------------------------ Điều khiển: thời điểm
+  const err = h('p', { class: 'field-error', role: 'alert', 'aria-live': 'polite' });
+
+  const yearInput = h('input', { type: 'number', class: 'num hsky-year', min: 1, max: 6001, step: 1, inputmode: 'numeric', id: 'hsky-year', 'aria-label': H.time.year });
+  const eraSel = h(
+    'select',
+    { 'aria-label': H.time.year, class: 'hsky-era' },
+    h('option', { value: 'bc', text: H.era.bc, title: H.era.bcAria }),
+    h('option', { value: 'ad', text: H.era.ad, title: H.era.adAria }),
+  );
+  const slider = h('input', { type: 'range', class: 'range', min: YEAR_MIN, max: YEAR_MAX, step: 1, 'aria-label': H.time.slider });
+  const monthSel = h(
+    'select',
+    { 'aria-label': H.time.month },
+    ...Array.from({ length: 12 }, (_, i) => h('option', { value: String(i + 1), text: fmt(H.time.monthOption, { m: i + 1 }) })),
+  );
+  const dayInput = h('input', { type: 'number', class: 'num hsky-day', min: 1, max: 31, step: 1, inputmode: 'numeric', 'aria-label': H.time.day });
+  const timeInput = h('input', { type: 'time', class: 'hsky-time', 'aria-label': H.time.clock, step: 60 });
+  const calTag = h('span', { class: 'hsky-cal', 'aria-live': 'polite' });
+
+  const syncTime = () => {
+    const d = displayYear(s.year);
+    if (document.activeElement !== yearInput) yearInput.value = String(d.n);
+    eraSel.value = d.era;
+    slider.value = String(s.year);
+    slider.setAttribute('aria-valuetext', fmt(H.time.sliderValue, { n: d.n, era: H.era[d.era] }));
+    monthSel.value = String(s.month);
+    if (document.activeElement !== dayInput) dayInput.value = String(s.day);
+    timeInput.value = `${pad2(s.hour)}:${pad2(s.minute)}`;
+    setText(calTag, H.cal[calendarOf(s.year, s.month, s.day)]);
+  };
+
+  /** Áp một phần cài đặt; trả về false (và báo lỗi) nếu ngày không hợp lệ. */
+  function apply(patch: Partial<Settings>, opts: { clamp?: boolean; fromPlay?: boolean } = {}): boolean {
+    const next = { ...s, ...patch };
+    next.year = Math.max(YEAR_MIN, Math.min(YEAR_MAX, Math.round(next.year)));
+    if (opts.clamp) next.day = clampDay(next.year, next.month, next.day);
+    if (!validDate(next.year, next.month, next.day)) {
+      const gap = next.year === 1582 && next.month === 10;
+      err.textContent = gap
+        ? fmt(H.time.gap, { day: next.day, month: next.month })
+        : fmt(H.time.invalid, { day: next.day, month: next.month, year: yearLabel(next.year) });
+      syncTime();
+      return false;
+    }
+    err.textContent = '';
+    s = next;
+    // Người dùng đổi ngày giờ trong lúc đang chạy: chạy tiếp từ chỗ mới, không kéo về chỗ cũ.
+    if (!opts.fromPlay && playDir) resync();
+    syncAll();
+    schedule();
+    return true;
+  }
+
+  const setYearFromInputs = () => {
+    const n = Math.round(Number(yearInput.value));
+    if (!Number.isFinite(n) || n < 1) {
+      yearInput.value = String(displayYear(s.year).n);
+      return;
+    }
+    const year = eraSel.value === 'bc' ? 1 - n : n;
+    if (year < YEAR_MIN || year > YEAR_MAX) {
+      err.textContent = fmt(H.time.range, { min: displayYear(YEAR_MIN).n, eraMin: H.era.bc, max: displayYear(YEAR_MAX).n, eraMax: H.era.ad });
+      syncTime();
+      return;
+    }
+    apply({ year }, { clamp: true });
+  };
+  yearInput.addEventListener('change', setYearFromInputs);
+  yearInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') setYearFromInputs();
+  });
+  eraSel.addEventListener('change', setYearFromInputs);
+  slider.addEventListener('input', () => apply({ year: Number(slider.value) }, { clamp: true }));
+  monthSel.addEventListener('change', () => apply({ month: Number(monthSel.value) }, { clamp: true }));
+  dayInput.addEventListener('change', () => {
+    const d = Math.round(Number(dayInput.value));
+    if (!Number.isFinite(d) || d < 1 || d > 31) {
+      syncTime();
+      return;
+    }
+    apply({ day: d });
+  });
+  timeInput.addEventListener('change', () => {
+    const [hh, mm] = timeInput.value.split(':').map(Number);
+    if (Number.isFinite(hh) && Number.isFinite(mm)) apply({ hour: hh, minute: mm });
+  });
+
+  const stepBtn = (label: string, delta: number) =>
+    button(label, () => apply({ year: s.year + delta }, { clamp: true }), { cls: 'btn--small', aria: fmt(H.time.stepAria, { delta: label }), guide: 'historyStep' });
+
+  // ------------------------------------------------------------ Hoạt ảnh (quay bầu trời trong ngày, hoặc chạy qua các thế kỷ)
+  const DAY_RATES = [5, 20, 60, 180, 720]; // phút mỗi giây
+  const YEAR_RATES = [50, 200, 500, 1000, 2500]; // năm mỗi giây
+  type PlayMode = 'day' | 'years';
+  let playDir = 0;
+  let playMode: PlayMode = 'day';
+  let dirSign: 1 | -1 = 1;
+  let rateIdx = 1;
+  let playJd = 0;
+  let playYearF = 0;
+  let playTimer = 0;
+
+  const playBtn = h('button', { type: 'button', class: 'btn btn--play btn--primary', 'aria-pressed': 'false', 'data-guide': 'historyPlay', onclick: () => togglePlay() });
+  const animMode = h(
+    'select',
+    {
+      id: 'hsky-anim-mode',
+      'data-guide': 'historyAnimMode',
+      onchange: (e: Event) => {
+        stopPlay();
+        playMode = (e.target as HTMLSelectElement).value as PlayMode;
+        syncAnim();
+      },
+    },
+    h('option', { value: 'day', text: H.anim.modeDay }),
+    h('option', { value: 'years', text: H.anim.modeYears }),
+  );
+  const dirSel = h(
+    'select',
+    {
+      'aria-label': H.anim.direction,
+      onchange: (e: Event) => {
+        dirSign = (e.target as HTMLSelectElement).value === 'back' ? -1 : 1;
+        if (playDir) playDir = dirSign;
+      },
+    },
+    h('option', { value: 'fwd', text: H.anim.fwd }),
+    h('option', { value: 'back', text: H.anim.back }),
+  );
+  const rateOut = h('output', { class: 'value', htmlFor: 'hsky-rate' });
+  const rate = h('input', {
+    type: 'range',
+    id: 'hsky-rate',
+    class: 'range',
+    min: 0,
+    max: 4,
+    step: 1,
+    value: String(rateIdx),
+    'aria-label': H.anim.speed,
+    oninput: (e: Event) => {
+      rateIdx = Number((e.target as HTMLInputElement).value);
+      syncAnim();
+    },
+  });
+  const hourOut = h('output', { class: 'value value--big', htmlFor: 'hsky-hour' });
+  const hourSlider = h('input', {
+    type: 'range',
+    id: 'hsky-hour',
+    class: 'range range--lst',
+    min: 0,
+    max: 1439,
+    step: 1,
+    'aria-label': H.anim.hour,
+    oninput: (e: Event) => {
+      stopPlay();
+      const v = Number((e.target as HTMLInputElement).value);
+      apply({ hour: Math.floor(v / 60), minute: v % 60 });
+    },
+  });
+  const animNote = h('p', { class: 'note' });
+
+  function syncAnim(): void {
+    const label = (playMode === 'day' ? H.anim.dayRates : H.anim.yearRates)[rateIdx];
+    setText(rateOut, fmt(H.anim.speedValue, { v: label }));
+    setText(animNote, playMode === 'day' ? H.anim.noteDay : H.anim.noteYears);
+    if (animMode.value !== playMode) animMode.value = playMode;
+    const v = String(s.hour * 60 + s.minute);
+    if (hourSlider.value !== v && document.activeElement !== hourSlider) hourSlider.value = v;
+    setText(hourOut, `${pad2(s.hour)}:${pad2(s.minute)}`);
+    hourSlider.setAttribute('aria-valuetext', `${pad2(s.hour)}:${pad2(s.minute)}`);
+  }
+
+  function syncPlay(): void {
+    const on = playDir !== 0;
+    setText(playBtn, on ? H.anim.pause : H.anim.play);
+    playBtn.setAttribute('aria-pressed', String(on));
+    playBtn.classList.toggle('btn--primary', !on);
+  }
+
+  function stopPlay(): boolean {
+    if (!playDir) return false;
+    playDir = 0;
+    window.clearInterval(playTimer);
+    syncPlay();
+    return true;
+  }
+
+  /** Một bước thời gian dài dtSec giây; false = đã chạm mốc cuối của khoảng năm cho phép. */
+  function stepPlay(dtSec: number): boolean {
+    if (playMode === 'day') {
+      playJd += (playDir * DAY_RATES[rateIdx] * dtSec) / 1440;
+      const c = jdToCalendar(playJd + 1e-9);
+      const mins = Math.floor((c.day - Math.floor(c.day)) * 1440);
+      apply({ year: c.year, month: c.month, day: Math.floor(c.day), hour: Math.floor(mins / 60), minute: mins % 60 }, { fromPlay: true });
+      return c.year > YEAR_MIN && c.year < YEAR_MAX;
+    }
+    playYearF += playDir * YEAR_RATES[rateIdx] * dtSec;
+    const y = Math.max(YEAR_MIN, Math.min(YEAR_MAX, Math.round(playYearF)));
+    if (y !== s.year) apply({ year: y }, { clamp: true, fromPlay: true });
+    return y > YEAR_MIN && y < YEAR_MAX;
+  }
+
+  /** Lấy lại mốc chạy từ ngày giờ hiện tại. */
+  function resync(): void {
+    playJd = calendarToJd(s.year, s.month, s.day) + (s.hour + s.minute / 60) / 24;
+    playYearF = s.year;
+  }
+
+  function togglePlay(): void {
+    if (playDir) {
+      stopPlay();
+      return;
+    }
+    playDir = dirSign;
+    resync();
+    syncPlay();
+    let last = performance.now();
+    const tick = () => {
+      if (!playDir || disposed) return;
+      const now = performance.now();
+      // Tối đa 0,1 giây mỗi khung: quay lại từ thẻ nền không bị nhảy cả đêm.
+      const ok = stepPlay(Math.min(0.1, (now - last) / 1000));
+      last = now;
+      if (!ok) stopPlay();
+      else requestAnimationFrame(tick);
+    };
+    // Giảm chuyển động: từng bước rời rạc mỗi 0,7 giây thay vì chạy mượt.
+    if (reduced) playTimer = window.setInterval(() => !stepPlay(0.7) && stopPlay(), 700);
+    else requestAnimationFrame(tick);
+  }
+
+  /** Lùi / tiến một giờ, tràn sang ngày khác nếu cần (qua JD để đúng cả lịch Julius). */
+  function hourShift(dir: 1 | -1): Partial<Settings> {
+    const jd = calendarToJd(s.year, s.month, s.day) + (s.hour + s.minute / 60 + dir) / 24;
+    const c = jdToCalendar(jd + 1e-9);
+    const mins = Math.floor((c.day - Math.floor(c.day)) * 1440);
+    return { year: c.year, month: c.month, day: Math.floor(c.day), hour: Math.floor(mins / 60), minute: mins % 60 };
+  }
+
+  const ticks24 = () => h('div', { class: 'ticks', 'aria-hidden': 'true' }, ...[0, 6, 12, 18, 24].map((x) => h('span', { text: `${x}h` })));
+  const animPanel = h(
+    'section',
+    { class: 'panel hsky-panel', id: 'hsky-panel-anim', role: 'tabpanel', 'aria-labelledby': 'hsky-tab-anim', hidden: true },
+    h('h2', { class: 'panel__title', text: H.anim.title }),
+    h('div', { class: 'row' }, playBtn, h('label', { class: 'sr-only', htmlFor: 'hsky-anim-mode', text: H.anim.mode }), animMode, dirSel),
+    guide('historyHour', h('div', { class: 'field' }, h('div', { class: 'field__head' }, h('label', { htmlFor: 'hsky-hour', text: H.anim.hour }), hourOut), hourSlider, ticks24())),
+    h(
+      'div',
+      { class: 'row row--wrap' },
+      button(H.anim.hourBack, () => {
+        stopPlay();
+        apply(hourShift(-1));
+      }, { guide: 'historyStep' }),
+      button(H.anim.hourFwd, () => {
+        stopPlay();
+        apply(hourShift(1));
+      }, { guide: 'historyStep' }),
+    ),
+    guide('historyRate', h('div', { class: 'field' }, h('div', { class: 'field__head' }, h('label', { htmlFor: 'hsky-rate', text: H.anim.speed }), rateOut), rate, h('div', { class: 'ticks', 'aria-hidden': 'true' }, h('span', { text: H.anim.slow }), h('span', { text: H.anim.fast })))),
+    animNote,
+  );
+
+  // ------------------------------------------------------------ Điều khiển: địa điểm (giống bảng Vị trí của trang chính)
+  const latInput = h('input', { type: 'text', inputmode: 'decimal', class: 'num', id: 'hsky-lat', 'aria-describedby': 'hsky-lat-help' });
+  const latHem = h('select', { 'aria-label': t('panel.location.latHemAria') }, h('option', { value: 'N', text: t('panel.location.north') }), h('option', { value: 'S', text: t('panel.location.south') }));
+  const lonInput = h('input', { type: 'text', inputmode: 'decimal', class: 'num', id: 'hsky-lon' });
+  const lonHem = h('select', { 'aria-label': t('panel.location.lonHemAria') }, h('option', { value: 'E', text: t('panel.location.east') }), h('option', { value: 'W', text: t('panel.location.west') }));
+  const placeErr = h('p', { class: 'field-error', role: 'alert', 'aria-live': 'polite' });
+  const poleLine = h('p', { class: 'pole-line', 'aria-live': 'polite' });
+  const latSlider = h('input', {
+    type: 'range',
+    min: -90,
+    max: 90,
+    step: 0.5,
+    class: 'range',
+    'aria-label': t('panel.location.latSlider'),
+    oninput: (e: Event) => setLoc(Number((e.target as HTMLInputElement).value), s.lon),
+  });
+
+  function setLoc(lat: number, lon: number): void {
+    placeErr.textContent = '';
+    s = { ...s, lat: Math.max(-90, Math.min(90, Math.round(lat * 100) / 100)), lon: Math.max(-180, Math.min(180, Math.round(lon * 100) / 100)) };
+    syncAll();
+    schedule();
+  }
+  const map = new WorldMap((lat, lon) => setLoc(lat, lon));
+
+  const syncPlace = () => {
+    if (document.activeElement !== latInput) latInput.value = fmtNum(Math.abs(s.lat));
+    if (document.activeElement !== lonInput) lonInput.value = fmtNum(Math.abs(s.lon));
+    latHem.value = s.lat < 0 ? 'S' : 'N';
+    lonHem.value = s.lon < 0 ? 'W' : 'E';
+    latSlider.value = String(s.lat);
+    poleLine.textContent =
+      s.lat === 0
+        ? t('panel.location.poleLineEquator')
+        : t('panel.location.poleLine', { pole: t(s.lat > 0 ? 'panel.location.north' : 'panel.location.south'), x: fmtDeg(Math.abs(s.lat)) });
+    map.draw(s.lat, s.lon);
+  };
+  const applyPlace = () => {
+    const la = parseNum(latInput.value);
+    const lo = parseNum(lonInput.value);
+    const errors: string[] = [];
+    if (!Number.isFinite(la) || la < 0 || la > 90) errors.push(t('panel.location.errLat'));
+    if (!Number.isFinite(lo) || lo < 0 || lo > 180) errors.push(t('panel.location.errLon'));
+    placeErr.textContent = errors.join(' ');
+    if (errors.length) return;
+    setLoc(latHem.value === 'S' ? -la : la, lonHem.value === 'W' ? -lo : lo);
+  };
+  for (const el of [latInput, lonInput]) {
+    el.addEventListener('change', applyPlace);
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') applyPlace();
+    });
+  }
+  latHem.addEventListener('change', applyPlace);
+  lonHem.addEventListener('change', applyPlace);
+
+  const chip = (label: string, lat: number, lon: number | undefined) =>
+    button(label, () => setLoc(lat, lon ?? s.lon), { cls: 'chip', title: lon !== undefined ? `${fmtNum(lat)}°; ${fmtNum(lon)}°` : t('panel.location.keepLon') });
+  const placePanel = h(
+    'section',
+    { class: 'panel hsky-panel', id: 'hsky-panel-place', role: 'tabpanel', 'aria-labelledby': 'hsky-tab-place', hidden: true },
+    h('h2', { class: 'panel__title', text: t('panel.location.title') }),
+    h(
+      'div',
+      { class: 'coord-grid', 'data-guide': 'latLonInput' },
+      h('label', { htmlFor: 'hsky-lat', text: t('panel.location.lat') }),
+      h('div', { class: 'coord-row' }, latInput, h('span', { class: 'unit', text: '°' }), latHem),
+      h('label', { htmlFor: 'hsky-lon', text: t('panel.location.lon') }),
+      h('div', { class: 'coord-row' }, lonInput, h('span', { class: 'unit', text: '°' }), lonHem),
+    ),
+    h('p', { class: 'hint', id: 'hsky-lat-help', text: t('panel.location.inputHint') }),
+    placeErr,
+    h('div', { class: 'slider-row', 'data-guide': 'latSlider' }, h('span', { class: 'slider-row__label', text: t('panel.location.latSliderShort') }), latSlider),
+    h('div', { class: 'pole-row' }, poleLine),
+    guide('worldMap', map.el),
+    h('p', { class: 'hint', text: t('panel.location.mapHint') }),
+    guide('places', fieldset(H.place.groupOld, h('div', { class: 'chips' }, ...OLD_PLACES.map((p) => chip(H.places[p.id], p.lat, p.lon))))),
+    guide('places', fieldset(t('panel.location.vn'), h('div', { class: 'chips' }, ...VN_PLACES.map((p) => chip(p.name, p.lat, p.lon))))),
+    guide('places', fieldset(t('panel.location.special'), h('div', { class: 'chips' }, ...SPECIAL_PLACES.map((p) => chip(p.name, p.lat, p.lon))))),
+    button(H.place.sync, () => setLoc(store.state.lat, store.state.lon), { cls: 'btn--small hsky-sync', guide: 'historyPlaceSync' }),
+  );
+
+  // ------------------------------------------------------------ Điều khiển: ba hiệu chỉnh và lớp hiển thị
+  const fix = (label: string, hint: string, key: 'precession' | 'motion' | 'deltaT') => {
+    const cb = checkbox(label, s[key], (v) => {
+      s = { ...s, [key]: v };
+      syncAll();
+      schedule();
+    }, { hint });
+    return cb;
+  };
+  const fPrec = guide('historyPrecession', fix(H.fix.precession, H.fix.precessionHint, 'precession').el);
+  const fMotion = guide('historyMotion', fix(H.fix.motion, H.fix.motionHint, 'motion').el);
+  const fDt = guide('historyDeltaT', fix(H.fix.deltaT, H.fix.deltaTHint, 'deltaT').el);
+  const fixBox = h(
+    'fieldset',
+    { class: 'group' },
+    h('legend', { text: H.sec.fixes }),
+    fPrec,
+    fMotion,
+    MOTION_SOURCE === 'curated' ? h('p', { class: 'hint', text: fmt(H.fix.motionCurated, { n: CURATED.length }) }) : null,
+    fDt,
+  );
+
+  const layer = (label: string, key: keyof Layers) => checkbox(label, layers[key], (v) => {
+    layers[key] = v;
+    schedule();
+  }).el;
+  const layerBox = guide(
+    'historyLayers',
+    h(
+      'fieldset',
+      { class: 'group' },
+      h('legend', { text: H.sec.layers }),
+      layer(H.layers.lines, 'lines'),
+      layer(H.layers.names, 'names'),
+      layer(H.layers.ecliptic, 'ecliptic'),
+      layer(H.layers.equator, 'equator'),
+      layer(H.layers.bodies, 'bodies'),
+      guide('historyDaylight', layer(H.layers.daylight, 'daylight')),
+    ),
+  );
+
+  // ------------------------------------------------------------ Thời điểm tiêu biểu
+  const presetDesc = h('p', { class: 'hsky-desc', 'aria-live': 'polite' });
+  const presetBtns = new Map<Preset['id'], HTMLButtonElement>();
+  const showPresetDesc = () => {
+    const key = presetId;
+    setText(presetDesc, key ? H.presets[key].desc : '');
+    for (const [id, b] of presetBtns) b.setAttribute('aria-pressed', String(id === key));
+  };
+  function choose(p: Preset): void {
+    let q = p;
+    if (p.id === 'today') {
+      // Ngày giờ thật và nơi đang dùng trong mô phỏng chính; giờ địa phương trung bình theo kinh độ.
+      const lat = store.state.lat;
+      const lon = store.state.lon;
+      const jdLocal = Date.now() / 86400000 + 2440587.5 + lon / 360;
+      const c = jdToCalendar(jdLocal);
+      const frac = c.day - Math.floor(c.day);
+      q = { ...p, year: c.year, month: c.month, day: Math.floor(c.day), hour: Math.floor(frac * 24), minute: Math.floor((frac * 24 - Math.floor(frac * 24)) * 60), lat, lon };
+    }
+    presetId = p.id;
+    marker = p.marker;
+    selected = null;
+    err.textContent = '';
+    placeErr.textContent = '';
+    s = { ...s, year: q.year, month: q.month, day: q.day, hour: q.hour, minute: q.minute, lat: q.lat, lon: q.lon };
+    if (playDir) resync();
+    syncAll();
+    schedule();
+  }
+  const presetBox = guide(
+    'historyPresets',
+    h(
+      'section',
+      { class: 'hsky-presets', 'aria-labelledby': 'hsky-presets-h' },
+      h('h3', { id: 'hsky-presets-h', class: 'hsky-h', text: H.sec.presets }),
+      h(
+        'div',
+        { class: 'hsky-chips', role: 'group', 'aria-labelledby': 'hsky-presets-h' },
+        ...PRESETS.map((p) => {
+          const b = button(H.presets[p.id].title, () => choose(p), { cls: 'chip' });
+          b.setAttribute('aria-pressed', 'false');
+          presetBtns.set(p.id, b);
+          return b;
+        }),
+      ),
+      presetDesc,
+    ),
+  );
+
+  // ------------------------------------------------------------ Bảng số liệu
+  const rows: Record<string, HTMLElement> = {};
+  const row = (key: string, label: string): HTMLElement => {
+    const dd = h('dd', { class: 'hsky-v' });
+    rows[key] = dd;
+    return h('div', { class: 'hsky-kv' }, h('dt', { text: label }), dd);
+  };
+  const readout = guide(
+    'historyReadout',
+    h(
+      'section',
+      { class: 'hsky-readout', 'aria-labelledby': 'hsky-readout-h' },
+      h('h3', { id: 'hsky-readout-h', class: 'hsky-h', text: H.sec.readout }),
+      h(
+        'dl',
+        { class: 'hsky-dl' },
+        row('date', H.readout.date),
+        row('jd', H.readout.jd),
+        row('ut', H.readout.ut),
+        row('tt', H.readout.tt),
+        row('dt', H.readout.deltaT),
+        row('lag', H.readout.lag),
+        row('pole', H.readout.pole),
+        row('eps', H.readout.obliquity),
+        row('equinox', H.readout.equinox),
+        row('sun', H.readout.sun),
+        row('moon', H.readout.moon),
+      ),
+    ),
+  );
+
+  const selBody = h('p', { class: 'hsky-sel' });
+  const selHead = h('h4', { class: 'hsky-sel__name' });
+  const selClear = button(H.selected.dismiss, () => {
+    selected = null;
+    render();
+  }, { cls: 'btn--small btn--ghost' });
+  const selBox = h('section', { class: 'hsky-selected', 'aria-labelledby': 'hsky-sel-h' }, h('h3', { id: 'hsky-sel-h', class: 'hsky-h', text: H.sec.selected }), selHead, selBody, selClear);
+
+  const poleCanvas = h('canvas', { class: 'hsky-pole', role: 'img', 'aria-label': H.pole.aria });
+  const chart = new PoleChart(poleCanvas);
+  const poleBox = guide(
+    'historyPole',
+    h('section', { class: 'hsky-polebox', 'aria-labelledby': 'hsky-pole-h' }, h('h3', { id: 'hsky-pole-h', class: 'hsky-h', text: H.sec.pole }), poleCanvas, h('p', { class: 'hint', text: H.pole.caption })),
+  );
+
+  const notes = h('details', { class: 'hsky-notes' }, h('summary', { text: H.notes.title }), h('p', { text: H.notes.body }));
+
+  const main = h('div', { class: 'hsky-main' }, stage, summary);
+  // Kiểu hiển thị: khối 3D (giống giản đồ chân trời ngoài trang chính) hoặc bản đồ phẳng.
+  const btn3d = button(H.view.mode3d, () => setMode('3d'), { cls: 'btn--small' });
+  const btn2d = button(H.view.mode2d, () => setMode('2d'), { cls: 'btn--small' });
+  const btnFp = button(H.view.firstPerson, () => {
+    const on = !dome?.isFirstPerson();
+    dome?.setFirstPerson(on);
+    btnFp.setAttribute('aria-pressed', String(on));
+    setText(btnFp.querySelector('.btn__text') as HTMLElement, on ? H.view.outside : H.view.firstPerson);
+  }, { cls: 'btn--small', guide: 'historyFirstPerson' });
+  btnFp.setAttribute('aria-pressed', 'false');
+  const btnCam = button(H.view.camera, () => dome?.resetCamera(), { cls: 'btn--small btn--ghost', guide: 'historyCamera' });
+  const modeBar = guide('historyMode', h('div', { class: 'hsky-modes', role: 'group', 'aria-label': H.view.modeAria }, btn3d, btn2d, btnFp, btnCam));
+  const btnIntro = button(H.view.intro, () => showIntro(), { cls: 'btn--small btn--ghost hsky-introbtn', guide: 'historyIntro' });
+  main.append(btnIntro);
+  btn3d.disabled = true; // bật khi cảnh 3D dựng xong
+  main.append(modeBar);
+  // ------------------------------------------------------------ Các bảng điều khiển (thẻ giống trang chính)
+  const panel = (key: string, title: string, ...children: (Node | null)[]) =>
+    h('section', { class: 'panel hsky-panel', id: `hsky-panel-${key}`, role: 'tabpanel', 'aria-labelledby': `hsky-tab-${key}`, hidden: key !== 'time' }, h('h2', { class: 'panel__title', text: title }), ...children);
+
+  const timePanel = panel(
+    'time',
+    H.tabs.time,
+    presetBox,
+    guide('historyYear', h('div', { class: 'row' }, h('label', { class: 'hsky-lbl', htmlFor: 'hsky-year', text: H.time.year }), yearInput, eraSel, calTag)),
+    guide('historySlider', h('div', { class: 'row hsky-row--slider' }, slider)),
+    guide('historyDate', h('div', { class: 'row' }, h('span', { class: 'hsky-lbl', text: `${H.time.day}/${H.time.month}` }), dayInput, monthSel)),
+    guide('historyTime', h('div', { class: 'row' }, h('span', { class: 'hsky-lbl', text: H.time.clock }), timeInput)),
+    h('p', { class: 'hint', text: H.time.clockNote }),
+    h('div', { class: 'row row--wrap' }, stepBtn(H.time.back1000, -1000), stepBtn(H.time.back100, -100), stepBtn(H.time.fwd100, 100), stepBtn(H.time.fwd1000, 1000)),
+    err,
+  );
+  const displayPanel = panel('display', H.tabs.display, fixBox, layerBox);
+  const dataPanel = panel('data', H.tabs.data, readout, selBox, poleBox, notes);
+  const panelList: [string, string, HTMLElement][] = [
+    ['time', H.tabs.time, timePanel],
+    ['place', H.tabs.place, placePanel],
+    ['anim', H.tabs.anim, animPanel],
+    ['display', H.tabs.display, displayPanel],
+    ['data', H.tabs.data, dataPanel],
+  ];
+  const tabEls = new Map<string, HTMLElement>();
+  const tabList = guide('historyTabs', h('div', { class: 'hsky-tabs', role: 'tablist', 'aria-label': H.tabs.aria }));
+  let roving: { sync(): void } | null = null;
+  function selectTab(key: string): void {
+    for (const [k, , el] of panelList) {
+      el.hidden = k !== key;
+      tabEls.get(k)?.setAttribute('aria-selected', String(k === key));
+    }
+    roving?.sync();
+    // Bảng vừa hiện: vẽ lại những thứ đo kích thước khi hiện (bản đồ thế giới, biểu đồ cực).
+    if (key === 'place') syncPlace();
+    if (key === 'data' && typeof fit === 'function') fit();
+  }
+  for (const [key, label] of panelList) {
+    const b = h('button', { type: 'button', role: 'tab', class: 'hsky-tab', id: `hsky-tab-${key}`, 'aria-selected': String(key === 'time'), 'aria-controls': `hsky-panel-${key}`, 'data-tab': key, text: label, onclick: () => selectTab(key) });
+    tabEls.set(key, b);
+    tabList.append(b);
+  }
+  roving = rovingTabs(tabList, (tab) => selectTab(tab.dataset.tab!));
+  const side = h('div', { class: 'hsky-side' }, tabList, ...panelList.map((p) => p[2]));
+  // ------------------------------------------------------------ Phần giới thiệu
+  let introOpen = false;
+  const introStart = button(H.intro.start, () => hideIntro(), { cls: 'btn--primary' });
+  const intro = h(
+    'section',
+    { class: 'hsky-intro', role: 'region', 'aria-labelledby': 'hsky-intro-h', hidden: true },
+    h(
+      'div',
+      { class: 'hsky-intro__card' },
+      h(
+        'div',
+        { class: 'hsky-intro__head' },
+        h('img', { class: 'hsky-intro__face', src: avatarUrl, alt: '', width: 56, height: 56, decoding: 'async' }),
+        h('div', null, h('p', { class: 'hsky-intro__kicker', text: H.intro.kicker }), h('h2', { id: 'hsky-intro-h', class: 'hsky-intro__title', tabindex: '-1', text: H.intro.title })),
+      ),
+      ...H.intro.lede.map((x) => h('p', { class: 'hsky-intro__lede', text: x })),
+      h('h3', { class: 'hsky-h', text: H.intro.whyTitle }),
+      h('p', { class: 'hsky-intro__lede hsky-intro__lede--small', text: H.intro.whyLede }),
+      h('ul', { class: 'hsky-intro__why', role: 'list' }, ...H.intro.why.map((w) => h('li', null, h('strong', { text: w.title }), h('span', { text: w.body })))),
+      h('h3', { class: 'hsky-h', text: H.intro.howTitle }),
+      h('ul', { class: 'hsky-intro__how' }, ...H.intro.how.map((x) => h('li', null, h('strong', { text: `${x.title}: ` }), h('span', { text: x.body })))),
+      h('div', { class: 'hsky-intro__actions' }, introStart),
+    ),
+  );
+  function showIntro(): void {
+    introOpen = true;
+    intro.hidden = false;
+    main.inert = true;
+    side.inert = true;
+    writeJson(HISTORY_STORAGE_KEY, { intro: true });
+    (intro.querySelector('#hsky-intro-h') as HTMLElement).focus({ preventScroll: true });
+    intro.scrollTop = 0;
+  }
+  function hideIntro(): void {
+    if (!introOpen) return;
+    introOpen = false;
+    intro.hidden = true;
+    main.inert = false;
+    side.inert = false;
+    btnIntro.focus({ preventScroll: true });
+  }
+  const layout = h('div', { class: 'hsky' }, main, side, intro);
+  o.host.replaceChildren(layout);
+
+  // ------------------------------------------------------------ Vẽ
+  let lastSummary = '';
+  function syncAll(): void {
+    syncTime();
+    syncAnim();
+    syncPlace();
+    showPresetDesc();
+  }
+
+  function render(): void {
+    if (disposed) return;
+    const m = momentOf(s);
+    stars.compute(m, s.lat, s.motion);
+    figures?.set.compute(m, s.lat, s.motion);
+    computeBodies(m, s.lat, s.lon, bodies);
+    let mk: Scene['marker'] = null;
+    if (marker) {
+      markerSet.p0[0] = Math.cos(marker.dec * Math.PI / 180) * Math.cos(marker.ra * Math.PI / 180);
+      markerSet.p0[1] = Math.cos(marker.dec * Math.PI / 180) * Math.sin(marker.ra * Math.PI / 180);
+      markerSet.p0[2] = Math.sin(marker.dec * Math.PI / 180);
+      markerSet.compute(m, s.lat, false);
+      mk = { alt: markerSet.alt[0], az: markerSet.az[0], label: H.presets.sn1054.marker };
+    }
+    const pole = nearestToPole(stars, m, s.motion, cat.mag);
+    const scene: Scene = { m, lat: s.lat, stars, figures, bodies, layers, marker: mk, poleStar: pole.index, selected };
+    if (mode === '3d' && dome) {
+      dome.setBackground(skyColors(bodies[0] ? bodies[0].alt : -90)[0]);
+      dome.draw(scene);
+    } else view.draw(scene);
+    chart.draw(stars, m, s.motion, s.year, pole.index);
+    readoutUpdate(m, pole);
+    selectedUpdate(m);
+    if (!playDir) {
+      const sun = bodies[0];
+      const text = fmt(H.view.summary, {
+        lat: fmtLat(s.lat),
+        lon: fmtLon(s.lon),
+        date: dateText(m),
+        time: `${pad2(s.hour)}:${pad2(s.minute)}`,
+        sun: sun ? H.sunState[sunStateOf(sun.alt)] : '',
+      });
+      if (text !== lastSummary) {
+        lastSummary = text;
+        summary.textContent = text;
+      }
+    }
+  }
+
+  function dateText(m: Moment): string {
+    const c = m.calendar;
+    const d = displayYear(c.year);
+    return fmt(H.readout.dateValue, { day: Math.floor(c.day), month: c.month, year: d.n, era: H.era[d.era], cal: H.cal[c.calendar] });
+  }
+
+  function readoutUpdate(m: Moment, pole: { index: number; sepDeg: number }): void {
+    setText(rows.date, dateText(m));
+    setText(rows.jd, num(m.jdUt, 2));
+    setText(rows.ut, clockOf(m.jdUt));
+    setText(rows.tt, clockOf(m.jdTt));
+    const sigma = deltaTUncertainty(2000 + (m.jdUt - 2451544.5) / 365.2425);
+    setText(rows.dt, fmt(H.readout.deltaTValue, { dt: durationOf(m.dtReal), sigma: durationOf(sigma) }));
+    setText(rows.lag, s.deltaT ? fmt(H.readout.lagValue, { deg: num((m.dtReal * 360.98564736629) / 86400, 1) }) : H.readout.lagNone);
+    const star = getCatalogStar(pole.index);
+    setText(rows.pole, fmt(H.readout.poleValue, { name: `${star.shortName || star.designation || `HIP ${star.hip}`}`, sep: num(pole.sepDeg, 1) }));
+    setText(rows.eps, fmtDeg(m.eps, 2));
+    setText(rows.equinox, s.precession ? fmt(H.readout.equinoxValue, { deg: num(equinoxShiftDeg(m.jdTt), 1).replace(/^(\d)/, '+$1') }) : H.readout.equinoxNone);
+    const sun = bodies[0];
+    const moon = bodies[1];
+    if (sun) setText(rows.sun, fmt(H.readout.sunValue, { alt: num(sun.alt, 1), state: H.sunState[sunStateOf(sun.alt)] }));
+    if (moon) {
+      const phase = H.phase[Math.round(moon.elongation / 45) % 8];
+      const pct = Math.round(moon.illum * 100);
+      setText(rows.moon, moon.alt >= 0 ? fmt(H.readout.moonValue, { phase, pct, alt: num(moon.alt, 1) }) : fmt(H.readout.moonBelow, { phase, pct }));
+    }
+  }
+
+  function selectedUpdate(m: Moment): void {
+    if (!selected) {
+      selHead.textContent = '';
+      setText(selBody, H.selected.none);
+      selClear.hidden = true;
+      return;
+    }
+    selClear.hidden = false;
+    setText(selHead, pickName(selected, false));
+    if (selected.kind === 'star') {
+      const i = selected.index;
+      const star = getCatalogStar(i);
+      const alt = stars.alt[i];
+      const eq = vectorToRaDec([stars.vec[3 * i], stars.vec[3 * i + 1], stars.vec[3 * i + 2]]);
+      const a: [number, number, number] = [stars.p0[3 * i], stars.p0[3 * i + 1], stars.p0[3 * i + 2]];
+      const b = stars.at(i, m.years, s.motion, [0, 0, 0]);
+      const parts = [
+        `${fmt(H.selected.mag, { mag: num(star.mag, 1) })}; ${fmt(H.selected.altaz, { alt: num(alt, 1), az: num(stars.az[i], 0) })}.`,
+        `${fmt(H.selected.coord, { ra: fmtHMS(eq.ra, { seconds: false }), dec: `${eq.dec >= 0 ? '+' : '−'}${fmtDeg(Math.abs(eq.dec), 1)}` })}.`,
+        stars.moving[i] ? fmt(H.selected.moved, { sep: num(separationDeg(a, b), 2) }) : H.selected.still,
+      ];
+      if (alt < 0) parts.push(H.selected.belowHorizon);
+      setText(selBody, parts.join(' '));
+    } else if (selected.kind === 'body') {
+      const id = selected.id;
+      const bd = bodies.find((x) => x.id === id);
+      setText(selBody, bd ? fmt(H.selected.altaz, { alt: num(bd.alt, 1), az: num(bd.az, 0) }) + (bd.alt < 0 ? ` ${H.selected.belowHorizon}` : '') : '');
+    } else setText(selBody, H.presets.sn1054.desc);
+  }
+
+  function schedule(): void {
+    if (raf || disposed) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      render();
+    });
+  }
+
+  // ------------------------------------------------------------ Kích thước
+  const fit = () => {
+    const r = stage.getBoundingClientRect();
+    const size = Math.floor(Math.min(r.width, r.height));
+    if (size < 100) return;
+    canvas.style.width = `${size}px`;
+    canvas.style.height = `${size}px`;
+    view.resize(size, size);
+    dome?.resize(r.width, r.height);
+    const pw = Math.floor(poleCanvas.parentElement?.getBoundingClientRect().width ?? 240);
+    chart.resize(Math.min(300, pw));
+    poleCanvas.style.width = `${Math.min(300, pw)}px`;
+    poleCanvas.style.height = `${Math.min(300, pw)}px`;
+    schedule();
+  };
+  const ro = new ResizeObserver(fit);
+  ro.observe(stage);
+  ro.observe(side);
+
+  syncAll();
+  syncPlay();
+  fit();
+  render();
+  if (!readJson(HISTORY_STORAGE_KEY, isHistoryState, { intro: false }).intro) showIntro();
+  // Bầu trời tự quay khi mở (như trang chính); người dùng bật giảm chuyển động thì không tự chạy.
+  if (!reduced) togglePlay();
+
+  function setMode(m: '3d' | '2d'): void {
+    if (m === '3d' && !dome) return;
+    mode = m;
+    canvas.hidden = m === '3d';
+    glHost.hidden = m !== '3d';
+    tip.hidden = true;
+    btn3d.setAttribute('aria-pressed', String(m === '3d'));
+    btn2d.setAttribute('aria-pressed', String(m === '2d'));
+    btnCam.hidden = m !== '3d';
+    btnFp.hidden = m !== '3d';
+    fit();
+  }
+  btn3d.setAttribute('aria-pressed', 'false');
+  btn2d.setAttribute('aria-pressed', 'true');
+  btnCam.hidden = true;
+  btnFp.hidden = true;
+
+  // Cảnh 3D: tải lười (dùng chung gói three.js với trang chính). Dựng xong thì chuyển sang 3D, trừ khi trình duyệt không
+  // có WebGL — khi đó giữ bản đồ phẳng.
+  void import('../scene/history/dome')
+    .then((m) => {
+      if (disposed) return;
+      try {
+        dome = new m.HistoryDome(glHost, handlers);
+      } catch (e) {
+        console.warn(e);
+        btn3d.hidden = true;
+        btnCam.hidden = true;
+        btnFp.hidden = true;
+        return;
+      }
+      btn3d.disabled = false;
+      setMode('3d');
+    })
+    .catch(() => {
+      btn3d.hidden = true;
+    });
+
+  // Hình 88 chòm sao: tải lười (≈ 29 kB), vẽ lại khi có.
+  void loadAllFigures().then((map) => {
+    if (disposed) return;
+    const ra: number[] = [];
+    const dec: number[] = [];
+    const hip: number[] = [];
+    const segs: number[] = [];
+    for (const f of Object.values(map)) {
+      const base = ra.length;
+      for (const st of f.stars) {
+        ra.push(st[0]);
+        dec.push(st[1]);
+        hip.push(st[3]);
+      }
+      for (const [a, b] of f.segs) segs.push(base + a, base + b);
+    }
+    figures = { set: new StarSet(ra, dec, hip), segs: Uint32Array.from(segs) };
+    schedule();
+  });
+
+  return {
+    // Esc: đóng phần giới thiệu nếu đang mở; nếu không, hộp thoại đóng thẳng (bầu trời tự quay, không cần dừng trước).
+    escape: () => {
+      if (!introOpen) return false;
+      hideIntro();
+      return true;
+    },
+    dispose() {
+      disposed = true;
+      playDir = 0;
+      window.clearInterval(playTimer);
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+      dome?.dispose();
+      o.host.replaceChildren();
+    },
+  };
+}

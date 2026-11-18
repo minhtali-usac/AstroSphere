@@ -20,13 +20,21 @@ export interface Guide {
   escape(): boolean;
   /** Tắt mọi thứ của Usui-chan (vào chế độ trình chiếu). */
   close(): void;
+  /**
+   * Đưa Usui-chan (chân dung, dải thông báo, bong bóng) vào một hộp thoại đang mở để chế độ giải thích dùng được ở đó;
+   * null = trả về chỗ cũ trong trang.
+   */
+  dock(parent: HTMLElement | null): void;
 }
 
 export function createGuide(opts: { skies: HTMLElement[] }): Guide {
   let ui: GuideUi | null = null;
   let loading: Promise<GuideUi> | null = null;
+  let docked: HTMLElement | null = null;
+  let home: { parent: HTMLElement; next: ChildNode | null } | null = null;
   const load = (): Promise<GuideUi> =>
-    (loading ??= import('./guide').then((m) => (ui = m.createGuideUi({ avatar: el, skies: opts.skies }))));
+    (loading ??= import('./guide').then((m) => (ui = m.createGuideUi({ avatar: el, skies: opts.skies }))))
+      .then((u) => (u.dock(docked), u));
 
   const el = h(
     'button',
@@ -50,5 +58,16 @@ export function createGuide(opts: { skies: HTMLElement[] }): Guide {
     },
     escape: () => ui?.escape() ?? false,
     close: () => ui?.closeAll(),
+    dock(parent) {
+      docked = parent;
+      if (parent) {
+        if (!home && el.parentElement) home = { parent: el.parentElement, next: el.nextSibling };
+        parent.append(el);
+      } else if (home) {
+        home.parent.insertBefore(el, home.next);
+        home = null;
+      }
+      ui?.dock(parent);
+    },
   };
 }
