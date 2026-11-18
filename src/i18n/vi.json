@@ -28,7 +28,9 @@
     "about": "Giới thiệu",
     "aboutTip": "Thông tin về mô phỏng, dữ liệu và giấy phép",
     "flight": "Bay vào vũ trụ",
-    "flightTip": "Bay tới các hành tinh, các sao và hành tinh quanh sao khác, ở đúng vị trí và khoảng cách thật"
+    "flightTip": "Bay tới các hành tinh, các sao và hành tinh quanh sao khác, ở đúng vị trí và khoảng cách thật",
+    "history": "Bầu trời xưa",
+    "historyTip": "Chọn nơi và ngày trong quá khứ để xem bầu trời người xưa đã thấy: có tính tuế sai, chuyển động riêng của sao và Trái Đất quay chậm dần"
   },
   "pwa": {
     "install": "⬇ Cài AstroSphere về máy (dùng được khi không có mạng)",
@@ -779,7 +781,26 @@
       "flightOrbits": "Hiện hoặc ẩn đường quỹ đạo của các hành tinh và Mặt Trăng.",
       "flightLines": "Hiện hoặc ẩn đường nối chòm sao. Bay ra xa Mặt Trời, các đường này méo đi vì các sao ở những khoảng cách khác nhau.",
       "flightForward": "Giữ để bay về phía trước. Càng xa các thiên thể, tốc độ càng lớn.",
-      "flightBack": "Giữ để lùi lại."
+      "flightBack": "Giữ để lùi lại.",
+      "history": "Quay về quá khứ (hoặc tới tương lai): chọn nơi và ngày để xem bầu trời người xưa đã thấy, có tính tuế sai của trục Trái Đất, chuyển động riêng của sao và việc Trái Đất quay chậm dần.",
+      "historyClose": "Đóng «Bầu trời xưa» và trở về mô phỏng. Phím Esc cũng làm được việc này.",
+      "historyView": "Bầu trời nhìn lên từ mặt đất: phía Bắc ở trên, phía Đông ở bên trái. Rê chuột hoặc chạm vào một ngôi sao để xem tên, bấm để xem chi tiết.",
+      "historyPresets": "Nhảy tới một thời điểm lịch sử: nơi, ngày và giờ đã được đặt sẵn.",
+      "historyYear": "Gõ năm và chọn TCN (trước Công nguyên) hoặc SCN (sau Công nguyên). Trước năm 1582 dùng lịch Julius, từ đó dùng lịch Gregory.",
+      "historySlider": "Kéo để lùi hoặc tiến năm. Bầu trời đổi theo ngay: các sao dịch chỗ và cực Bắc thiên cầu dời sang sao khác.",
+      "historyDate": "Chọn ngày và tháng trong năm. Ứng dụng tự chọn lịch Julius hay Gregory theo năm bạn chọn.",
+      "historyTime": "Giờ Mặt Trời trung bình tại nơi quan sát. Người xưa chưa có múi giờ nên ở đây cũng không dùng múi giờ.",
+      "historyStep": "Lùi hoặc tiến nhanh theo thế kỷ hoặc thiên niên kỷ để thấy rõ bầu trời đổi thế nào.",
+      "historyPlay": "Tự chạy thời gian lùi hoặc tiến, mỗi giây vài trăm năm. Bấm lần nữa để dừng.",
+      "historyPlace": "Chọn một nơi trong danh sách, hoặc gõ vĩ độ và kinh độ. Kinh độ cũng quyết định giờ địa phương trung bình.",
+      "historyPlaceSync": "Lấy vị trí đang dùng trong mô phỏng chính.",
+      "historyPrecession": "Bỏ chọn để so sánh: bầu trời sẽ như thể trục Trái Đất không đổi hướng. Nhờ tuế sai mà sao Bắc Cực thay đổi theo từng thời đại.",
+      "historyMotion": "Bỏ chọn để các sao đứng yên như hôm nay. Khi chọn, những sao chạy nhanh như Arcturus dời chỗ rõ rệt qua hàng nghìn năm.",
+      "historyDeltaT": "Bỏ chọn để giả sử Trái Đất luôn quay đều như hiện nay. Khi chọn, Trái Đất quay chậm dần nên Mặt Trăng và hành tinh ở chỗ khác; sai khác này càng lớn khi lùi xa.",
+      "historyLayers": "Bật tắt đường nối chòm sao, tên sao, hoàng đạo, xích đạo trời và các thiên thể trong hệ Mặt Trời.",
+      "historyDaylight": "Bình thường ban ngày không thấy sao. Chọn để hiện cả sao lúc trời sáng, tiện khi muốn xem trọn bầu trời.",
+      "historyPole": "Đường chấm là quỹ đạo của cực Bắc thiên cầu quanh cực hoàng đạo, mất gần 26 000 năm một vòng. Chấm cam là cực ở thời điểm đã chọn.",
+      "historyReadout": "Các con số của thời điểm này: ngày lịch, ΔT, sao gần cực nhất, độ nghiêng trục và pha Mặt Trăng."
     }
   },
   "flight": {
@@ -790,5 +811,13 @@
     "viewAria": "Khung nhìn bay trong vũ trụ: Hệ Mặt Trời, các sao và hành tinh quanh sao khác",
     "wait": "Đang dựng vũ trụ…",
     "failed": "Không mở được chế độ bay trên trình duyệt này."
+  },
+  "history": {
+    "title": "Bầu trời xưa",
+    "hint": "Chọn nơi và ngày để xem bầu trời người xưa đã thấy · tuế sai, chuyển động riêng của sao và ΔT đều được tính",
+    "close": "Về hiện tại",
+    "closeTip": "Đóng «Bầu trời xưa» và trở lại mô phỏng (Esc)",
+    "wait": "Đang dựng bầu trời xưa…",
+    "failed": "Không mở được «Bầu trời xưa» trên trình duyệt này."
   }
 }

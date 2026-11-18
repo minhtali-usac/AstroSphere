@@ -13,7 +13,10 @@ giấy phép MIT trong `LICENSE` và CC BY-NC-SA 4.0 trong `LICENSE-CONTENT.md` 
 | JPL "Approximate Positions of the Planets" (Standish); Meeus, "Astronomical Algorithms", chương 47; NASA NSSDCA Planetary Fact Sheets; IAU WGCCRE 2015 | Vị trí và tính chất hành tinh, Mặt Trăng | Công thức và số liệu đã công bố; trích dẫn nguồn |
 | [Three.js](https://threejs.org/) | Đồ họa 3D | MIT |
 | [KaTeX](https://katex.org/) | Hiển thị công thức | MIT |
-| [astronomy-engine](https://github.com/cosinekitty/astronomy) | Chỉ dùng trong unit test để kiểm chứng phép tính | MIT |
+| [astronomy-engine](https://github.com/cosinekitty/astronomy) (Don Cross) | Vị trí Mặt Trời, Mặt Trăng và hành tinh trong «Bầu trời xưa» (gói tải lười `history`); kiểm chứng phép tính trong unit test | MIT |
+| Espenak & Meeus, đa thức ΔT (NASA, *Five Millennium Canon of Solar Eclipses*), dựa trên Stephenson & Morrison 2004; Capitaine, Wallace & Chapront 2003 (tuế sai IAU 2006, IERS Conventions 2010 eq. 5.40); Laskar 1986 (độ nghiêng trục); Meeus, "Astronomical Algorithms", chương 7, 21, 22 | `src/astro/history.ts`: lịch, ΔT, tuế sai, độ nghiêng trục | Công thức và số liệu đã công bố; trích dẫn nguồn |
+| Hipparcos, bản xử lý mới (van Leeuwen 2007; I/311): chuyển động riêng | `src/data/fetched/hip-motion.json` (khi có) và bảng chọn lọc trong `src/data/motion.ts` | Dữ liệu khoa học công khai; trích dẫn nguồn |
+| [XEphem](https://github.com/XEphem/XEphem) (Elwood Downey) | Ý tưởng cho mục «Bầu trời xưa» (xem bầu trời ở thời điểm bất kỳ có tính tuế sai và chuyển động riêng). Không sao chép mã nguồn | MIT |
 
 ## NASA Exoplanet Archive
 

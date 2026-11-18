@@ -1,0 +1,190 @@
+{
+  "era": { "bc": "TCN", "ad": "SCN", "bcAria": "trước Công nguyên", "adAria": "sau Công nguyên" },
+  "cal": { "julian": "lịch Julius", "gregorian": "lịch Gregory" },
+  "sec": {
+    "presets": "Thời điểm tiêu biểu",
+    "time": "Thời điểm",
+    "place": "Địa điểm",
+    "fixes": "Ba điều cần tính khi lùi xa",
+    "layers": "Hiển thị",
+    "readout": "Bầu trời lúc này",
+    "pole": "Cực Bắc thiên cầu qua các thời đại",
+    "selected": "Ngôi sao đang chọn"
+  },
+  "time": {
+    "year": "Năm",
+    "month": "Tháng",
+    "monthOption": "Tháng {m}",
+    "day": "Ngày",
+    "clock": "Giờ",
+    "clockNote": "Giờ Mặt Trời trung bình tại nơi quan sát; chưa có múi giờ nào vào thời xưa.",
+    "slider": "Kéo để đổi năm",
+    "sliderValue": "Năm {n} {era}",
+    "back1000": "−1000 năm",
+    "back100": "−100 năm",
+    "fwd100": "+100 năm",
+    "fwd1000": "+1000 năm",
+    "stepAria": "Đổi năm {delta}",
+    "playBack": "◀ Lùi",
+    "playFwd": "Tiến ▶",
+    "playStop": "■ Dừng",
+    "playBackAria": "Chạy thời gian lùi về quá khứ",
+    "playFwdAria": "Chạy thời gian tiến về tương lai",
+    "playStopAria": "Dừng chạy thời gian",
+    "invalid": "Ngày không hợp lệ: tháng {month} của năm {year} không có ngày {day}.",
+    "gap": "Ngày {day}/{month}/1582 không tồn tại: lịch nhảy từ 4 sang 15/10/1582.",
+    "range": "Năm nằm ngoài khoảng {min} {eraMin} đến {max} {eraMax}."
+  },
+  "place": {
+    "preset": "Chọn nơi",
+    "lat": "Vĩ độ φ (°, + Bắc)",
+    "lon": "Kinh độ λ (°, + Đông)",
+    "sync": "Dùng vị trí của mô phỏng",
+    "errLat": "Vĩ độ phải từ −90 đến 90.",
+    "errLon": "Kinh độ phải từ −180 đến 180.",
+    "groupVn": "Việt Nam",
+    "groupOld": "Nơi quan sát cổ",
+    "custom": "Tự nhập"
+  },
+  "fix": {
+    "precession": "Tuế sai của trục Trái Đất",
+    "precessionHint": "Trục Trái Đất vẽ một hình nón mất ≈ 25 770 năm một vòng, nên cực thiên cầu dời chỗ.",
+    "motion": "Chuyển động riêng của các sao",
+    "motionHint": "Mỗi sao tự đi trên bầu trời; sau hàng nghìn năm hình dạng một số chòm sao đã khác.",
+    "deltaT": "Trái Đất quay chậm dần (ΔT)",
+    "deltaTHint": "Ngày dài thêm vài phần nghìn giây mỗi thế kỷ; cộng dồn lại làm giờ quay của Trái Đất lệch hàng giờ so với đồng hồ đều.",
+    "motionCurated": "Chưa có bảng chuyển động riêng đầy đủ: đang dùng bảng chọn lọc cho các sao sáng và sao chạy nhanh. Chạy «npm run fetch-sky» để lấy toàn bộ danh mục Hipparcos."
+  },
+  "layers": {
+    "lines": "Đường nối chòm sao",
+    "names": "Tên sao sáng",
+    "ecliptic": "Hoàng đạo",
+    "equator": "Xích đạo trời",
+    "bodies": "Mặt Trời, Mặt Trăng, hành tinh",
+    "daylight": "Hiện sao cả lúc trời sáng"
+  },
+  "bodies": {
+    "sun": "Mặt Trời",
+    "moon": "Mặt Trăng",
+    "mercury": "Sao Thủy",
+    "venus": "Sao Kim",
+    "mars": "Sao Hỏa",
+    "jupiter": "Sao Mộc",
+    "saturn": "Sao Thổ"
+  },
+  "cardinal": { "n": "B", "e": "Đ", "s": "N", "w": "T" },
+  "sunState": {
+    "day": "Mặt Trời ở trên chân trời: ban ngày",
+    "civil": "Hoàng hôn dân dụng (Mặt Trời dưới chân trời 0–6°)",
+    "nautical": "Hoàng hôn hàng hải (6–12° dưới chân trời)",
+    "astro": "Hoàng hôn thiên văn (12–18° dưới chân trời)",
+    "night": "Trời tối hẳn"
+  },
+  "phase": [
+    "Trăng non",
+    "Trăng lưỡi liềm đầu tháng",
+    "Trăng thượng huyền",
+    "Trăng khuyết đầu tháng",
+    "Trăng tròn",
+    "Trăng khuyết cuối tháng",
+    "Trăng hạ huyền",
+    "Trăng lưỡi liềm cuối tháng"
+  ],
+  "readout": {
+    "date": "Ngày lịch",
+    "dateValue": "{day}/{month}/{year} {era} ({cal})",
+    "jd": "Ngày Julius (JD)",
+    "ut": "Giờ quay Trái Đất (UT)",
+    "tt": "Giờ của đồng hồ đều (TT)",
+    "deltaT": "ΔT = TT − UT",
+    "deltaTValue": "{dt} (± {sigma})",
+    "lag": "Trái Đất đã quay trễ",
+    "lagValue": "{deg}° so với nhịp quay hôm nay",
+    "lagNone": "không (đang bỏ qua ΔT)",
+    "pole": "Sao gần cực Bắc nhất",
+    "poleValue": "{name}, cách cực {sep}°",
+    "poleNone": "Không có sao sáng nào gần cực",
+    "obliquity": "Độ nghiêng trục ε",
+    "equinox": "Xuân phân so với năm 2000",
+    "equinoxValue": "{deg}° dọc hoàng đạo",
+    "equinoxNone": "không đổi (đang bỏ qua tuế sai)",
+    "sun": "Mặt Trời",
+    "sunValue": "độ cao {alt}° · {state}",
+    "moon": "Mặt Trăng",
+    "moonValue": "{phase}, sáng {pct}%, độ cao {alt}°",
+    "moonBelow": "{phase}, sáng {pct}% (dưới chân trời)",
+    "minutes": "{n} ph",
+    "hoursMinutes": "{h} g {m} ph",
+    "hoursMinutesSeconds": "{h} g {m} ph {s} s",
+    "seconds": "{n} s"
+  },
+  "selected": {
+    "none": "Bấm vào một ngôi sao hoặc thiên thể để xem chi tiết.",
+    "mag": "cấp sao {mag}",
+    "altaz": "độ cao {alt}°, phương vị {az}°",
+    "coord": "α = {ra}, δ = {dec} (của thời điểm này)",
+    "moved": "Đã dời {sep}° so với vị trí năm 2000 vì chuyển động riêng.",
+    "still": "Chưa có số liệu chuyển động riêng: coi như đứng yên.",
+    "belowHorizon": "Đang ở dưới chân trời.",
+    "dismiss": "Bỏ chọn"
+  },
+  "pole": {
+    "caption": "Đường chấm: cực Bắc thiên cầu đi một vòng quanh cực hoàng đạo. Chấm cam: cực ở thời điểm đã chọn.",
+    "aria": "Biểu đồ nhìn quanh cực hoàng đạo: đường tròn là quỹ đạo của cực Bắc thiên cầu qua các thời đại, chấm cam là vị trí lúc này",
+    "label": "Cực hoàng đạo",
+    "ticks": "{n} {era}"
+  },
+  "hover": { "star": "{name} · cấp sao {mag}", "unnamed": "Sao HIP {hip} · cấp sao {mag}" },
+  "view": {
+    "aria": "Bầu trời nhìn lên từ mặt đất vào thời điểm đã chọn: phía Bắc ở trên, phía Đông ở bên trái",
+    "poleN": "Cực Bắc thiên cầu",
+    "poleS": "Cực Nam thiên cầu",
+    "summary": "Bầu trời nhìn lên từ vĩ độ {lat}, kinh độ {lon}, ngày {date}, lúc {time}. {sun}",
+    "summaryNone": "Chưa có bầu trời để hiển thị."
+  },
+  "notes": {
+    "title": "Về độ chính xác",
+    "body": "Vị trí sao tính từ danh mục Hipparcos, thêm chuyển động riêng tuyến tính và tuế sai IAU 2006. Mặt Trời, Mặt Trăng và hành tinh tính bằng astronomy-engine với ΔT của Espenak và Meeus. Càng lùi xa, càng kém chắc chắn: ΔT quá khứ chỉ biết qua ghi chép nhật nguyệt thực cổ, và vị trí Mặt Trăng, hành tinh kém chắc chắn hơn sao. Độ sáng sao được giữ như hiện nay (sao biến quang và sao tiến hóa có thể đã khác). Ý tưởng lấy từ phần mềm XEphem (MIT)."
+  },
+  "presets": {
+    "giza": {
+      "title": "Kim tự tháp Khufu",
+      "desc": "Khoảng 2560 TCN, lúc xây Đại Kim tự tháp ở Giza. Sao gần cực nhất khi đó là Thuban (α Draconis), không phải Polaris."
+    },
+    "coloa": {
+      "title": "Cổ Loa",
+      "desc": "Khoảng 257 TCN, thời An Dương Vương xây thành Cổ Loa. Sao Bắc Cực chưa là Polaris và bầu trời đã khác hẳn."
+    },
+    "hipparchus": {
+      "title": "Hipparchus phát hiện tuế sai",
+      "desc": "Khoảng 127 TCN ở đảo Rhodes. Hipparchus so vị trí sao Spica với ghi chép cũ và thấy các điểm phân đã dời chỗ."
+    },
+    "ptolemy": {
+      "title": "Ptolemy viết Almagest",
+      "desc": "Khoảng năm 150 ở Alexandria. Danh mục sao của Ptolemy ngự trị thiên văn học hơn một nghìn năm."
+    },
+    "thanglong": {
+      "title": "Dời đô ra Thăng Long",
+      "desc": "Năm 1010, Lý Thái Tổ dời đô về Thăng Long. Đây là bầu trời mà các nhà thiên văn nhà Lý đã ngắm."
+    },
+    "sn1054": {
+      "title": "Khách tinh năm 1054",
+      "desc": "Sáng sớm 4/7/1054 ở Khai Phong: «khách tinh» bùng sáng gần Thiên Quan (ζ Tauri). Nay là Tinh vân Con Cua (M1).",
+      "marker": "Khách tinh 1054 (nay là M1)"
+    },
+    "today": {
+      "title": "Hôm nay (đối chiếu)",
+      "desc": "Đặt lại về thời điểm hiện tại tại nơi đang xem, để so với các thời xưa."
+    }
+  },
+  "places": {
+    "giza": "Giza, Ai Cập",
+    "alexandria": "Alexandria, Ai Cập",
+    "rhodes": "Rhodes, Hy Lạp",
+    "babylon": "Babylon, Iraq",
+    "stonehenge": "Stonehenge, Anh",
+    "coloa": "Cổ Loa, Hà Nội",
+    "kaifeng": "Khai Phong, Trung Quốc",
+    "chichen": "Chichén Itzá, Mexico"
+  }
+}

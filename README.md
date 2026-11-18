@@ -43,6 +43,7 @@ AstroSphere giúp người học hình thành trực giác về ba điều:
 | 📖 **USACodex** | Sổ tay 44 mục trong 7 danh mục, "mở khóa" dần khi bạn gặp khái niệm trong mô phỏng. |
 | 🎮 **Thử thách SGK** | 10 hoạt động tương tác theo Bài 4 và Bài 5, chuyên đề «Trái Đất và Bầu Trời». Giáo viên chọn hoạt động, cuối buổi có bảng điểm. |
 | 🚀 **Bay vào vũ trụ** | Rời Trái Đất, bay tới Mặt Trời, tám hành tinh, Mặt Trăng, khoảng 1.300 sao và 60 ngoại hành tinh đã xác nhận, ở đúng vị trí và khoảng cách thật. |
+| ⌛ **Bầu trời xưa** | Chọn nơi và ngày từ 6001 TCN đến năm 3000 để xem bầu trời người xưa đã thấy: tuế sai của trục Trái Đất, chuyển động riêng của sao và Trái Đất quay chậm dần (ΔT), mỗi điều có công tắc để so sánh. Có sẵn các thời điểm như Kim tự tháp Khufu, Cổ Loa, Hipparchus, khách tinh 1054. |
 | ✏️ **Ôn tập** | 12 nhiệm vụ có gợi ý, giải thích và chấm điểm. |
 | 🖥️ **Trình chiếu** | Phím `F`: toàn màn hình, nét dày, nhãn lớn cho máy chiếu. |
 | 💬 **Usui-chan** | Linh vật của CLB giải thích từng nút bấm khi bạn rê chuột hoặc chạm vào. |
