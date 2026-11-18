@@ -39,7 +39,7 @@ export const GUIDE_CODEX: Readonly<Record<string, string>> = {
   trails: 'diurnal',
 };
 
-export const PASSIVE: ReadonlySet<string> = new Set(['horizonView', 'sphereView']);
+export const PASSIVE: ReadonlySet<string> = new Set(['horizonView', 'sphereView', 'historyView']);
 
 /** Mục Codex cho một điều khiển (nút "?" mang sẵn mục của nó trong data-codex). */
 export function codexFor(key: string, codexAttr?: string): string | null {

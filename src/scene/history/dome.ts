@@ -88,6 +88,10 @@ export class HistoryDome {
   private h = 0;
   private down: { x: number; y: number } | null = null;
   private figCap = 0;
+  private readonly person = new THREE.Group();
+  private firstPerson = false;
+  private modelRequested = false;
+  private modelScheduled = false;
 
   constructor(
     host: HTMLElement,
@@ -150,13 +154,26 @@ export class HistoryDome {
     rg.setAttribute('position', new THREE.Float32BufferAttribute(rim, 3));
     this.scene.add(new THREE.Line(rg, new THREE.LineBasicMaterial({ color: COLORS.horizon })));
 
-    // Người quan sát: hình nhân đơn giản ở tâm.
-    const mat = new THREE.MeshBasicMaterial({ color: '#f8fafc' });
+    // Người quan sát: hình nhân đơn giản trong lúc chờ, rồi thay bằng Usui-chan (cùng mô hình với giản đồ chân trời chính).
+    const mat = new THREE.MeshBasicMaterial({ color: COLORS.zenith });
     const body = new THREE.Mesh(new THREE.CylinderGeometry(R * 0.012, R * 0.018, R * 0.06, 12), mat);
     body.position.y = R * 0.03;
     const head = new THREE.Mesh(new THREE.SphereGeometry(R * 0.016, 12, 10), mat);
     head.position.y = R * 0.075;
-    this.scene.add(body, head);
+    this.person.add(body, head);
+    this.scene.add(this.person);
+
+    // Vòm trời mờ giúp cảm nhận chiều sâu, và ánh sáng cho mô hình 3D (các đối tượng khác dùng vật liệu không chịu sáng).
+    const dome = new THREE.Mesh(
+      new THREE.SphereGeometry(R * 0.995, 64, 32, 0, Math.PI * 2, 0, Math.PI / 2),
+      new THREE.MeshBasicMaterial({ color: cssColor('--hsky-zenith-day', '#2c5f98'), transparent: true, opacity: 0.06, side: THREE.BackSide, depthWrite: false }),
+    );
+    dome.renderOrder = -3;
+    this.scene.add(dome, new THREE.HemisphereLight(COLORS.azimuth, COLORS.ground, 2.2));
+    const key = new THREE.DirectionalLight(COLORS.zenith, 2.4);
+    key.position.set(0.4, 0.8, 1);
+    this.camera.add(key);
+    this.scene.add(this.camera);
 
     // Đường nối chòm sao, hoàng đạo, xích đạo trời.
     this.figLines = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: COLORS.figureSky, transparent: true, opacity: 0.75, clippingPlanes: this.clip }));
@@ -219,20 +236,95 @@ export class HistoryDome {
     this.labelRenderer.setSize(this.w, this.h);
     this.camera.aspect = this.w / this.h;
     // Khung dọc (điện thoại): mở rộng góc nhìn để đĩa chân trời không bị cắt hai bên.
-    this.camera.fov = this.camera.aspect < 1 ? (2 * Math.atan(Math.tan(20 * DEG) / this.camera.aspect)) / DEG : 40;
-    this.camera.updateProjectionMatrix();
+    this.applyFov();
     this.schedule();
   }
 
-  resetCamera(): void {
-    this.camera.position.copy(HOME);
-    this.controls.target.copy(TARGET);
+  private applyFov(): void {
+    const half = this.firstPerson ? 37 : 20;
+    this.camera.fov = this.camera.aspect < 1 ? (2 * Math.atan(Math.tan(half * DEG) / this.camera.aspect)) / DEG : half * 2;
+    this.camera.updateProjectionMatrix();
+  }
+
+  /** Nhìn từ người quan sát: mắt ở độ cao của Usui-chan, quay đầu nhìn quanh (kéo chuột). Tắt thì về góc nhìn ngoài. */
+  setFirstPerson(on: boolean): void {
+    this.firstPerson = on;
+    this.person.visible = !on;
+    if (on) {
+      const eye = new THREE.Vector3(0, R * 0.18, 0);
+      this.controls.minDistance = this.controls.maxDistance = 0.02;
+      this.controls.enableZoom = false;
+      this.controls.target.copy(eye);
+      // Máy ảnh đứng phía Nam của mắt nên nhìn về phía Bắc (−Z), nơi có thiên cực Bắc.
+      this.camera.position.copy(eye).add(new THREE.Vector3(0, 0, 0.02));
+    } else {
+      this.controls.minDistance = R * 1.25;
+      this.controls.maxDistance = R * 7;
+      this.controls.enableZoom = true;
+      this.camera.position.copy(HOME);
+      this.controls.target.copy(TARGET);
+    }
+    this.applyFov();
     this.controls.update();
     this.schedule();
   }
 
+  isFirstPerson(): boolean {
+    return this.firstPerson;
+  }
+
+  resetCamera(): void {
+    this.setFirstPerson(this.firstPerson);
+  }
+
+  /**
+   * Thay hình nhân bằng Usui-chan (public/models/usui-chan.glb), giống giản đồ chân trời chính: co về chiều cao cố định,
+   * chân đặt trên mặt phẳng chân trời, vật liệu VRoid chuyển sang chế độ cắt alpha. Tải lười, một lần, lúc trình duyệt rảnh.
+   */
+  private loadModel(): void {
+    if (this.modelRequested) return;
+    this.modelRequested = true;
+    import('three/addons/loaders/GLTFLoader.js').then(({ GLTFLoader }) =>
+      new GLTFLoader().load(`${import.meta.env.BASE_URL}models/usui-chan.glb`, (gltf) => {
+        if (this.disposed) return;
+        const model = gltf.scene;
+        const box = new THREE.Box3().setFromObject(model);
+        const size = box.getSize(new THREE.Vector3());
+        const k = (R * 0.2) / Math.max(size.y, 1e-6);
+        model.scale.setScalar(k);
+        const center = box.getCenter(new THREE.Vector3());
+        model.position.set(-center.x * k, -box.min.y * k + R * 0.004, -center.z * k);
+        model.traverse((o) => {
+          const mesh = o as THREE.Mesh;
+          if (!mesh.isMesh) return;
+          mesh.frustumCulled = false;
+          for (const m of Array.isArray(mesh.material) ? mesh.material : [mesh.material]) {
+            if (!m.transparent) continue;
+            m.transparent = false;
+            m.alphaTest = Math.max(m.alphaTest, 0.5);
+            m.depthWrite = true;
+            m.needsUpdate = true;
+          }
+        });
+        this.person.clear();
+        this.person.add(model);
+        this.schedule();
+      }),
+    ).catch(() => {
+      /* giữ hình nhân đơn giản */
+    });
+  }
+
   draw(sc: SkySceneData): void {
     this.last = sc;
+    // Usui-chan nhìn về thiên cực nhìn thấy được: Bắc ở Bắc bán cầu, Nam ở Nam bán cầu (như giản đồ chân trời chính).
+    this.person.rotation.y = sc.lat >= 0 ? Math.PI : 0;
+    (this.ground.material as THREE.MeshBasicMaterial).opacity = this.firstPerson ? 1 : 0.55;
+    if (!this.modelScheduled) {
+      this.modelScheduled = true;
+      if (typeof window.requestIdleCallback === 'function') window.requestIdleCallback(() => this.loadModel(), { timeout: 3000 });
+      else window.setTimeout(() => this.loadModel(), 400);
+    }
     const sun = sc.bodies[0];
     const sunAlt = sun ? sun.alt : -90;
     const limit = sc.layers.daylight ? 6 : limitingMagnitude(sunAlt);

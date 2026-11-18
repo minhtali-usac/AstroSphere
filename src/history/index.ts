@@ -508,8 +508,15 @@ export function startHistory(o: StartOpts): HistorySession {
   // Kiểu hiển thị: khối 3D (giống giản đồ chân trời ngoài trang chính) hoặc bản đồ phẳng.
   const btn3d = button(H.view.mode3d, () => setMode('3d'), { cls: 'btn--small' });
   const btn2d = button(H.view.mode2d, () => setMode('2d'), { cls: 'btn--small' });
+  const btnFp = button(H.view.firstPerson, () => {
+    const on = !dome?.isFirstPerson();
+    dome?.setFirstPerson(on);
+    btnFp.setAttribute('aria-pressed', String(on));
+    setText(btnFp.querySelector('.btn__text') as HTMLElement, on ? H.view.outside : H.view.firstPerson);
+  }, { cls: 'btn--small', guide: 'historyFirstPerson' });
+  btnFp.setAttribute('aria-pressed', 'false');
   const btnCam = button(H.view.camera, () => dome?.resetCamera(), { cls: 'btn--small btn--ghost', guide: 'historyCamera' });
-  const modeBar = guide('historyMode', h('div', { class: 'hsky-modes', role: 'group', 'aria-label': H.view.modeAria }, btn3d, btn2d, btnCam));
+  const modeBar = guide('historyMode', h('div', { class: 'hsky-modes', role: 'group', 'aria-label': H.view.modeAria }, btn3d, btn2d, btnFp, btnCam));
   btn3d.disabled = true; // bật khi cảnh 3D dựng xong
   main.append(modeBar);
   const side = h('div', { class: 'hsky-side' }, presetBox, timeBox, placeBox, fixBox, readout, selBox, poleBox, layerBox, notes);
@@ -662,11 +669,13 @@ export function startHistory(o: StartOpts): HistorySession {
     btn3d.setAttribute('aria-pressed', String(m === '3d'));
     btn2d.setAttribute('aria-pressed', String(m === '2d'));
     btnCam.hidden = m !== '3d';
+    btnFp.hidden = m !== '3d';
     fit();
   }
   btn3d.setAttribute('aria-pressed', 'false');
   btn2d.setAttribute('aria-pressed', 'true');
   btnCam.hidden = true;
+  btnFp.hidden = true;
 
   // Cảnh 3D: tải lười (dùng chung gói three.js với trang chính). Dựng xong thì chuyển sang 3D, trừ khi trình duyệt không
   // có WebGL — khi đó giữ bản đồ phẳng.
@@ -679,6 +688,7 @@ export function startHistory(o: StartOpts): HistorySession {
         console.warn(e);
         btn3d.hidden = true;
         btnCam.hidden = true;
+        btnFp.hidden = true;
         return;
       }
       btn3d.disabled = false;

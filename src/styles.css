@@ -5503,6 +5503,15 @@ body.mode-simple .infocard__fly {
   overflow: hidden;
 }
 
+/* Usui-chan được đưa vào hộp thoại (guide.dock) để chế độ giải thích dùng được ở đây: góc dưới phải, trên mọi thứ. */
+.hsky-dlg > .guide-avatar {
+  position: fixed;
+  inset: auto var(--space-4) var(--space-4) auto;
+  width: 56px;
+  height: 56px;
+  z-index: 5;
+}
+
 .hsky-dlg__status {
   position: absolute;
   inset: 50% 0 auto;

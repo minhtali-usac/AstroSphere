@@ -137,6 +137,8 @@
   "hover": { "star": "{name} · cấp sao {mag}", "unnamed": "Sao HIP {hip} · cấp sao {mag}" },
   "view": {
     "mode3d": "Khối 3D",
+    "firstPerson": "Nhìn từ người quan sát",
+    "outside": "Nhìn từ ngoài vào",
     "mode2d": "Bản đồ phẳng",
     "modeAria": "Kiểu hiển thị",
     "camera": "Góc nhìn mặc định",

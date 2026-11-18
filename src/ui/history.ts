@@ -6,6 +6,7 @@
 // đang diễn ra → đóng. Khi đóng: tiếp tục vẽ hai khung nhìn chính, trả tiêu điểm về nút đã mở.
 
 import { t } from '../i18n';
+import type { Guide } from '../guide/boot';
 import type { Store } from '../state';
 import { button, h, setText } from './dom';
 import { historyIcon } from './icons';
@@ -17,6 +18,8 @@ export interface HistorySessionLike {
 
 interface HistoryContext {
   store: Store;
+  /** Usui-chan: vào hộp thoại để chế độ giải thích dùng được trong lúc xem bầu trời xưa. */
+  guide: Guide;
   /** Tạm dừng / tiếp tục vẽ hai khung nhìn chính khi hộp thoại mở / đóng. */
   suspend(on: boolean): void;
 }
@@ -52,11 +55,14 @@ function buildDialog(): HTMLDialogElement {
     statusEl,
   );
   d.addEventListener('cancel', (e) => {
-    if (session?.escape()) e.preventDefault();
+    // Esc: dừng chạy thời gian → thoát chế độ giải thích của Usui-chan → đóng.
+    if (session?.escape() || ctx?.guide.escape()) e.preventDefault();
   });
   d.addEventListener('close', () => {
     session?.dispose();
     session = null;
+    ctx?.guide.close();
+    ctx?.guide.dock(null);
     ctx?.suspend(false);
     document.body.classList.remove('history-open');
     const back = opener?.isConnected ? opener : document.querySelector<HTMLElement>('.btn--top-history');
@@ -73,6 +79,7 @@ export function openHistory(): void {
   const a = document.activeElement;
   opener = a instanceof HTMLElement && a !== document.body ? a : null;
   dlg.showModal();
+  ctx.guide.dock(dlg);
   document.body.classList.add('history-open');
   ctx.suspend(true);
   setText(statusEl!, t('history.wait'));

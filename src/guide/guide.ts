@@ -404,6 +404,11 @@ export function createGuideUi({ avatar, skies }: { avatar: HTMLButtonElement; sk
 
   return {
     showHello,
+    /** Đưa dải thông báo và bong bóng vào một hộp thoại đang mở (lớp trên cùng) hoặc trả về trang; null = về trang. */
+    dock(parent: HTMLElement | null): void {
+      (parent ?? document.body).append(tip);
+      avatar.after(banner);
+    },
     toggleExplain: () => (explaining ? exitExplain() : enterExplain()),
     isExplaining: () => explaining,
     /** Esc: lời chào trước, rồi chế độ giải thích. */

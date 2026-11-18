@@ -476,7 +476,7 @@ mountQualityNotice(quality, app);
 // «Bay vào vũ trụ»: hai khung nhìn chính ngừng vẽ trong lúc bay (hộp thoại che kín chúng).
 initFlight({ store, suspend: (on) => loop.suspend('flight', on) });
 // «Bầu trời xưa»: hộp thoại riêng với canvas 2D; hai khung nhìn chính cũng ngừng vẽ cho tới khi đóng.
-initHistory({ store, suspend: (on) => loop.suspend('history', on) });
+initHistory({ store, guide: guideUi, suspend: (on) => loop.suspend('history', on) });
 
 // ---------------------------------------------------------------- Chế độ Cơ bản / Đầy đủ (redesign-2 R2)
 // Cơ bản chỉ có giản đồ chân trời: tắt trình chiếu, đóng ngăn Ôn tập, chọn thẻ "Giản đồ chân trời" (để thiên cầu
