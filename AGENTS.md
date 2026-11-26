@@ -109,7 +109,7 @@ The brand comes from the club site https://web-usac.vercel.app/.
   - The focus ring is orange, not yellow, because yellow means the celestial equator in the scene.
 - **3D scene colours** (`scene/colors.ts`) carry meaning and are never rebranded. Examples: equator yellow, axis blue `#4f9dff`, zones purple/teal/red.
 - **App name:** AstroSphere. The page title and link-preview tags (`og:*` in `index.html`) read "AstroSphere - Hệ thống mô phỏng Hệ tọa độ"; the preview image is `public/og-logo.png`.
-- **Club link:** exactly one link to the club Fanpage (https://www.facebook.com/clbusac), in the footer. The logo is `src/assets/usac-logo.png`.
+- **Club link:** exactly one link to the club Fanpage (https://www.facebook.com/clbusac), in the footer. The logo is `src/assets/usac-logo.png`; the project group's STELLAR logo (`src/assets/stellar-logo.png`) sits beside it in the top bar.
 
 ## Performance budgets
 

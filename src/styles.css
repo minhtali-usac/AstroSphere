@@ -5554,3 +5554,23 @@ body.mode-simple .infocard__fly {
     font-size: 10.5px;
   }
 }
+
+/* Hai logo (CLB và nhóm STELLAR): trên điện thoại rất hẹp thu nhỏ để hàng đầu vẫn vừa 375 px. */
+@media (max-width: 480px) {
+  .brand__logo,
+  body.mode-full .brand__logo,
+  body.mode-simple .brand__logo {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* 901–1535 px: logo thứ hai chiếm thêm chỗ, nên Trình chiếu, Đặt lại, Trợ giúp và Giới thiệu chỉ còn biểu tượng (vẫn
+   có tên truy cập và chú thích) để thanh trên một dòng và tên ứng dụng không bị cắt. */
+@media (min-width: 901px) and (max-width: 1535px) {
+  .btn--top-present .btn__text,
+  .btn--top-reset .btn__text,
+  .btn--top-aux .btn__text {
+    display: none;
+  }
+}
