@@ -20,7 +20,7 @@ const errors = [];
 
 /** Đầy đủ, Usui-chan đã chào; đồng hồ cố định để ảnh chụp lặp lại được; giảm chuyển động = không tự chạy. */
 async function open(width, height, { mode = 'full', url = URL } = {}) {
-  const ctx = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce', deviceScaleFactor: 1 });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width, height }, reducedMotion: 'reduce', deviceScaleFactor: 1 });
   await ctx.addInitScript((m) => {
     try {
       localStorage.setItem('astrosphere.mode.v1', JSON.stringify(m));

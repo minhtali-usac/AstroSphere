@@ -7,7 +7,7 @@ const OUT = process.env.OUT ?? 'docs/redesign-2/review-1/';
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 
 async function shot(name, { w = 1440, h = 900, seed = {}, touch = false, act } = {}) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch, deviceScaleFactor: 1 });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch, deviceScaleFactor: 1 });
   await ctx.addInitScript((kv) => { try { for (const [k, v] of Object.entries(kv)) localStorage.setItem(k, v); } catch {} }, seed);
   const page = await ctx.newPage();
   await page.goto(URL);

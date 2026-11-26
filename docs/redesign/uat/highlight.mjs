@@ -28,7 +28,7 @@ const check = (name, ok, detail = '') => {
 };
 
 async function open(opts = {}) {
-  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: opts.reducedMotion ?? 'no-preference' });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width: 1440, height: 900 }, reducedMotion: opts.reducedMotion ?? 'no-preference' });
   // Không hiện gợi ý lần đầu (che khung nhìn trong ảnh chụp).
   await ctx.addInitScript(FULL_MODE);
   await ctx.addInitScript(() => {

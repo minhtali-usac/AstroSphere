@@ -10,7 +10,8 @@
 //
 // <dialog> gốc: bẫy tiêu điểm, Esc đóng trước mọi thứ khác, tiêu điểm trở về nút đã mở khi đóng.
 
-import content from '../i18n/codex.vi.json';
+import { content } from '../i18n/codexContent';
+import { LANG } from '../i18n/locale';
 import { t } from '../i18n';
 import { h } from '../ui/dom';
 import { renderLines, renderMath } from '../ui/dialogs';
@@ -79,8 +80,8 @@ interface Ui {
   catCount: HTMLElement;
   page: HTMLElement;
   cat: string;
-  /** Ô "Thử thách SGK" (trò chơi theo SGK, src/games). */
-  sgk: Tile;
+  /** Ô "Thử thách SGK" (trò chơi theo SGK Việt Nam, src/games); null ở bản tiếng Anh. */
+  sgk: Tile | null;
   showEntry: (id: string) => void;
   showCategory: (cat: string, focusId?: string) => void;
   showGames: () => void;
@@ -137,10 +138,12 @@ function syncMarkers(u: Ui): void {
     tile.btn.toggleAttribute('data-new', fresh);
     if (c.id === u.cat) setText(u.catCount, t('codexUi.progress', { n, total: c.entries.length }));
   }
-  const done = completedCount();
-  setText(u.sgk.count, `${done}/${GAME_IDS.length}`);
-  setText(u.sgk.sr, `, ${t('codexUi.sgkCountSr', { n: done, total: GAME_IDS.length })}`);
-  if (bars) u.sgk.btn.style.setProperty('--p', String(done / GAME_IDS.length));
+  if (u.sgk) {
+    const done = completedCount();
+    setText(u.sgk.count, `${done}/${GAME_IDS.length}`);
+    setText(u.sgk.sr, `, ${t('codexUi.sgkCountSr', { n: done, total: GAME_IDS.length })}`);
+    if (bars) u.sgk.btn.style.setProperty('--p', String(done / GAME_IDS.length));
+  }
   const n = ORDER.filter(isDiscovered).length;
   setText(u.title, t('codexUi.title', { n, total: ORDER.length }));
   setText(u.progress, t('codexUi.progress', { n, total: ORDER.length }));
@@ -202,7 +205,8 @@ function build(ctx: CodexContext): Ui {
     }),
   );
   // Ô "Thử thách SGK": sau các danh mục, mở phần trò chơi (tải lười) thay cho lưới thẻ.
-  const sgk = (() => {
+  // Chỉ có ở bản tiếng Việt: các bài bám theo SGK của Việt Nam.
+  const sgk = LANG !== 'vi' ? null : (() => {
     const count = h('span', { class: 'cdx-tile__count', 'aria-hidden': 'true' });
     const sr = h('span', { class: 'sr-only' });
     const icon = h('span', { class: 'cdx-tile__icon', 'aria-hidden': 'true' });
@@ -306,7 +310,7 @@ function build(ctx: CodexContext): Ui {
   function selectCategory(cat: CodexCategory): void {
     u.cat = cat.id;
     dlg.classList.remove('is-playing');
-    sgk.btn.removeAttribute('aria-current');
+    sgk?.btn.removeAttribute('aria-current');
     for (const [k, tile] of tiles) {
       if (k === cat.id) tile.btn.setAttribute('aria-current', 'true');
       else tile.btn.removeAttribute('aria-current');
@@ -509,15 +513,17 @@ function build(ctx: CodexContext): Ui {
 
   /** Mở Thử thách SGK: tải lười phần trò chơi (một lần), giữ nguyên ván đang chơi nếu đã mở trước đó. */
   function showGames(): void {
+    if (!sgk) return;
+    const tile = sgk;
     dlg.classList.remove('is-reading');
     dlg.classList.add('is-playing');
-    for (const tile of tiles.values()) tile.btn.removeAttribute('aria-current');
-    sgk.btn.setAttribute('aria-current', 'true');
+    for (const other of tiles.values()) other.btn.removeAttribute('aria-current');
+    tile.btn.setAttribute('aria-current', 'true');
     void import('../games').then((m) =>
       m.mountGames(games, {
         onBack: () => {
           showCategory(u.cat);
-          sgk.btn.focus();
+          tile.btn.focus();
         },
         onChange: () => syncMarkers(u),
       }),

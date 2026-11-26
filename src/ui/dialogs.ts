@@ -12,7 +12,10 @@
 
 import { fmtDegSigned, fmtHMS, fmtMag, fmtNum } from '../astro';
 import { COMETS, DSOS, dsoDesignation } from '../data/deepSky';
-import { t, tList } from '../i18n';
+import dialogsEn from '../i18n/dialogs.en.json';
+import dialogsVi from '../i18n/dialogs.vi.json';
+import { addStrings, t, tList } from '../i18n';
+import { LANG } from '../i18n/locale';
 import { fmtLightYears } from '../selection';
 import { h } from './dom';
 
@@ -199,6 +202,7 @@ function catalogContent(): HTMLElement {
 }
 
 export function createDialogs() {
+  addStrings(LANG === 'en' ? dialogsEn : dialogsVi);
   const help = makeDialog('dlg-help', t('help.title'), tList('help.body'));
   const about = makeDialog('dlg-about', t('about.title'), tList('about.body'));
   const catalog = makeDialog('dlg-catalog', t('catalog.title'), [], [], catalogContent());

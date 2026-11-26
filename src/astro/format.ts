@@ -1,12 +1,13 @@
-// Định dạng số liệu theo kiểu Việt Nam (dấu phẩy thập phân).
+// Định dạng số liệu theo ngôn ngữ: tiếng Việt dùng dấu phẩy và B/N/Đ/T, tiếng Anh dùng dấu chấm và N/S/E/W.
 
+import { DECIMAL, pick } from '../i18n/locale';
 import { norm360 } from './math';
 
 /** 21.03 → "21,03" */
 export function fmtNum(x: number, digits = 2): string {
   if (!Number.isFinite(x)) return '—';
   const s = x.toFixed(digits);
-  return (s === `-${(0).toFixed(digits)}` ? s.slice(1) : s).replace('.', ',');
+  return (s === `-${(0).toFixed(digits)}` ? s.slice(1) : s).replace('.', DECIMAL);
 }
 
 /** Cấp sao (và số có thể âm khác): dấu trừ thật U+2212 như các số âm còn lại, không thêm "+": −1,44 · 0,03. */
@@ -27,12 +28,12 @@ export function fmtDegSigned(x: number, digits = 2): string {
 
 /** Vĩ độ: "21,03° B" / "33,87° N" (B = Bắc, N = Nam). */
 export function fmtLat(lat: number, digits = 2): string {
-  return `${fmtDeg(Math.abs(lat), digits)} ${lat >= 0 ? 'B' : 'N'}`;
+  return `${fmtDeg(Math.abs(lat), digits)} ${lat >= 0 ? pick('B', 'N') : pick('N', 'S')}`;
 }
 
 /** Kinh độ: "105,85° Đ" / "96,70° T" (Đ = Đông, T = Tây). */
 export function fmtLon(lon: number, digits = 2): string {
-  return `${fmtDeg(Math.abs(lon), digits)} ${lon >= 0 ? 'Đ' : 'T'}`;
+  return `${fmtDeg(Math.abs(lon), digits)} ${lon >= 0 ? pick('Đ', 'E') : pick('T', 'W')}`;
 }
 
 const pad = (n: number) => String(n).padStart(2, '0');

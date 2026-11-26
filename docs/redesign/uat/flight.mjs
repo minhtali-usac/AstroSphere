@@ -28,7 +28,7 @@ const check = (name, ok, detail = '') => {
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 
 async function openPage(opts = {}) {
-  const page = await browser.newPage({ viewport: opts.viewport ?? { width: 1280, height: 800 } });
+  const page = await browser.newPage({ locale: 'vi-VN', viewport: opts.viewport ?? { width: 1280, height: 800 } });
   if (opts.reducedMotion) await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.addInitScript(INIT);
   const foreign = [];

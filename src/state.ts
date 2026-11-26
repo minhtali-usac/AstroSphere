@@ -6,6 +6,7 @@ import { TEMPLATE_FIGURES, constellationName, getTemplate } from './data/constel
 import { DEFAULT_PLACE } from './data/places';
 import { COLORS } from './scene/colors';
 import type { EmphasisKey } from './emphasis';
+import { pick } from './i18n/locale';
 
 export type { EmphasisKey } from './emphasis';
 
@@ -369,7 +370,7 @@ export class Actions {
       const ra = Math.random() * 360;
       stars.push({
         id: nextId('s'),
-        name: `Sao ngẫu nhiên ${++count}`,
+        name: `${pick('Sao ngẫu nhiên', 'Random star')} ${++count}`,
         ra: Math.round(ra * 100) / 100,
         dec: Math.round(dec * 100) / 100,
         mag: 1.5,

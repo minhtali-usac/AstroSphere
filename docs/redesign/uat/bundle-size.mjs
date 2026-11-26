@@ -1,7 +1,8 @@
 // Đo kích thước gói JS sau khi build (gzip mức mặc định của zlib, như báo cáo của Vite).
 // Chạy: npm run build && node docs/redesign/uat/bundle-size.mjs
 //
-// (1) Entry JS: mọi JS mà dist/index.html tải ngay (<script type=module> + <link rel=modulepreload>).
+// (1) Entry JS: mọi JS mà dist/index.html tải ngay (<script type=module> + <link rel=modulepreload>), cộng
+//     src/main.ts (import tĩnh của nó) và một bảng chuỗi giao diện.
 // (2) JS trước khung hình 3D đầu tiên: (1) + chunk scene/boot và mọi import tĩnh của nó (three.js…).
 //     Dữ liệu lục địa và 88 chòm sao tải động sau đó nên không tính.
 // (3) Tổng JS, trừ KaTeX (chỉ dùng trong hộp thoại Trợ giúp/Giới thiệu).
@@ -36,6 +37,15 @@ function staticClosure(key, out = new Set()) {
   for (const k of c.imports ?? []) staticClosure(k, out);
   return out;
 }
+// src/boot.ts tải động bảng chuỗi rồi src/main.ts: cả hai đều thuộc gói khởi động. Tính bảng chuỗi lớn hơn.
+const keyOf = (suffix) => {
+  const key = Object.keys(manifest).find((k) => k.endsWith(suffix));
+  if (!key) throw new Error(`${suffix} not found in dist/.vite/manifest.json`);
+  return key;
+};
+for (const f of staticClosure(keyOf('src/main.ts'))) entryFiles.add(f);
+const dictionaries = ['src/i18n/vi.json', 'src/i18n/en.json'].map((s) => manifest[keyOf(s)].file);
+entryFiles.add(dictionaries.sort((a, b) => gz(b) - gz(a))[0]);
 const bootKey = Object.keys(manifest).find((k) => k.endsWith('src/scene/boot.ts'));
 if (!bootKey) throw new Error('scene/boot.ts not found in dist/.vite/manifest.json');
 const firstFrame = new Set([...entryFiles, ...staticClosure(bootKey)]);

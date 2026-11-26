@@ -9,6 +9,7 @@ import { calendarOf, calendarToJd, deltaTUncertainty, equinoxShiftDeg, jdToCalen
 import { fmtDeg, fmtHMS, fmtLat, fmtLon, fmtNum, parseNum } from '../astro/format';
 import { SPECIAL_PLACES, VN_PLACES } from '../data/places';
 import { t } from '../i18n';
+import { pick } from '../i18n/locale';
 import { rovingTabs } from '../ui/tabs';
 import { WorldMap } from '../ui/worldMap';
 import { catalogArrays, getCatalogStar } from '../data/catalog';
@@ -60,6 +61,9 @@ function clampDay(year: number, month: number, day: number): number {
 }
 
 const pad2 = (n: number) => String(n).padStart(2, '0');
+const EN_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+/** Tháng trong câu chữ: số trong tiếng Việt, tên tháng trong tiếng Anh (ngày dạng số dễ đọc nhầm giữa các nước). */
+const monthName = (m: number): string => pick(String(m), EN_MONTHS[m - 1]);
 
 function clockOf(jd: number): string {
   const f = (((jd + 0.5) % 1) + 1) % 1;
@@ -159,7 +163,7 @@ export function startHistory(o: StartOpts): HistorySession {
   const monthSel = h(
     'select',
     { 'aria-label': H.time.month },
-    ...Array.from({ length: 12 }, (_, i) => h('option', { value: String(i + 1), text: fmt(H.time.monthOption, { m: i + 1 }) })),
+    ...Array.from({ length: 12 }, (_, i) => h('option', { value: String(i + 1), text: fmt(H.time.monthOption, { m: monthName(i + 1) }) })),
   );
   const dayInput = h('input', { type: 'number', class: 'num hsky-day', min: 1, max: 31, step: 1, inputmode: 'numeric', 'aria-label': H.time.day });
   const timeInput = h('input', { type: 'time', class: 'hsky-time', 'aria-label': H.time.clock, step: 60 });
@@ -185,8 +189,8 @@ export function startHistory(o: StartOpts): HistorySession {
     if (!validDate(next.year, next.month, next.day)) {
       const gap = next.year === 1582 && next.month === 10;
       err.textContent = gap
-        ? fmt(H.time.gap, { day: next.day, month: next.month })
-        : fmt(H.time.invalid, { day: next.day, month: next.month, year: yearLabel(next.year) });
+        ? fmt(H.time.gap, { day: next.day, month: monthName(next.month) })
+        : fmt(H.time.invalid, { day: next.day, month: monthName(next.month), year: yearLabel(next.year) });
       syncTime();
       return false;
     }
@@ -785,7 +789,7 @@ export function startHistory(o: StartOpts): HistorySession {
   function dateText(m: Moment): string {
     const c = m.calendar;
     const d = displayYear(c.year);
-    return fmt(H.readout.dateValue, { day: Math.floor(c.day), month: c.month, year: d.n, era: H.era[d.era], cal: H.cal[c.calendar] });
+    return fmt(H.readout.dateValue, { day: Math.floor(c.day), month: monthName(c.month), year: d.n, era: H.era[d.era], cal: H.cal[c.calendar] });
   }
 
   function readoutUpdate(m: Moment, pole: { index: number; sepDeg: number }): void {

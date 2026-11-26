@@ -3,7 +3,7 @@
 // - Mục sao, chòm sao, thiên thể sâu: ảnh bầu trời thu nhỏ từ dữ liệu thật (sky.ts) và các con số chính
 //   (α, δ, cấp sao, B − V, chòm, tên tiếng Việt; khoảng cách và kích thước cho thiên thể sâu).
 
-import content from '../i18n/codex.vi.json';
+import { content } from '../i18n/codexContent';
 import { fmtDegSigned, fmtHMS, fmtMag, fmtNum } from '../astro';
 import { catalogIndexByHip, getCatalogStar, nameOf, starConstellation } from '../data/catalog';
 import { constellationName, constellationNameVi, TEMPLATE_FIGURES } from '../data/constellations';

@@ -1,11 +1,11 @@
 // Điểm khởi động: dựng bố cục, hai khung nhìn 3D, bốn bảng điều khiển và vòng lặp hoạt ảnh.
 
-import './styles.css';
 import logoUrl from './assets/usac-logo.png';
 import { Animator } from './animator';
 import { codexButton, isCodexOpen } from './codex/triggers';
 import { createGuide } from './guide/boot';
 import { t } from './i18n';
+import { LANG, switchLang } from './i18n/locale';
 import { startFrameLoop, type FrameView } from './runtime/frameLoop';
 import { initPwa } from './pwa';
 import { createQuality } from './runtime/quality';
@@ -49,6 +49,16 @@ const reducedMotion = (): boolean => {
 };
 if (reducedMotion()) actions.pause();
 const app = document.getElementById('app')!;
+applyDocumentLanguage();
+
+/** index.html viết sẵn bằng tiếng Việt; bản tiếng Anh đổi ngôn ngữ, tiêu đề, mô tả và manifest PWA lúc chạy. */
+function applyDocumentLanguage(): void {
+  document.documentElement.lang = LANG;
+  if (LANG === 'vi') return;
+  document.title = t('meta.title');
+  document.querySelector('meta[name="description"]')?.setAttribute('content', t('meta.description'));
+  document.querySelector('link[rel="manifest"]')?.setAttribute('href', './manifest.en.webmanifest');
+}
 
 // ---------------------------------------------------------------- Ngăn Ôn tập và hộp thoại (tải động khi dùng lần đầu)
 type LearnDrawer = ReturnType<typeof import('./ui/learning').learningDrawer>;
@@ -124,6 +134,7 @@ const topbar = h(
   ),
   // Công tắc Cơ bản | Đầy đủ (redesign-2 R2).
   modeSwitch(store, actions),
+  languageButton(), // VI ⇄ EN
   h(
     'nav',
     { class: 'topbar__actions', 'aria-label': t('top.navAria') },
@@ -137,6 +148,22 @@ const topbar = h(
     button(t('top.about'), () => dialogs.about(), { cls: 'btn--top btn--top-aux', icon: 'i', title: t('top.aboutTip'), guide: 'about' }),
   ),
 );
+
+/**
+ * Nút đổi ngôn ngữ, cạnh công tắc chế độ: ghi mã ngôn ngữ KIA, tên truy cập là tên ngôn ngữ đó bằng chính nó. Bấm là
+ * tải lại trang. Để ngoài dải nút: ở 375 px dải đó đã đầy.
+ */
+function languageButton(): HTMLButtonElement {
+  const other = LANG === 'vi' ? 'en' : 'vi';
+  const btn = button(other.toUpperCase(), () => switchLang(other), {
+    cls: 'btn--lang',
+    aria: t('top.language'),
+    title: t('top.languageTip'),
+    guide: 'language',
+  }) as HTMLButtonElement;
+  btn.lang = other;
+  return btn;
+}
 
 // ---------------------------------------------------------------- Hai khung nhìn
 const sphereHost = h('div', { class: 'view__canvas', role: 'img', 'aria-label': t('view.sphereAria'), 'data-guide': 'sphereView' });

@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import vi from './vi.json';
+import dialogs from './dialogs.vi.json';
+import base from './vi.json';
 import { DEFAULT_LABELS, DEFAULT_TOGGLES } from '../state';
 
 type Dict = { [k: string]: unknown };
+
+const vi = { ...base, ...dialogs };
 
 function has(key: string): boolean {
   let cur: unknown = vi;

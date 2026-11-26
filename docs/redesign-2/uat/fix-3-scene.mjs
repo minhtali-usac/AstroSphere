@@ -22,7 +22,7 @@ const check = (name, ok, detail = '') => {
 };
 
 async function open(width, height, { touch = false, focus = null } = {}) {
-  const ctx = await browser.newContext({ viewport: { width, height }, hasTouch: touch, isMobile: touch, deviceScaleFactor: 1, reducedMotion: 'reduce' });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width, height }, hasTouch: touch, isMobile: touch, deviceScaleFactor: 1, reducedMotion: 'reduce' });
   await ctx.addInitScript((focus) => {
     try {
       localStorage.setItem('astrosphere.mode.v1', JSON.stringify('full'));

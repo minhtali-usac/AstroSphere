@@ -75,7 +75,7 @@ const keyLineHas = (page, text) =>
 
 try {
   // ------------------------------------------------------------ 1440 × 900, ngữ cảnh mới
-  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width: 1440, height: 900 }, reducedMotion: 'no-preference' });
   let page = await open(ctx);
 
   const body = await page.evaluate(() => document.body.className);
@@ -305,7 +305,7 @@ try {
   await ctx.close();
 
   // ------------------------------------------------------------ 375 × 812 (điện thoại), ngữ cảnh mới
-  const phone = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true, reducedMotion: 'no-preference' });
+  const phone = await browser.newContext({ locale: 'vi-VN', viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true, reducedMotion: 'no-preference' });
   page = await open(phone);
   const m = await page.evaluate(() => {
     const box = (sel) => {
