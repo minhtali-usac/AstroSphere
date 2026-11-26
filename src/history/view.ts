@@ -318,6 +318,8 @@ export class SkyView {
     // Nhãn (vẽ ngoài vùng cắt để không bị cụt ở mép).
     ctx.font = '12px Arial, Helvetica, sans-serif';
     ctx.textBaseline = 'alphabetic';
+    // Viền chữ nối tròn: nối nhọn (mặc định) tạo "gai" trên các chữ như M.
+    ctx.lineJoin = 'round';
     for (const l of labels) {
       ctx.lineWidth = 3;
       ctx.strokeStyle = p.halo;

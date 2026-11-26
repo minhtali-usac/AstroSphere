@@ -332,12 +332,14 @@ export class HistoryDome {
 
     // Sao.
     let labelN = 0;
-    const showLabel = (text: string, x: number, y: number, z: number, cls: string): void => {
+    // cy: điểm neo theo chiều dọc của nhãn (0,5 = giữa; số âm = nhãn nằm hẳn dưới điểm).
+    const showLabel = (text: string, x: number, y: number, z: number, cls: string, cy = 0.5): void => {
       if (labelN >= this.labels.length) return;
       const o = this.labels[labelN++];
       o.element.textContent = text;
       o.element.className = cls;
       o.position.set(x, y, z);
+      o.center.set(0.5, cy);
       o.visible = true;
     };
     const nameMag = this.w < 520 ? 1.3 : 2.0;
@@ -409,7 +411,8 @@ export class HistoryDome {
     this.ring.col.set([0.31, 0.62, 1], 0);
     this.ring.size[0] = 22;
     ar[0] = 1;
-    showLabel(sc.lat >= 0 ? H.view.poleN : H.view.poleS, this.ring.pos[0], this.ring.pos[1] + 0.45, this.ring.pos[2], 'lbl lbl--catalog');
+    // Tên cực nằm DƯỚI vòng: tên sao Bắc Cực của thời đó nằm phía trên sao, hai nhãn không đè nhau.
+    showLabel(sc.lat >= 0 ? H.view.poleN : H.view.poleS, this.ring.pos[0], this.ring.pos[1], this.ring.pos[2], 'lbl lbl--catalog', -0.6);
     if (sc.marker && sc.marker.alt > -0.5) {
       put(this.ring.pos, 1, sc.marker.alt, sc.marker.az, R * 0.99);
       this.ring.col.set([0.95, 0.4, 0.13], 3);
@@ -427,7 +430,10 @@ export class HistoryDome {
     touch(this.ring);
 
     for (let i = labelN; i < this.labels.length; i++) this.labels[i].visible = false;
-    this.schedule();
+    // Vẽ ngay trong lượt này: chữ của nhãn đổi tức thì, nên để vị trí sang khung hình sau sẽ có lúc tên nằm nhầm sao.
+    if (this.raf) cancelAnimationFrame(this.raf);
+    this.raf = 0;
+    this.render();
   }
 
   private circle(line: THREE.Line, sc: SkySceneData, eps: number, on: boolean): void {
