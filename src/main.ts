@@ -1,6 +1,7 @@
 // Điểm khởi động: dựng bố cục, hai khung nhìn 3D, bốn bảng điều khiển và vòng lặp hoạt ảnh.
 
 import logoUrl from './assets/usac-logo.png';
+import groupLogoUrl from './assets/stellar-logo.png';
 import { Animator } from './animator';
 import { codexButton, isCodexOpen } from './codex/triggers';
 import { createGuide } from './guide/boot';
@@ -123,6 +124,8 @@ const topbar = h(
     'div',
     { class: 'brand' },
     h('img', { class: 'brand__logo', src: logoUrl, alt: t('app.logoAlt'), width: 44, height: 44, decoding: 'async' }),
+    // Nhóm dự án STELLAR, đứng cạnh logo CLB.
+    h('img', { class: 'brand__logo', src: groupLogoUrl, alt: t('app.groupLogoAlt'), width: 44, height: 44, decoding: 'async' }),
     h(
       'h1',
       { class: 'brand__text' },
