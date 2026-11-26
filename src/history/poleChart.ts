@@ -136,6 +136,7 @@ export class PoleChart {
     ctx.stroke();
     named.push({ x: c + 7, y: c + 4, t: H.pole.label });
 
+    ctx.lineJoin = 'round';
     for (const l of named) {
       ctx.lineWidth = 3;
       ctx.strokeStyle = halo;
