@@ -110,7 +110,7 @@ const canvasDraws = (page) =>
   }));
 
 async function openPage(browser, url, viewport) {
-  const page = await browser.newPage({ viewport });
+  const page = await browser.newPage({ locale: 'vi-VN', viewport });
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
@@ -220,7 +220,7 @@ try {
 
   // (d) Nỗ lực tốt nhất: CPU chậm → chất lượng tự hạ
   {
-    const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+    const page = await browser.newPage({ locale: 'vi-VN', viewport: { width: 1280, height: 800 } });
     await page.addInitScript(FULL_MODE);
     await page.goto(`${DEV}/`);
     await page.evaluate(() => {

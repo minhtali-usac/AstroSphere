@@ -69,5 +69,6 @@ export default defineConfig({
   },
   test: {
     include: ['src/**/*.test.ts'],
+    setupFiles: ['src/i18n/testSetup.ts'],
   },
 });

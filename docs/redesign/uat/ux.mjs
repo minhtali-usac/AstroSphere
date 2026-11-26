@@ -31,7 +31,7 @@ const errors = [];
 
 /** Mỗi lần gọi là một hồ sơ trình duyệt mới (bộ nhớ trống = lần đầu vào trang). */
 async function open({ width = 1440, height = 900, reducedMotion = 'no-preference', init } = {}) {
-  const ctx = await browser.newContext({ viewport: { width, height }, reducedMotion });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width, height }, reducedMotion });
   await ctx.addInitScript(FULL_MODE);
   if (init) await ctx.addInitScript(init);
   const page = await ctx.newPage();

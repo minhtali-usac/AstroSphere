@@ -4560,8 +4560,8 @@ body.present .guide-tip {
   }
 }
 
-/* 901–1100 px: thêm "Đặt lại" (↺) chỉ còn biểu tượng để thanh trên cùng vẫn một dòng. */
-@media (min-width: 901px) and (max-width: 1100px) {
+/* 901–1200 px: thêm "Đặt lại" (↺) chỉ còn biểu tượng để thanh trên cùng vẫn một dòng. */
+@media (min-width: 901px) and (max-width: 1200px) {
   .btn--top-reset .btn__text {
     display: none;
   }
@@ -5523,5 +5523,34 @@ body.mode-simple .infocard__fly {
 @media (max-width: 900px) {
   .hsky-dlg__hint {
     display: none;
+  }
+}
+
+/* Nút đổi ngôn ngữ "EN"/"VI" cạnh công tắc chế độ. */
+.btn--lang {
+  flex: none;
+  min-width: var(--tap);
+  min-height: 38px;
+  padding-inline: var(--space-2);
+  background: transparent;
+  font-weight: 700;
+}
+
+@media (max-width: 900px) {
+  .btn--lang {
+    min-height: var(--tap);
+  }
+}
+
+/* Tiếng Anh trên điện thoại: chú thích dưới biểu tượng dài hơn ("Through", "Ancient"), nên nhỏ đi một bậc. */
+@media (max-width: 420px) {
+  html[lang='en'] body.mode-full .topbar__actions .btn--top,
+  html[lang='en'] body.mode-simple .topbar__actions .btn--top {
+    padding-inline: 0;
+  }
+
+  html[lang='en'] body.mode-full .topbar__actions .btn--top .btn__text,
+  html[lang='en'] body.mode-simple .topbar__actions .btn--top .btn__text {
+    font-size: 10.5px;
   }
 }

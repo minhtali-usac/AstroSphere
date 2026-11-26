@@ -1,6 +1,11 @@
 // Chữ của «Bầu trời xưa» (src/i18n/history.vi.json) — chỉ phần tải lười nhập tệp này.
 
-import strings from '../i18n/history.vi.json';
+import { DECIMAL, LANG } from '../i18n/locale';
+import en from '../i18n/history.en.json';
+import vi from '../i18n/history.vi.json';
+
+// Cả hai ngôn ngữ nằm trong chunk tải lười (vài kB): top-level await ở đây làm gói khởi động bị chẻ nhỏ.
+const strings: typeof vi = LANG === 'en' ? en : vi;
 
 export const H = strings;
 
@@ -11,5 +16,5 @@ export function fmt(str: string, params: Record<string, string | number> = {}): 
 
 /** Số thập phân kiểu Việt Nam (dấu phẩy, dấu trừ thật). */
 export function num(x: number, digits = 0): string {
-  return x.toFixed(digits).replace('.', ',').replace('-', '−');
+  return x.toFixed(digits).replace('.', DECIMAL).replace('-', '−');
 }

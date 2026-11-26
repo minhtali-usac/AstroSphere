@@ -11,10 +11,11 @@ import type { FlightData } from '../data/flightData';
 import { ft } from '../scene/flight/text';
 import type { FlightView, Thing } from '../scene/flight/flightView';
 import { button, checkbox, guide, h, setText } from './dom';
+import { pick } from '../i18n/locale';
 
-const nf3 = new Intl.NumberFormat('vi-VN', { maximumSignificantDigits: 3 });
-const nf0 = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 });
-const nf2 = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 });
+const nf3 = new Intl.NumberFormat(pick('vi-VN', 'en-US'), { maximumSignificantDigits: 3 });
+const nf0 = new Intl.NumberFormat(pick('vi-VN', 'en-US'), { maximumFractionDigits: 0 });
+const nf2 = new Intl.NumberFormat(pick('vi-VN', 'en-US'), { maximumFractionDigits: 2 });
 
 const LY_KM = PC_KM / LY_PER_PC;
 
@@ -66,7 +67,7 @@ export function flightPanel(view: FlightView, data: FlightData): FlightPanel {
   const solar = h(
     'div',
     { class: 'flight__chips' },
-    ...BODIES.map((b) => goButton(view.get(`body:${b.id}`)!, ft(`vi.${b.id}`), ft(`name.${b.id}`))),
+    ...BODIES.map((b) => goButton(view.get(`body:${b.id}`)!, pick(ft(`vi.${b.id}`), ft(`name.${b.id}`)), pick(ft(`name.${b.id}`), ''))),
   );
   const hosts = h(
     'ul',

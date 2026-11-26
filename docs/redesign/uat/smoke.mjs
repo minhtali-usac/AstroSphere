@@ -15,7 +15,7 @@ const FULL_MODE = () => {
   }
 };
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
-const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+const page = await browser.newPage({ locale: 'vi-VN', viewport: { width: 1280, height: 800 } });
 await page.addInitScript(FULL_MODE);
 const errors = [];
 page.on('pageerror', (e) => errors.push(String(e)));

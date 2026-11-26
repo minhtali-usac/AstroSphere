@@ -1,0 +1,669 @@
+{
+  "categories": [
+    {
+      "id": "basics",
+      "title": "Foundations",
+      "blurb": "The sky as a great sphere turning around you.",
+      "entries": ["sphere", "horizon", "zenith", "pole", "equator", "meridian", "diurnal"]
+    },
+    {
+      "id": "coords",
+      "title": "Coordinate systems",
+      "blurb": "Two ways to write a star's address, and the bridge between them.",
+      "entries": ["altaz", "radec", "vernal", "hourAngle", "lst", "latPole", "eqAngle"]
+    },
+    {
+      "id": "riseSet",
+      "title": "Rising and setting",
+      "blurb": "Your latitude decides which stars rise, set or never do either.",
+      "entries": ["circumpolar", "riseSetZone", "neverRise", "transit", "timeAbove"]
+    },
+    {
+      "id": "extra",
+      "title": "Extras",
+      "blurb": "The Sun, the seasons, the Milky Way and the rhythm of the turning sky.",
+      "entries": ["ecliptic", "seasons", "siderealDay", "milkyWay"]
+    },
+    {
+      "id": "starsCat",
+      "title": "Bright stars",
+      "blurb": "Brightness, colour, and the stars to get to know first.",
+      "entries": ["magnitude", "starColor", "polaris", "sirius", "canopus", "vega", "betelgeuse", "rigel", "antares", "sun"]
+    },
+    {
+      "id": "constellations",
+      "title": "Constellations",
+      "blurb": "Figures that help us find our way around the sky.",
+      "entries": ["constellations", "uma", "umi", "cas", "ori", "sco", "cru"]
+    },
+    {
+      "id": "deep",
+      "title": "Deep-sky objects",
+      "blurb": "Distant galaxies, nebulae and star clusters.",
+      "entries": ["deepSky", "m31", "m42", "m45"]
+    }
+  ],
+  "diagram": {
+    "observer": "You",
+    "horizon": "Horizon",
+    "equator": "Celestial equator",
+    "ecliptic": "Ecliptic",
+    "zenith": "Zenith",
+    "pole": "Celestial pole",
+    "star": "Star",
+    "vernal": "γ",
+    "circumpolar": "Never sets",
+    "riseSet": "Rises and sets",
+    "neverRise": "Never rises",
+    "nadir": "Nadir",
+    "poleN": "North celestial pole",
+    "poleS": "South celestial pole",
+    "meridian": "Meridian",
+    "diurnalNote": "Rise in the east, set in the west",
+    "rise": "Rise",
+    "set": "Set",
+    "toStar": "To a distant star",
+    "toSun": "To the Sun",
+    "siderealDay": "Sidereal day (by the stars): 23h 56m 04s",
+    "solarDay": "Solar day: 24h",
+    "galacticCenter": "Galactic centre",
+    "milkyWay": "Milky Way",
+    "brighter": "Brighter",
+    "fainter": "Fainter",
+    "hotter": "Hot, blue",
+    "cooler": "Cool, red",
+    "sun": "Sun",
+    "galaxy": "Galaxy",
+    "nebula": "Nebula",
+    "cluster": "Star cluster",
+    "summer": "≈ 21 Jun",
+    "equinox": "≈ 20 Mar · 23 Sep",
+    "winter": "≈ 22 Dec"
+  },
+  "ui": {
+    "factsTitle": "Data",
+    "formulaTitle": "Formulae",
+    "mag": "Magnitude m",
+    "bv": "Colour index B − V",
+    "type": "Type",
+    "date": "Selected date",
+    "code": "IAU abbreviation",
+    "figStars": "Stars in the figure",
+    "brightest": "Brightest star",
+    "decRange": "Declination range",
+    "stateRead": "read",
+    "capStar": "{name} (circled) among nearby bright stars, as seen looking up: north at the top, east on the left. Larger dots are brighter; dot colour follows the B − V colour index.",
+    "capFigure": "The lines show the figure of {con}.",
+    "capConstellation": "The figure of {con}, drawn from the true star positions as seen looking up: north at the top, east on the left. Larger dots are brighter.",
+    "capDso": "{name} (circle, at its true apparent size) among nearby bright stars: north at the top, east on the left. Larger dots are brighter.",
+    "asideTitle": "Illustration and data",
+    "factsSource": "Source: the simulator's star catalogue (HYG, Hipparcos); values may differ slightly from the rounded figures in the text.",
+    "factsSourceSun": "Position computed for the date selected in the simulation."
+  },
+  "entries": {
+    "sphere": {
+      "title": "Celestial sphere",
+      "aka": "An imaginary sphere",
+      "lede": "A huge imaginary sphere surrounding Earth, onto which we “paste” every celestial object.",
+      "body": [
+        "Stars lie at very different distances, but our eyes see only their **direction**, not how far away they are. Astronomers therefore imagine every object on the surface of a sphere of enormous radius with Earth at its centre.",
+        "On the celestial sphere, a star's position needs only **two angles**, like latitude and longitude on a globe. Every coordinate system in this simulator is a different way of measuring those two angles.",
+        "In the **Celestial sphere** view, Earth is drawn far larger than in reality so that you can see where the observer stands. Compared with the celestial sphere, Earth is really just a point."
+      ],
+      "related": ["horizon", "pole", "equator", "diurnal"],
+      "sim": "Show the horizon, celestial equator and polar axis on the celestial sphere.",
+      "figure": "The celestial sphere around you: horizon (green), celestial equator (yellow) and polar axis (blue). The far half of the sphere is dashed."
+    },
+    "horizon": {
+      "title": "Horizon",
+      "aka": "h = 0°",
+      "lede": "The plane touching Earth where you stand; it splits the sky into the visible half and the hidden half.",
+      "body": [
+        "The horizon is where the horizon plane meets the celestial sphere. Every point on it has **altitude h = 0°**. Above it is the sky you can see; below it is hidden by the ground.",
+        "North, east, south and west lie on the horizon. Every place on Earth has its own horizon, so at the same moment someone in Hanoi and someone in Sydney see two different halves of the sky.",
+        "Turn on **Below the horizon** to make the ground transparent: stars carry on beneath your feet, you just cannot see them."
+      ],
+      "related": ["zenith", "altaz", "sphere", "riseSetZone"],
+      "sim": "Show the horizon on the celestial sphere and make the ground transparent.",
+      "figure": "The horizon plane (green) divides the celestial sphere into a visible upper half and a hidden lower half; the zenith is directly overhead. N, E, S, W are the cardinal directions."
+    },
+    "zenith": {
+      "title": "Zenith and nadir",
+      "aka": "h = ±90°",
+      "lede": "The zenith is the point directly above your head; the nadir is the point directly below your feet.",
+      "body": [
+        "Hang a plumb line: the string points straight at the **nadir**, and extended upwards it reaches the **zenith**. The zenith has altitude \\(h = +90^\\circ\\), the nadir \\(h = -90^\\circ\\).",
+        "The zenith is the “pole” of the horizontal coordinate system, just as the celestial pole is the pole of the equatorial system. Each observer has their own zenith, so as you change latitude it slides along the meridian.",
+        "At Earth's equator, the celestial equator passes through the zenith. At the North Pole, the zenith coincides with the north celestial pole."
+      ],
+      "related": ["horizon", "altaz", "meridian"],
+      "sim": "Show the zenith and nadir.",
+      "figure": "The zenith (h = +90°) is directly overhead and the nadir (h = −90°) directly underfoot; the line joining them is perpendicular to the horizon."
+    },
+    "pole": {
+      "title": "Celestial poles",
+      "aka": "δ = ±90°",
+      "lede": "The two points the whole sky seems to turn about: Earth's rotation axis extended out to the celestial sphere.",
+      "body": [
+        "Extend Earth's rotation axis both ways and it meets the celestial sphere at the **north celestial pole** (\\(\\delta = +90^\\circ\\)) and the **south celestial pole** (\\(\\delta = -90^\\circ\\)). The line joining them is the **celestial polar axis**.",
+        "Polaris lies very close to the north celestial pole, only about 0.7° away. No bright star marks the south celestial pole; people find it with the help of Crux.",
+        "The closer a star is to a celestial pole, the smaller its daily circle. A star exactly at the pole would hardly move at all."
+      ],
+      "related": ["latPole", "polaris", "diurnal", "equator"],
+      "sim": "Show the polar axis and highlight the altitude of the celestial pole.",
+      "figure": "The celestial polar axis (blue) passes through where you stand and meets the sphere at the north and south celestial poles; the sky turns about it."
+    },
+    "equator": {
+      "title": "Celestial equator",
+      "aka": "δ = 0°",
+      "lede": "Earth's equator projected onto the celestial sphere; it divides the sky into northern and southern halves.",
+      "body": [
+        "The celestial equator is made of all points with **declination δ = 0°**. It is always perpendicular to the polar axis and 90° from both celestial poles.",
+        "Everywhere except at Earth's poles, the celestial equator crosses the horizon at **due east and due west**. So a star on the celestial equator rises due east, sets due west and spends exactly half a day above the horizon.",
+        "In the simulator the celestial equator is yellow. Its plane is tilted \\(90^\\circ - |\\varphi|\\) to the horizon."
+      ],
+      "related": ["radec", "eqAngle", "pole", "ori"],
+      "sim": "Show the celestial equator and its plane.",
+      "figure": "The celestial equator (yellow, δ = 0°) is the great circle perpendicular to the polar axis (blue), equidistant from both poles."
+    },
+    "meridian": {
+      "title": "Celestial meridian",
+      "aka": "Meridian",
+      "lede": "The great circle through the north point, the zenith, the south point and both celestial poles.",
+      "body": [
+        "The meridian divides your sky into eastern and western halves. Each star crosses it twice a day: once above (**upper transit**, when it is highest) and once below.",
+        "When a star makes its upper transit, its hour angle is \\(H = 0\\) and local sidereal time equals its right ascension: \\(\\mathrm{LST} = \\alpha\\).",
+        "The Sun makes its upper transit at **noon** by local solar time. The Latin word “meridies” means “midday”."
+      ],
+      "related": ["transit", "hourAngle", "lst", "zenith"],
+      "sim": "Show and highlight the meridian.",
+      "figure": "The celestial meridian (white) runs through the north point, the celestial pole, the zenith and the south point on the horizon."
+    },
+    "diurnal": {
+      "title": "Diurnal motion",
+      "aka": "The daily turning of the sky",
+      "lede": "The whole sky turns from east to west about the celestial polar axis, once in almost a day.",
+      "body": [
+        "In fact the sky stands still; it is Earth that spins from west to east. Standing on Earth we see the opposite: stars rise in the east, climb, then set in the west.",
+        "The sky turns \\(15^\\circ\\) per sidereal hour, completing \\(360^\\circ\\) in one **sidereal day** (23h 56m 04s). Looking north, stars circle Polaris anticlockwise.",
+        "During this motion each star keeps its declination, so it follows a circle parallel to the celestial equator. Turn on **star trails** to see those circles."
+      ],
+      "related": ["pole", "siderealDay", "riseSetZone", "lst"],
+      "sim": "Run the animation and draw full-circle star trails.",
+      "figure": "Each star traces a circle parallel to the celestial equator around the polar axis; the arrow shows the sense of rotation: rise in the east, set in the west."
+    },
+    "altaz": {
+      "title": "Horizontal coordinates",
+      "aka": "Azimuth A, altitude h",
+      "lede": "A star's address as “which way to face and how high to look”, measured from where you stand.",
+      "body": [
+        "**Azimuth A** is measured along the horizon from the north point through east, south and west: \\(0^\\circ\\) to \\(360^\\circ\\). **Altitude h** is measured from the horizon up to the star along a vertical circle: from \\(-90^\\circ\\) (nadir) to \\(+90^\\circ\\) (zenith).",
+        "This system is handy for pointing things out to friends: “look south-east, about 30° up”. But a star's A and h **change continuously** as the sky turns, and differ from place to place on Earth.",
+        "Converting from equatorial to horizontal coordinates:",
+        "$$ Altitude :: \\sin h = \\sin\\varphi\\,\\sin\\delta + \\cos\\varphi\\,\\cos\\delta\\,\\cos H"
+      ],
+      "figure": "The cyan arc is azimuth A, measured along the horizon from north. The pink arc is altitude h, measured from the horizon up to the star.",
+      "related": ["radec", "horizon", "zenith", "hourAngle"],
+      "sim": "Show the horizontal grid (A, h) and the vertical circle through the selected star."
+    },
+    "radec": {
+      "title": "Equatorial coordinates",
+      "aka": "Right ascension α, declination δ",
+      "lede": "A star's fixed address on the celestial sphere, like longitude and latitude on a globe.",
+      "body": [
+        "**Declination δ** is like latitude: the angle from the celestial equator to the star, from \\(-90^\\circ\\) to \\(+90^\\circ\\). **Right ascension α** is like longitude: measured eastwards along the celestial equator from the March equinox point γ, in **hours** from 0h to 24h (1h = 15°).",
+        "The equatorial grid turns with the stars, so **a star's α and δ hardly change** wherever and whenever you are. That is why star catalogues use this system.",
+        "Over centuries, the wobble of Earth's axis (precession) makes α and δ drift slowly, so catalogues always state an **epoch**, for example J2000.0."
+      ],
+      "figure": "Right ascension α is measured along the celestial equator (yellow) from γ. Declination δ is measured from the celestial equator to the star.",
+      "related": ["altaz", "vernal", "hourAngle", "equator"],
+      "sim": "Show the equatorial grid (α, δ) and the 0h hour circle."
+    },
+    "vernal": {
+      "title": "March equinox point γ",
+      "aka": "First point of Aries · α = 0h",
+      "lede": "The zero point of right ascension: where the Sun crosses the celestial equator going north, around 20 March.",
+      "body": [
+        "The ecliptic and the celestial equator cross at two points. Where the Sun passes from south to north is the **March (vernal) equinox point γ**; the opposite point is the September equinox point.",
+        "Right ascension of every object is measured eastwards from γ. The **0h hour circle** in the simulator is the half great circle joining the celestial poles through γ.",
+        "Because of precession, γ slides westwards by about 50″ a year. More than 2000 years ago it lay in Aries; today it is in Pisces."
+      ],
+      "related": ["radec", "ecliptic", "seasons", "lst"],
+      "sim": "Show the 0h hour circle and the ecliptic.",
+      "figure": "The point γ is where the celestial equator (yellow) meets the ecliptic (orange, dashed); the hour circle through γ (grey) marks α = 0h."
+    },
+    "hourAngle": {
+      "title": "Hour angle H",
+      "aka": "H = LST − α",
+      "lede": "How long it has been since the star crossed your meridian.",
+      "body": [
+        "Hour angle is measured westwards from the meridian along the celestial equator. **Negative H**: the star is still in the east, not yet at the meridian. **H = 0**: it is on the meridian, at its highest. **Positive H**: it has passed and is heading west.",
+        "$$ Hour angle :: H = \\mathrm{LST} - \\alpha",
+        "Hour angle bridges the two coordinate systems: knowing latitude \\(\\varphi\\), declination \\(\\delta\\) and hour angle \\(H\\), we can compute azimuth A and altitude h. It increases steadily by 1 hour per sidereal hour."
+      ],
+      "related": ["lst", "meridian", "radec", "altaz"],
+      "sim": "Show the meridian and highlight the selected star's hour angle.",
+      "figure": "Hour angle H (yellow band) is measured along the celestial equator, westwards from the meridian (white) to the hour circle (grey) through the star."
+    },
+    "lst": {
+      "title": "Sidereal time: LST and GST",
+      "aka": "Local / Greenwich sidereal time",
+      "lede": "The clock of the stars: it tells which strip of sky is on your meridian.",
+      "body": [
+        "**Local sidereal time (LST)** equals the right ascension of the stars now crossing your meridian. For example, LST = 6h45m means Sirius (α ≈ 6h45m) is at its highest.",
+        "**GST** is the sidereal time at the Greenwich prime meridian. Move 15° of longitude east and sidereal time is 1 hour ahead:",
+        "$$ Local sidereal time :: \\mathrm{LST} = \\mathrm{GST} + \\lambda",
+        "Changing longitude only shifts the clock, not the shape of the sky; changing latitude is what tilts the sky differently."
+      ],
+      "related": ["hourAngle", "siderealDay", "meridian", "vernal"],
+      "sim": "Show the meridian and the 0h hour circle and highlight LST.",
+      "figure": "Local sidereal time LST (yellow band) is the hour angle of γ: measured along the celestial equator from the meridian (white) to the 0h hour circle (grey)."
+    },
+    "latPole": {
+      "title": "Pole altitude = latitude",
+      "aka": "Pole altitude = |φ|",
+      "lede": "The celestial pole stands above the horizon by exactly your latitude. This is the most important relation in the simulator.",
+      "body": [
+        "At the North Pole (\\(\\varphi = 90^\\circ\\)), the north celestial pole is at the zenith. At the equator (\\(\\varphi = 0^\\circ\\)), both celestial poles lie on the horizon. In Hanoi (\\(\\varphi \\approx 21^\\circ\\)), Polaris stands about 21° above the northern horizon.",
+        "$$ Altitude of the celestial pole :: h_P = |\\varphi|",
+        "Why: the zenith is \\(\\varphi\\) from the celestial equator, while the pole is \\(90^\\circ\\) from it. So the pole is \\(90^\\circ - \\varphi\\) from the zenith, which means it is \\(\\varphi\\) above the horizon.",
+        "Sailors once measured the altitude of Polaris to find their latitude."
+      ],
+      "figure": "The light blue arc is the altitude of the celestial pole above the horizon at your chosen latitude: it always equals |φ|.",
+      "related": ["pole", "eqAngle", "polaris", "circumpolar"],
+      "sim": "Show and highlight the pole altitude arc."
+    },
+    "eqAngle": {
+      "title": "Equator–horizon angle",
+      "aka": "θ = 90° − |φ|",
+      "lede": "The celestial equator is tilted to the horizon by the complement of your latitude.",
+      "body": [
+        "$$ Angle between celestial equator and horizon :: \\theta = 90^\\circ - |\\varphi|",
+        "At Earth's equator the celestial equator stands **upright** (90°): stars rise straight up and set straight down. At the poles it **lies along** the horizon (0°): stars circle parallel to the ground.",
+        "In Vietnam the angle is about 67°–81°, so stars rise quite steeply. It is also the Sun's altitude at noon on the equinoxes."
+      ],
+      "related": ["latPole", "equator", "seasons"],
+      "sim": "Show and highlight the equator–horizon angle.",
+      "figure": "Side view of the meridian plane at the chosen latitude: the celestial equator (yellow) is tilted θ = 90° − |φ| to the horizon (green)."
+    },
+    "circumpolar": {
+      "title": "Circumpolar stars",
+      "aka": "Stars that never set",
+      "lede": "Stars close enough to the celestial pole that their daily circle never touches the horizon.",
+      "body": [
+        "In the Northern Hemisphere, a star is circumpolar when:",
+        "$$ Northern Hemisphere :: \\delta > 90^\\circ - \\varphi",
+        "The nearer you go to a pole, the larger the circumpolar zone. At the North Pole every northern star is circumpolar; at the equator none is.",
+        "In Hanoi a star needs \\(\\delta > 69^\\circ\\) never to set: Polaris qualifies, but the stars of the Big Dipper still set. In Moscow (\\(\\varphi \\approx 56^\\circ\\)), the whole Big Dipper is circumpolar."
+      ],
+      "figure": "Three zones by declination at the chosen latitude: purple never sets, teal rises and sets, red never rises.",
+      "related": ["riseSetZone", "neverRise", "latPole", "uma"],
+      "sim": "Show the circumpolar zone and select Polaris."
+    },
+    "riseSetZone": {
+      "title": "Rising and setting",
+      "aka": "The everyday zone",
+      "lede": "Most stars rise in the east and set in the west every day.",
+      "body": [
+        "A star rises and sets when its daily circle crosses the horizon, that is, when \\(|\\delta| < 90^\\circ - |\\varphi|\\).",
+        "The hour angle at rising and setting, \\(H_0\\), tells how long the star stays up:",
+        "$$ Hour angle at rising or setting :: \\cos H_0 = -\\tan\\varphi\\,\\tan\\delta",
+        "In the Northern Hemisphere, a star with \\(\\delta > 0\\) rises towards the north-east and is up for more than half a day; one with \\(\\delta < 0\\) rises towards the south-east and is up for less than half a day."
+      ],
+      "figure": "Three zones by declination at the chosen latitude: purple never sets, teal rises and sets, red never rises.",
+      "related": ["timeAbove", "circumpolar", "neverRise", "transit"],
+      "sim": "Show the rising and setting zone and select Sirius."
+    },
+    "neverRise": {
+      "title": "Stars that never rise",
+      "aka": "Always below the horizon",
+      "lede": "Stars so close to the opposite celestial pole that they always stay below your horizon.",
+      "body": [
+        "In the Northern Hemisphere, a star never rises when:",
+        "$$ Northern Hemisphere :: \\delta < -\\left(90^\\circ - \\varphi\\right)",
+        "This zone mirrors the circumpolar zone across the celestial equator. In Hanoi, stars with \\(\\delta < -69^\\circ\\) never rise; in Ho Chi Minh City the limit is about \\(-79^\\circ\\).",
+        "That is why people in most of Europe never see Crux, and people in Australia never see Polaris."
+      ],
+      "figure": "Three zones by declination at the chosen latitude: purple never sets, teal rises and sets, red never rises.",
+      "related": ["circumpolar", "riseSetZone", "cru", "horizon"],
+      "sim": "Show the never-rising zone and make the ground transparent."
+    },
+    "transit": {
+      "title": "Meridian transit",
+      "aka": "Culmination",
+      "lede": "The moment a star is highest in your sky: when it crosses the meridian.",
+      "body": [
+        "At upper transit the hour angle is \\(H = 0\\) and the star reaches its greatest altitude:",
+        "$$ Greatest altitude :: h_{\\max} = 90^\\circ - |\\varphi - \\delta|",
+        "This is the best time to observe an object: its light passes through the least air. That is why observers ask, “when does this star transit tonight?”.",
+        "A circumpolar star also makes a lower transit (\\(H = 12\\text{h}\\)) while still above the horizon; that is when it is lowest."
+      ],
+      "related": ["meridian", "hourAngle", "lst", "timeAbove"],
+      "sim": "Show the meridian for the selected star.",
+      "figure": "The meridian plane at the chosen latitude: a star's diurnal circle (dashed) is highest where it crosses the meridian; the pink arc is the greatest altitude h."
+    },
+    "timeAbove": {
+      "title": "Time above the horizon",
+      "aka": "T = 2H₀ / 15",
+      "lede": "How long a star is in the sky each day, from rising to setting.",
+      "body": [
+        "A star rises at hour angle \\(-H_0\\) and sets at \\(+H_0\\), so it is up for \\(2H_0\\). Converting degrees to hours (15° = 1 hour):",
+        "$$ Time above the horizon :: T = \\dfrac{2H_0}{15}",
+        "with \\(T\\) in sidereal hours and \\(H_0\\) in degrees.",
+        "A star on the celestial equator (\\(\\delta = 0\\)) is always up for exactly 12 sidereal hours, at every latitude. Applied to the Sun, the formula gives the **length of daylight** through the seasons."
+      ],
+      "related": ["riseSetZone", "seasons", "transit"],
+      "sim": "Show the rising and setting zone and run the animation with long star trails.",
+      "figure": "A star's diurnal circle (δ = +22°, φ = 40°): the part above the horizon (teal) spans 2H₀, from rising in the east to setting in the west."
+    },
+    "ecliptic": {
+      "title": "Ecliptic",
+      "aka": "ε = 23.44°",
+      "lede": "The path the Sun follows among the stars during a year.",
+      "body": [
+        "Earth orbits the Sun, so from Earth the Sun appears to drift eastwards against the stars by about 1° a day. In a year it completes a circle: the **ecliptic**.",
+        "The ecliptic is inclined \\(\\varepsilon \\approx 23.44^\\circ\\) to the celestial equator, equal to the tilt of Earth's axis. The two cross at the March and September equinox points.",
+        "The Moon and planets always stay close to the ecliptic too. The constellations it passes through are the **zodiacal** ones, such as Scorpius, Leo and Taurus."
+      ],
+      "figure": "The ecliptic (orange) is inclined 23.44° to the celestial equator (yellow); they cross at the March equinox point γ.",
+      "related": ["seasons", "vernal", "sun", "sco"],
+      "sim": "Show the ecliptic."
+    },
+    "seasons": {
+      "title": "The Sun and the seasons",
+      "aka": "δ☉ from −23.44° to +23.44°",
+      "lede": "Seasons do not come from Earth being near or far from the Sun, but from the Sun's declination changing through the year.",
+      "body": [
+        "Moving along the ecliptic, the Sun's declination swings from \\(-23.44^\\circ\\) (December solstice, about 22 Dec) to \\(+23.44^\\circ\\) (June solstice, about 21 Jun). When \\(\\delta_\\odot\\) is large, the Sun in the Northern Hemisphere climbs higher and stays up longer: that is summer.",
+        "$$ Altitude of the Sun at noon :: h = 90^\\circ - |\\varphi - \\delta_\\odot|",
+        "In Hanoi and Ho Chi Minh City (between the tropics), on two days a year the Sun passes exactly through the zenith at noon: your shadow vanishes beneath your feet."
+      ],
+      "related": ["ecliptic", "sun", "timeAbove", "vernal"],
+      "sim": "Show the Sun by date and select the Sun.",
+      "figure": "The Sun's daily path (yellow) at the June solstice, the equinoxes and the December solstice, at the chosen latitude; the dot is its position at noon."
+    },
+    "siderealDay": {
+      "title": "Sidereal day",
+      "aka": "23h 56m 04s",
+      "lede": "The starry sky turns once about 4 minutes faster than the solar day.",
+      "body": [
+        "A **sidereal day** is the time for a star to return to the same place in the sky: 23 hours 56 minutes 04 seconds. A **solar day** lasts 24 hours, because during one day the Sun moves about 1° along the ecliptic, so Earth must turn a little further to catch up.",
+        "As a result each star rises about 4 minutes earlier every evening. In a month that is 2 hours, so the evening sky changes with the seasons.",
+        "In a year Earth turns about 366.24 times relative to the stars but only 365.24 times relative to the Sun."
+      ],
+      "related": ["diurnal", "lst", "ecliptic"],
+      "sim": "Run the animation for exactly one sidereal day, then stop.",
+      "figure": "Earth (blue) on two consecutive days of its orbit, angle exaggerated: one full turn relative to a distant star takes 23h 56m 04s, but it must turn about 1° more (nearly 4 minutes) to face the Sun again."
+    },
+    "milkyWay": {
+      "title": "The Milky Way and galactic centre",
+      "aka": "Our galaxy from inside",
+      "lede": "The faint band of light across the sky is our own galaxy, seen from within.",
+      "body": [
+        "The Sun lies in the disc of a spiral galaxy of hundreds of billions of stars. Looking along the plane of the disc, countless faint stars pile up into a band of light: the **Milky Way**.",
+        "This plane is inclined about 63° to the celestial equator. The **galactic centre** is about 26,000 light-years away, towards Sagittarius, near Scorpius.",
+        "From Vietnam, the brightest stretch of the Milky Way around the galactic centre is easy to see on summer evenings, under dark skies away from city lights."
+      ],
+      "related": ["deepSky", "sco", "constellations"],
+      "sim": "Show the galactic equator.",
+      "figure": "The Milky Way band (purple-pink) on a right ascension–declination map, drawn along the galactic equator; the dot is the galactic centre in Sagittarius."
+    },
+    "magnitude": {
+      "title": "Magnitude",
+      "aka": "Apparent magnitude m",
+      "lede": "The scale of star brightness: the smaller the number, the brighter the star.",
+      "body": [
+        "Over 2000 years ago Hipparchus ranked the brightest stars as magnitude 1 and the faintest visible to the eye as magnitude 6. Today the scale is defined precisely: a difference of 5 magnitudes is **exactly a factor of 100** in brightness.",
+        "$$ Magnitude difference :: m_1 - m_2 = -2.5\\,\\log_{10}\\dfrac{F_1}{F_2}",
+        "Magnitudes can therefore be negative: Sirius −1.46; Venus down to −4.6; the full Moon −12.7; the Sun −26.7. Under very dark skies the eye reaches about magnitude 6.",
+        "This is **apparent** brightness: a very luminous but distant star can look fainter than a weak one nearby."
+      ],
+      "related": ["starColor", "sirius", "polaris"],
+      "sim": "Show the real bright stars.",
+      "figure": "The magnitude scale: larger dots are brighter stars, smaller magnitudes are brighter. The marks below show the measured magnitudes of Sirius, Vega and Polaris."
+    },
+    "starColor": {
+      "title": "Star colours",
+      "aka": "Colour index B − V",
+      "lede": "A star's colour reveals its surface temperature: blue is hot, red is cool.",
+      "body": [
+        "Astronomers measure brightness through two filters: blue (B) and visual yellow-green (V). The difference **B − V** is the colour index: negative or near 0 for blue-white stars, about 0.65 for the Sun, above 1.5 for red stars.",
+        "Rigel (B − V ≈ −0.03) is about 12,000 K; the Sun about 5,800 K; Betelgeuse and Antares (B − V ≈ 1.8) only about 3,500 K.",
+        "Star colours in the simulator are computed from the B − V of real data. Outdoors, the eye clearly sees colour only in bright stars."
+      ],
+      "related": ["betelgeuse", "rigel", "antares", "magnitude"],
+      "sim": "Select Betelgeuse, a red giant star.",
+      "figure": "The B − V colour index scale with the colours used in the simulator; each dot is placed at the measured B − V of Rigel, Sirius, the Sun and Betelgeuse."
+    },
+    "polaris": {
+      "title": "Polaris",
+      "aka": "α UMi · The North Star",
+      "lede": "The star that barely moves in the north, because it sits next to the north celestial pole.",
+      "body": [
+        "**Polaris**, the North Star, has a declination of about \\(+89.3^\\circ\\), less than 1° from the north celestial pole. While the whole sky turns it hardly moves, so it has long been used to find north.",
+        "Polaris is not the brightest star in the sky: its magnitude is only about 2.0. It is a yellow-white supergiant about 430 light-years away.",
+        "The altitude of Polaris above the horizon is nearly your latitude. Because of precession the pole drifts; around the year 14,000, Vega will be the pole star."
+      ],
+      "related": ["pole", "latPole", "umi", "circumpolar"],
+      "sim": "Select Polaris."
+    },
+    "sirius": {
+      "title": "Sirius",
+      "aka": "α CMa",
+      "lede": "The brightest star in the night sky, magnitude −1.46.",
+      "body": [
+        "**Sirius** belongs to Canis Major. It is bright both because it shines about 25 times more strongly than the Sun and because it is very close: only 8.6 light-years.",
+        "Sirius has a small companion, Sirius B, a **white dwarf**: the size of Earth but nearly as massive as the Sun.",
+        "With a declination of about \\(-16.7^\\circ\\), Sirius rises in the south-east and is easy to find on northern winter evenings, below and to the left of Orion."
+      ],
+      "related": ["magnitude", "ori", "riseSetZone"],
+      "sim": "Select Sirius."
+    },
+    "canopus": {
+      "title": "Canopus",
+      "aka": "α Car",
+      "lede": "The second brightest star in the night sky, deep in the south.",
+      "body": [
+        "**Canopus** has a magnitude of about −0.7 and a declination of about \\(-52.7^\\circ\\). It is a white giant about 310 light-years away.",
+        "In Hanoi, Canopus climbs at most about 16° above the southern horizon; in Ho Chi Minh City about 26°. Across most of Europe it never rises.",
+        "Being bright and far from the Sun's direction, Canopus has been used by many spacecraft as a navigation star."
+      ],
+      "related": ["neverRise", "transit", "sirius"],
+      "sim": "Select Canopus."
+    },
+    "vega": {
+      "title": "Vega",
+      "aka": "α Lyr",
+      "lede": "The brilliant blue-white star of the northern summer sky, in Lyra.",
+      "body": [
+        "**Vega** has a magnitude of about 0.0 and is 25 light-years away. It is a reference for colour: Vega's B − V index is close to 0.",
+        "Vega forms the **Summer Triangle** with Altair and Deneb. The East Asian tale of the Cowherd and the Weaver Girl meeting across the river of stars is the story of Altair and Vega on opposite sides of the Milky Way.",
+        "Around the year 14,000, precession will bring Vega close to the north celestial pole."
+      ],
+      "related": ["starColor", "milkyWay", "polaris"],
+      "sim": "Select Vega."
+    },
+    "betelgeuse": {
+      "title": "Betelgeuse",
+      "aka": "α Ori",
+      "lede": "The red supergiant at Orion's shoulder, big enough to swallow the orbit of Mars.",
+      "body": [
+        "Betelgeuse is distinctly orange-red (B − V about 1.5 to 1.85 depending on the measurement, as its brightness varies) because its surface is only about 3,500 K. It is about 550 light-years away, though that figure is still quite uncertain.",
+        "Betelgeuse varies in brightness. In late 2019 it faded noticeably (the “Great Dimming”) when dust it had ejected blocked some of its light.",
+        "Betelgeuse is near the end of its life and will one day explode as a **supernova**, possibly within the next 100,000 years."
+      ],
+      "related": ["ori", "rigel", "starColor", "antares"],
+      "sim": "Select Betelgeuse."
+    },
+    "rigel": {
+      "title": "Rigel",
+      "aka": "β Ori",
+      "lede": "The blue supergiant at Orion's foot, a complete contrast to red Betelgeuse.",
+      "body": [
+        "Rigel has a magnitude of about 0.1 and colour index B − V ≈ −0.03: a very hot star of about 12,000 K. It is about 860 light-years away and shines more than a hundred thousand times as strongly as the Sun.",
+        "Comparing Rigel with Betelgeuse is the easiest way to see star colour by eye: two stars of one constellation, nearly equal in brightness, one blue and one red.",
+        "With a declination of about \\(-8^\\circ\\), Rigel rises a little to the south of east."
+      ],
+      "related": ["ori", "betelgeuse", "starColor"],
+      "sim": "Select Rigel."
+    },
+    "antares": {
+      "title": "Antares",
+      "aka": "α Sco",
+      "lede": "The red heart of Scorpius; its name means “rival of Mars”.",
+      "body": [
+        "Antares is a red supergiant (B − V ≈ 1.8) about 550 light-years away. Its red colour resembles Mars (Ares), so the Greeks called it Anti-Ares.",
+        "Antares lies near the ecliptic, so the Moon and planets sometimes pass close by.",
+        "From Vietnam, Antares is easy to see in the south on summer evenings, along with the brightest stretch of the Milky Way."
+      ],
+      "related": ["sco", "starColor", "betelgeuse", "ecliptic"],
+      "sim": "Select Antares."
+    },
+    "sun": {
+      "title": "Sun",
+      "aka": "Our star",
+      "lede": "Our own star, and the only object in the simulator whose position changes with the date.",
+      "body": [
+        "The Sun is a yellow dwarf (B − V ≈ 0.65), on average 150 million km from Earth: its light takes about 8 minutes 20 seconds to arrive. Its apparent magnitude is −26.7.",
+        "Unlike the stars, the Sun's right ascension and declination change from day to day because it moves along the ecliptic. Pick a date under Display to put the Sun in the right place.",
+        "**Never look directly at the Sun** with the naked eye, or through binoculars or a telescope without a proper solar filter."
+      ],
+      "related": ["seasons", "ecliptic", "siderealDay", "starColor"],
+      "sim": "Show the Sun by date and select the Sun.",
+      "figure": "The Sun on the ecliptic (orange, dashed) on the date selected in the simulation; it moves about 1° eastwards each day."
+    },
+    "constellations": {
+      "title": "Constellations",
+      "aka": "The 88 IAU constellations",
+      "lede": "Regions of the sky, named after imaginary figures that join bright stars.",
+      "body": [
+        "In 1922 the International Astronomical Union (IAU) agreed on **88 constellations**; in 1930 the boundaries between them were precisely drawn. Every point in the sky belongs to exactly one constellation.",
+        "The stars of a constellation merely **lie in the same direction** as seen from Earth; their distances may differ enormously.",
+        "The simulator labels constellations with their official IAU (Latin) names. Each also has a three-letter IAU abbreviation, such as UMa for Ursa Major."
+      ],
+      "related": ["uma", "ori", "cru", "magnitude"],
+      "sim": "Show constellation lines and names.",
+      "figure": "Three constellations drawn from true star positions: Ursa Major, Orion and Cassiopeia. North at the top, east on the left; larger dots are brighter."
+    },
+    "uma": {
+      "title": "Ursa Major",
+      "aka": "UMa · The Great Bear",
+      "lede": "The Great Bear, home of the famous seven-star dipper: the Big Dipper, or Plough.",
+      "body": [
+        "The seven bright stars of the **Big Dipper** form a ladle. Join the two stars at the edge of the bowl, **Dubhe** and **Merak**, extend the line about 5 times, and you reach Polaris.",
+        "From Vietnam the Dipper is easy to see in the north on spring evenings. Because Dubhe has \\(\\delta \\approx 62^\\circ\\), less than \\(90^\\circ - 21^\\circ = 69^\\circ\\), the Dipper still sets in Hanoi; in much of Europe it is circumpolar.",
+        "Most of the Dipper's stars really are siblings: born together and still travelling through space together."
+      ],
+      "related": ["polaris", "circumpolar", "umi", "cas"],
+      "sim": "Add Ursa Major and select Dubhe."
+    },
+    "umi": {
+      "title": "Ursa Minor",
+      "aka": "UMi · The Little Bear",
+      "lede": "The Little Bear, with Polaris at the end of its handle.",
+      "body": [
+        "The stars of Ursa Minor also form a small dipper, much fainter than the Big Dipper. The tip of the handle is **Polaris**; the two bright stars at the rim of the bowl, Kochab and Pherkad, are called the “Guardians of the Pole”.",
+        "Lying next to the north celestial pole, the whole constellation traces a small circle around Polaris each day. In Hanoi part of it is circumpolar."
+      ],
+      "related": ["polaris", "pole", "uma"],
+      "sim": "Add Ursa Minor and select Polaris."
+    },
+    "cas": {
+      "title": "Cassiopeia",
+      "aka": "Cas · The Queen",
+      "lede": "A W-shaped (or M-shaped) constellation, opposite the Big Dipper across Polaris.",
+      "body": [
+        "The five bright stars of Cassiopeia form an easily recognised W. When the Big Dipper sinks low, Cassiopeia rides high, and vice versa: the two are like clock hands on either side of Polaris.",
+        "So Cassiopeia is the second guide to Polaris, especially on autumn evenings when the Dipper is hidden below the horizon.",
+        "Near Cassiopeia, under dark skies, you can see the Andromeda Galaxy (M31) as a faint smudge."
+      ],
+      "related": ["uma", "polaris", "m31"],
+      "sim": "Add Cassiopeia and select Schedar."
+    },
+    "ori": {
+      "title": "Orion",
+      "aka": "Ori · The Hunter",
+      "lede": "The Hunter of the northern winter sky, lying right on the celestial equator.",
+      "body": [
+        "Orion has two very bright stars: red **Betelgeuse** at the shoulder and blue **Rigel** at the foot. The three stars in a row in the middle form **Orion's Belt**.",
+        "Mintaka, at one end of the belt, has \\(\\delta \\approx 0^\\circ\\) and lies almost exactly on the celestial equator. So everywhere on Earth it rises close to due east and sets close to due west.",
+        "Extend the belt towards the south-east to reach Sirius. Below the belt hangs the sword, home of the Orion Nebula (M42)."
+      ],
+      "related": ["betelgeuse", "rigel", "m42", "equator"],
+      "sim": "Add Orion and select Betelgeuse."
+    },
+    "sco": {
+      "title": "Scorpius",
+      "aka": "Sco · The Scorpion",
+      "lede": "The hook-shaped Scorpion in the southern part of the northern summer sky.",
+      "body": [
+        "Scorpius is one of the few constellations that looks like its name: a curved body with a stinging tail. Its heart is the red star **Antares**.",
+        "Scorpius lies on the ecliptic right beside the direction of the galactic centre, so the sky around it is rich in clusters and nebulae.",
+        "With declinations from about \\(-20^\\circ\\) to \\(-43^\\circ\\), Scorpius climbs quite high in Vietnam but only peeps above the horizon in northern Europe."
+      ],
+      "related": ["antares", "milkyWay", "ecliptic"],
+      "sim": "Add Scorpius and select Antares."
+    },
+    "cru": {
+      "title": "Crux",
+      "aka": "Cru · The Southern Cross",
+      "lede": "The smallest of the 88 constellations, and a compass pointing to the south celestial pole.",
+      "body": [
+        "The four bright stars of Crux form a cross (the Southern Cross). Extend its long axis, from Gacrux through Acrux, about 4.5 times and you come close to the **south celestial pole**, where there is no bright star.",
+        "Crux spans declinations of about \\(-56^\\circ\\) to \\(-64^\\circ\\). In Hanoi, Acrux rises only about 6° above the southern horizon; in Ho Chi Minh City about 16°. North of latitude 27° or so, Crux never rises completely.",
+        "Crux appears on the flags of Australia, New Zealand, Brazil and several other southern countries."
+      ],
+      "related": ["pole", "neverRise", "canopus"],
+      "sim": "Add Crux and select Acrux."
+    },
+    "deepSky": {
+      "title": "Deep-sky objects",
+      "aka": "Messier · NGC",
+      "lede": "Objects beyond single stars: galaxies, nebulae and star clusters.",
+      "body": [
+        "A **galaxy** is a collection of billions of stars, like Andromeda (M31). A **nebula** is a cloud of gas and dust where new stars are born (M42) or that old stars have shed. A **star cluster** is a group of stars born together, like the Pleiades (M45).",
+        "In the 18th century the comet hunter Charles Messier listed fuzzy patches easily mistaken for comets: the **Messier** catalogue, today 110 objects (M1 to M110). The **NGC** catalogue (1888) lists nearly 8,000 objects.",
+        "The simulator draws deep-sky objects as open rings: pink for galaxies, teal for nebulae, yellow for clusters."
+      ],
+      "related": ["m31", "m42", "m45", "milkyWay"],
+      "sim": "Show deep-sky objects.",
+      "figure": "Deep-sky symbols in the simulator: open rings coloured by type — galaxy (pink), nebula (teal), star cluster (pale yellow)."
+    },
+    "m31": {
+      "title": "M31",
+      "aka": "Andromeda Galaxy",
+      "lede": "The nearest large galaxy, and the most distant thing you can see with the naked eye.",
+      "body": [
+        "M31 is about **2.5 million light-years** away: the light you see tonight left it before our species appeared. It is a spiral galaxy of about a trillion stars.",
+        "Under dark skies M31 appears as a faint oval smudge of magnitude about 3.4. In photographs it spans several times the width of the full Moon.",
+        "M31 and the Milky Way are approaching each other at about 110 km/s; they may merge in roughly 4–5 billion years."
+      ],
+      "related": ["deepSky", "cas", "milkyWay"],
+      "sim": "Show deep-sky objects and select M31."
+    },
+    "m42": {
+      "title": "M42",
+      "aka": "Orion Nebula",
+      "lede": "A vast stellar nursery, visible to the naked eye in Orion's sword.",
+      "body": [
+        "M42 is a cloud of gas and dust about 1,344 light-years away, where thousands of young stars are forming.",
+        "At its centre is the **Trapezium**, a group of four hot stars whose radiation makes the surrounding gas glow.",
+        "To the naked eye M42 is the slightly fuzzy “star” in the middle of Orion's sword. Binoculars clearly show a faint cloud."
+      ],
+      "related": ["ori", "deepSky", "m45"],
+      "sim": "Show deep-sky objects and select M42."
+    },
+    "m45": {
+      "title": "M45",
+      "aka": "Pleiades · Seven Sisters",
+      "lede": "The finest young star cluster in the sky, in Taurus.",
+      "body": [
+        "M45, the **Pleiades** or Seven Sisters, is an open cluster about 444 light-years away. Its stars are only about 100 million years old, far younger than the Sun.",
+        "The naked eye picks out 6–7 stars arranged like a tiny dipper; binoculars show more than a hundred blue-white stars.",
+        "M45 lies near the ecliptic, so the Moon sometimes passes across it and hides its stars."
+      ],
+      "related": ["deepSky", "m42", "starColor"],
+      "sim": "Show deep-sky objects and select M45."
+    }
+  }
+}

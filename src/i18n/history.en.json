@@ -1,0 +1,303 @@
+{
+  "era": {
+    "bc": "BC",
+    "ad": "AD",
+    "bcAria": "before Christ",
+    "adAria": "anno Domini"
+  },
+  "cal": {
+    "julian": "Julian calendar",
+    "gregorian": "Gregorian calendar"
+  },
+  "intro": {
+    "kicker": "Ancient Skies",
+    "title": "Explore the sky through time",
+    "lede": [
+      "The night sky we see today is not quite the sky of thousands of years ago. From the age of the Egyptian pyramids, through the observations of Hipparchus, to the days when the ancient Vietnamese watched and recorded events overhead, the apparent positions of celestial objects have never stopped changing.",
+      "With this tool you can choose a place and a moment in history and see the sky as someone living then would have seen it. Travel back and discover the sky that earlier generations looked up at."
+    ],
+    "whyTitle": "Why does the sky change over time?",
+    "whyLede": "Changes in the sky over thousands of years come from several astronomical processes that act on different timescales.",
+    "why": [
+      {
+        "title": "Precession of Earth's axis",
+        "body": "Earth's rotation axis is not fixed but moves slowly, completing a precession cycle of about 25,772 years. The positions of the celestial poles therefore shift. About 4,500 years ago, Thuban (Alpha Draconis) lay close to the north celestial pole and served as the pole star, a role Polaris holds today."
+      },
+      {
+        "title": "Proper motion of the stars",
+        "body": "Stars are not motionless in space: they constantly move relative to the Sun. Over thousands of years this changes their apparent positions and the shapes of constellations. Arcturus, for instance, has moved noticeably across the celestial sphere since the time of Hipparchus."
+      },
+      {
+        "title": "Changes in Earth's rate of rotation",
+        "body": "Earth's rotation rate varies over time, so the length of the day is not constant. The differences add up to a gap between Earth's actual rotation and time kept by uniform clocks. Reconstructing past skies therefore needs this correction for the apparent positions of the Moon, Sun and planets."
+      }
+    ],
+    "howTitle": "How to explore",
+    "how": [
+      {
+        "title": "Choose a moment",
+        "body": "Use the preset moments to jump to notable periods in history, or enter your own year, place and observing time."
+      },
+      {
+        "title": "Move around the sky",
+        "body": "Drag to rotate the view of the celestial sphere and use the scroll wheel to zoom in or out."
+      },
+      {
+        "title": "Change viewpoint",
+        "body": "The observer's view shows the sky as it appeared from your chosen place and time."
+      },
+      {
+        "title": "Test each effect",
+        "body": "On the Display tab you can switch each effect on or off to find out what role each motion plays in changing the sky over time."
+      },
+      {
+        "title": "Learn the controls",
+        "body": "If you are unsure about a tool, click Usui-chan's portrait in the corner, then point at the control you want explained."
+      }
+    ],
+    "start": "Start exploring"
+  },
+  "tabs": {
+    "time": "Time",
+    "place": "Place",
+    "anim": "Animation",
+    "display": "Display",
+    "data": "Data",
+    "aria": "Choose panel"
+  },
+  "anim": {
+    "title": "Animation",
+    "mode": "Playback",
+    "modeDay": "Turn through a day",
+    "modeYears": "Run through centuries",
+    "direction": "Direction",
+    "fwd": "Forward",
+    "back": "Backward",
+    "play": "Play",
+    "pause": "Pause",
+    "hour": "Time of day",
+    "hourBack": "−1 hour",
+    "hourFwd": "+1 hour",
+    "speed": "Rate",
+    "speedValue": "{v} per second",
+    "slow": "Slow",
+    "fast": "Fast",
+    "dayRates": [
+      "5 minutes",
+      "20 minutes",
+      "1 hour",
+      "3 hours",
+      "12 hours"
+    ],
+    "yearRates": [
+      "50 years",
+      "200 years",
+      "500 years",
+      "1000 years",
+      "2500 years"
+    ],
+    "noteDay": "The sky turns as it would if you watched all night: stars rise in the east and set in the west, and those near the pole circle around it.",
+    "noteYears": "Time and date stay fixed while the years pass. Watch the north celestial pole move to other stars and the constellations slowly change shape."
+  },
+  "sec": {
+    "presets": "Notable moments",
+    "time": "Date and time",
+    "place": "Location",
+    "fixes": "Three reasons the sky has changed",
+    "layers": "Display",
+    "readout": "The sky right now",
+    "pole": "The north celestial pole through the ages",
+    "selected": "Selected star"
+  },
+  "time": {
+    "year": "Year",
+    "month": "Month",
+    "monthOption": "{m}",
+    "day": "Day",
+    "clock": "Time",
+    "clockNote": "Solar time where you stand. Ancient people had no time zones, so none are used here.",
+    "slider": "Drag to change the year",
+    "sliderValue": "Year {n} {era}",
+    "back1000": "−1000 years",
+    "back100": "−100 years",
+    "fwd100": "+100 years",
+    "fwd1000": "+1000 years",
+    "stepAria": "Change year by {delta}",
+    "playBack": "◀ Back",
+    "playFwd": "Forward ▶",
+    "playStop": "■ Stop",
+    "playBackAria": "Run time back into the past",
+    "playFwdAria": "Run time forward into the future",
+    "playStopAria": "Stop running time",
+    "invalid": "{month} {year} has no day {day}.",
+    "gap": "There is no {day} {month} 1582: the calendar jumps straight from 4 to 15 October 1582.",
+    "range": "The year must lie between {min} {eraMin} and {max} {eraMax}."
+  },
+  "place": {
+    "preset": "Choose a place",
+    "lat": "Latitude φ (°, + north)",
+    "lon": "Longitude λ (°, + east)",
+    "sync": "Use the location from the simulation",
+    "errLat": "Latitude must be from −90 to 90.",
+    "errLon": "Longitude must be from −180 to 180.",
+    "groupVn": "Vietnam",
+    "groupOld": "Ancient observing sites",
+    "custom": "Custom"
+  },
+  "fix": {
+    "precession": "Earth's axis changes direction (precession)",
+    "precessionHint": "Earth's axis swings slowly like a wobbling top, taking nearly 25,800 years per turn. So the celestial pole drifts towards other stars.",
+    "motion": "The stars move",
+    "motionHint": "Every star is moving across the sky. After thousands of years some constellations have changed shape.",
+    "deltaT": "Earth's spin slows down (ΔT)",
+    "deltaTHint": "Each century the day grows about two thousandths of a second longer. Over millennia Earth has fallen hours behind a uniform clock, so the Moon and planets sit elsewhere.",
+    "motionCurated": "The motion of the {n} brightest and fastest stars is included. The others are left in place, as they move too slowly to notice by eye."
+  },
+  "layers": {
+    "lines": "Constellation lines",
+    "names": "Names of bright stars",
+    "ecliptic": "Ecliptic",
+    "equator": "Celestial equator",
+    "bodies": "Sun, Moon, planets",
+    "daylight": "Show stars in daylight too"
+  },
+  "bodies": {
+    "sun": "Sun",
+    "moon": "Moon",
+    "mercury": "Mercury",
+    "venus": "Venus",
+    "mars": "Mars",
+    "jupiter": "Jupiter",
+    "saturn": "Saturn"
+  },
+  "cardinal": {
+    "n": "N",
+    "e": "E",
+    "s": "S",
+    "w": "W"
+  },
+  "sunState": {
+    "day": "Sun above the horizon: daytime",
+    "civil": "Civil twilight (Sun 0–6° below the horizon)",
+    "nautical": "Nautical twilight (6–12° below the horizon)",
+    "astro": "Astronomical twilight (12–18° below the horizon)",
+    "night": "Fully dark"
+  },
+  "phase": [
+    "New Moon",
+    "Waxing crescent",
+    "First quarter",
+    "Waxing gibbous",
+    "Full Moon",
+    "Waning gibbous",
+    "Last quarter",
+    "Waning crescent"
+  ],
+  "readout": {
+    "date": "Calendar date",
+    "dateValue": "{day} {month} {year} {era} ({cal})",
+    "jd": "Julian date (JD)",
+    "ut": "Earth-rotation time (UT)",
+    "tt": "Uniform clock time (TT)",
+    "deltaT": "Difference ΔT",
+    "deltaTValue": "{dt} (± {sigma})",
+    "lag": "Earth's rotation lag",
+    "lagValue": "{deg}° compared with today's steady spin",
+    "lagNone": "none (ΔT switched off)",
+    "pole": "Pole star of the time",
+    "poleValue": "{name}, {sep}° from the pole",
+    "poleNone": "No bright star near the pole",
+    "obliquity": "Tilt of Earth's axis",
+    "equinox": "Shift of the March equinox",
+    "equinoxValue": "{deg}° along the ecliptic since the year 2000",
+    "equinoxNone": "unchanged (precession switched off)",
+    "sun": "Sun",
+    "sunValue": "altitude {alt}° · {state}",
+    "moon": "Moon",
+    "moonValue": "{phase}, {pct}% lit, altitude {alt}°",
+    "moonBelow": "{phase}, {pct}% lit (below the horizon)",
+    "minutes": "{n} min",
+    "hoursMinutes": "{h} h {m} min",
+    "hoursMinutesSeconds": "{h} h {m} min {s} s",
+    "seconds": "{n} s"
+  },
+  "selected": {
+    "none": "Click a star or other object for details.",
+    "mag": "magnitude {mag}",
+    "altaz": "altitude {alt}°, azimuth {az}°",
+    "coord": "α = {ra}, δ = {dec} (for this moment)",
+    "moved": "Moved {sep}° from its position in 2000 because of proper motion.",
+    "still": "This star moves too slowly, or lacks data, so it is left in place.",
+    "belowHorizon": "Currently below the horizon.",
+    "dismiss": "Deselect"
+  },
+  "pole": {
+    "caption": "The blue dotted line is the path of the north celestial pole around the ecliptic pole. The orange dot is the pole at your chosen moment.",
+    "aria": "Chart centred on the ecliptic pole: the circle is the path of the north celestial pole through the ages, the orange dot is its current position",
+    "label": "Ecliptic pole",
+    "ticks": "{n} {era}"
+  },
+  "hover": {
+    "star": "{name} · magnitude {mag}",
+    "unnamed": "HIP {hip} · magnitude {mag}"
+  },
+  "view": {
+    "mode3d": "3D dome",
+    "intro": "Introduction",
+    "firstPerson": "Observer's view",
+    "outside": "View from outside",
+    "mode2d": "Flat map",
+    "modeAria": "Display style",
+    "camera": "Default view",
+    "aria": "The sky looking up from the ground at the chosen moment: north at the top, east on the left",
+    "poleN": "North celestial pole",
+    "poleS": "South celestial pole",
+    "summary": "The sky seen from latitude {lat}, longitude {lon}, on {date} at {time}. {sun}",
+    "summaryNone": "No sky to display yet."
+  },
+  "notes": {
+    "title": "How far can ancient skies be trusted?",
+    "body": "Star positions come from the Hipparcos catalogue, with proper motion and precession added. The Sun, Moon and planets are less certain than the stars thousands of years back. Ancient ΔT is known only from old eclipse records, so the error grows the farther back you go. Star brightness is kept as today, although a few may since have brightened or faded."
+  },
+  "presets": {
+    "giza": {
+      "title": "Khufu's pyramid",
+      "desc": "Around 2560 BC, when the Great Pyramid of Giza was built. The star nearest the pole was then Thuban (α Draconis), not Polaris."
+    },
+    "coloa": {
+      "title": "Co Loa",
+      "desc": "Around 257 BC, when King An Duong Vuong built the Co Loa citadel. Polaris was not yet the pole star and the sky was quite different."
+    },
+    "hipparchus": {
+      "title": "Hipparchus finds precession",
+      "desc": "Around 127 BC on Rhodes. Hipparchus compared the position of Spica with older records and found that the equinoxes had shifted."
+    },
+    "ptolemy": {
+      "title": "Ptolemy writes the Almagest",
+      "desc": "Around AD 150 in Alexandria. Ptolemy's star catalogue dominated astronomy for over a thousand years."
+    },
+    "thanglong": {
+      "title": "The capital moves to Thang Long",
+      "desc": "In 1010 Emperor Ly Thai To moved the capital to Thang Long (now Hanoi). This is the sky the Ly dynasty astronomers watched."
+    },
+    "sn1054": {
+      "title": "The guest star of 1054",
+      "desc": "Early on 4 July 1054 at Kaifeng, a “guest star” blazed near Tianguan (ζ Tauri). Today it is the Crab Nebula (M1).",
+      "marker": "Guest star of 1054 (now M1)"
+    },
+    "today": {
+      "title": "Today (for comparison)",
+      "desc": "Return to the present moment at the current location, to compare with earlier ages."
+    }
+  },
+  "places": {
+    "giza": "Giza, Egypt",
+    "alexandria": "Alexandria, Egypt",
+    "rhodes": "Rhodes, Greece",
+    "babylon": "Babylon, Iraq",
+    "stonehenge": "Stonehenge, England",
+    "coloa": "Co Loa, Hanoi",
+    "kaifeng": "Kaifeng, China",
+    "chichen": "Chichén Itzá, Mexico"
+  }
+}

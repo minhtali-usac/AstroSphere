@@ -47,7 +47,7 @@ const onGlobe = async (page) =>
   }, GLOBE.toString());
 
 async function open(width, height, seed = {}) {
-  const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, reducedMotion: 'reduce' });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width, height }, deviceScaleFactor: 1, reducedMotion: 'reduce' });
   await ctx.addInitScript((kv) => {
     try {
       localStorage.setItem('astrosphere.hint.v1', 'true');

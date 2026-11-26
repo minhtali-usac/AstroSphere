@@ -9,7 +9,7 @@ mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 
 async function shot(name, { w = 1440, h = 900, seed = {}, session = {}, touch = false, act, ownShot = false } = {}) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch, deviceScaleFactor: 1 });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch, deviceScaleFactor: 1 });
   await ctx.addInitScript(
     ([kv, ss]) => {
       try {

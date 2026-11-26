@@ -22,7 +22,7 @@ mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 
 async function open(width, height) {
-  const ctx = await browser.newContext({ viewport: { width, height } });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width, height } });
   await ctx.addInitScript(FULL_MODE);
   const page = await ctx.newPage();
   await page.goto(URL);

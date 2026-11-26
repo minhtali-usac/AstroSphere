@@ -38,7 +38,7 @@ async function open(ctx) {
 }
 
 const newContext = (width, height, reducedMotion = 'no-preference') =>
-  browser.newContext({ viewport: { width, height }, reducedMotion }).then(async (ctx) => {
+  browser.newContext({ locale: 'vi-VN', viewport: { width, height }, reducedMotion }).then(async (ctx) => {
     // Không hiện gợi ý lần đầu (che khung nhìn trong ảnh chụp).
     await ctx.addInitScript(() => {
       try {

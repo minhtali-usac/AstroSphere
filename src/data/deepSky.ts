@@ -3,13 +3,14 @@
 // SIMBAD, NED, VizieR. Tọa độ (J2000), cấp sao và kích thước biểu kiến lấy từ d3-celestial; khoảng cách là
 // giá trị tham khảo làm tròn từ các tài liệu phổ biến (SIMBAD/NED, NASA), sai số có thể tới 10–20 %.
 
+import { pick } from '../i18n/locale';
 import raw from './generated/dsos.json';
 
 type RawDso = [string, string, string, string, number, number, number, number];
 
 export type DsoType = 's' | 'e' | 'i' | 'l' | 'sd' | 'oc' | 'gc' | 'sfr' | 'en' | 'rn' | 'pn' | 'snr' | 'pos';
 
-export const DSO_TYPE_VI: Record<string, string> = {
+const DSO_TYPE_VI: Record<string, string> = {
   s: 'Thiên hà xoắn ốc',
   e: 'Thiên hà elip',
   i: 'Thiên hà vô định hình',
@@ -23,6 +24,22 @@ export const DSO_TYPE_VI: Record<string, string> = {
   pn: 'Tinh vân hành tinh',
   snr: 'Tàn dư siêu tân tinh',
   pos: 'Nhóm sao / đám mây sao',
+};
+
+const DSO_TYPE_EN: Record<string, string> = {
+  s: 'Spiral galaxy',
+  e: 'Elliptical galaxy',
+  i: 'Irregular galaxy',
+  l: 'Lenticular galaxy',
+  sd: 'Dwarf galaxy',
+  oc: 'Open cluster',
+  gc: 'Globular cluster',
+  sfr: 'Star-forming region (emission nebula)',
+  en: 'Emission nebula',
+  rn: 'Reflection nebula',
+  pn: 'Planetary nebula',
+  snr: 'Supernova remnant',
+  pos: 'Asterism / star cloud',
 };
 
 /** Nhóm màu hiển thị theo loại. */
@@ -114,7 +131,7 @@ export const DSOS: DeepSkyObject[] = (raw as unknown as RawDso[]).map(([id, desi
     nameEn: x.en ?? alt,
     nameVi: x.vi ?? '',
     type: t,
-    typeVi: DSO_TYPE_VI[t] ?? t,
+    typeVi: pick(DSO_TYPE_VI, DSO_TYPE_EN)[t] ?? t,
     mag,
     sizeArcmin: size,
     ra,
@@ -151,10 +168,10 @@ export interface Comet {
  * Vị trí sao chổi thay đổi nhanh theo thời gian nên không được vẽ lên bầu trời; bảng chỉ dùng để tra cứu.
  */
 export const COMETS: Comet[] = [
-  { designation: '1P/Halley', nameVi: 'Sao chổi Halley', periodYr: 75.3, perihelionAu: 0.586, eccentricity: 0.967, inclinationDeg: 162.3, lastPerihelion: '09/02/1986', nextPerihelion: '28/07/2061', note: 'Nguồn của mưa sao băng Eta Aquariids và Orionids.' },
-  { designation: '2P/Encke', nameVi: 'Sao chổi Encke', periodYr: 3.3, perihelionAu: 0.34, eccentricity: 0.848, inclinationDeg: 11.3, lastPerihelion: '22/10/2023', nextPerihelion: '02/2027', note: 'Chu kỳ ngắn nhất trong các sao chổi sáng; nguồn của mưa sao băng Taurids.' },
-  { designation: '55P/Tempel–Tuttle', nameVi: 'Sao chổi Tempel–Tuttle', periodYr: 33.2, perihelionAu: 0.976, eccentricity: 0.906, inclinationDeg: 162.5, lastPerihelion: '28/02/1998', nextPerihelion: '05/2031', note: 'Nguồn của mưa sao băng Leonids (Sư Tử).' },
-  { designation: '109P/Swift–Tuttle', nameVi: 'Sao chổi Swift–Tuttle', periodYr: 133, perihelionAu: 0.96, eccentricity: 0.963, inclinationDeg: 113.5, lastPerihelion: '12/12/1992', nextPerihelion: '07/2126', note: 'Nguồn của mưa sao băng Perseids (Anh Tiên).' },
-  { designation: 'C/1995 O1 (Hale–Bopp)', nameVi: 'Sao chổi Hale–Bopp', periodYr: 2530, perihelionAu: 0.914, eccentricity: 0.995, inclinationDeg: 89.4, lastPerihelion: '01/04/1997', nextPerihelion: '≈ năm 4380', note: 'Nhìn thấy bằng mắt thường suốt khoảng 18 tháng (1996–1997).' },
-  { designation: 'C/2020 F3 (NEOWISE)', nameVi: 'Sao chổi NEOWISE', periodYr: 6800, perihelionAu: 0.295, eccentricity: 0.999, inclinationDeg: 128.9, lastPerihelion: '03/07/2020', nextPerihelion: '≈ 6800 năm nữa', note: 'Sao chổi sáng nhất quan sát được từ Bắc bán cầu kể từ Hale–Bopp.' },
+  { designation: '1P/Halley', nameVi: pick('Sao chổi Halley', 'Halley\'s Comet'), periodYr: 75.3, perihelionAu: 0.586, eccentricity: 0.967, inclinationDeg: 162.3, lastPerihelion: pick('09/02/1986', '1986-02-09'), nextPerihelion: pick('28/07/2061', '2061-07-28'), note: pick('Nguồn của mưa sao băng Eta Aquariids và Orionids.', 'Source of the Eta Aquariid and Orionid meteor showers.') },
+  { designation: '2P/Encke', nameVi: pick('Sao chổi Encke', 'Encke\'s Comet'), periodYr: 3.3, perihelionAu: 0.34, eccentricity: 0.848, inclinationDeg: 11.3, lastPerihelion: pick('22/10/2023', '2023-10-22'), nextPerihelion: pick('02/2027', '2027-02'), note: pick('Chu kỳ ngắn nhất trong các sao chổi sáng; nguồn của mưa sao băng Taurids.', 'Shortest period among the bright comets; source of the Taurid meteor shower.') },
+  { designation: '55P/Tempel–Tuttle', nameVi: pick('Sao chổi Tempel–Tuttle', 'Comet Tempel–Tuttle'), periodYr: 33.2, perihelionAu: 0.976, eccentricity: 0.906, inclinationDeg: 162.5, lastPerihelion: pick('28/02/1998', '1998-02-28'), nextPerihelion: pick('05/2031', '2031-05'), note: pick('Nguồn của mưa sao băng Leonids (Sư Tử).', 'Source of the Leonid meteor shower.') },
+  { designation: '109P/Swift–Tuttle', nameVi: pick('Sao chổi Swift–Tuttle', 'Comet Swift–Tuttle'), periodYr: 133, perihelionAu: 0.96, eccentricity: 0.963, inclinationDeg: 113.5, lastPerihelion: pick('12/12/1992', '1992-12-12'), nextPerihelion: pick('07/2126', '2126-07'), note: pick('Nguồn của mưa sao băng Perseids (Anh Tiên).', 'Source of the Perseid meteor shower.') },
+  { designation: 'C/1995 O1 (Hale–Bopp)', nameVi: pick('Sao chổi Hale–Bopp', 'Comet Hale–Bopp'), periodYr: 2530, perihelionAu: 0.914, eccentricity: 0.995, inclinationDeg: 89.4, lastPerihelion: pick('01/04/1997', '1997-04-01'), nextPerihelion: pick('≈ năm 4380', '≈ year 4380'), note: pick('Nhìn thấy bằng mắt thường suốt khoảng 18 tháng (1996–1997).', 'Visible to the naked eye for about 18 months (1996–1997).') },
+  { designation: 'C/2020 F3 (NEOWISE)', nameVi: pick('Sao chổi NEOWISE', 'Comet NEOWISE'), periodYr: 6800, perihelionAu: 0.295, eccentricity: 0.999, inclinationDeg: 128.9, lastPerihelion: pick('03/07/2020', '2020-07-03'), nextPerihelion: pick('≈ 6800 năm nữa', 'in ≈ 6800 years'), note: pick('Sao chổi sáng nhất quan sát được từ Bắc bán cầu kể từ Hale–Bopp.', 'The brightest comet seen from the Northern Hemisphere since Hale–Bopp.') },
 ];

@@ -25,7 +25,7 @@ const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--ena
 
 /** Ngữ cảnh mới (bộ nhớ trống = lần đầu vào trang). `init` chạy trước mọi trang. */
 async function context({ width = 1440, height = 900, touch = false, init } = {}) {
-  const ctx = await browser.newContext({
+  const ctx = await browser.newContext({ locale: 'vi-VN',
     viewport: { width, height },
     reducedMotion: 'no-preference',
     ...(touch ? { isMobile: true, hasTouch: true, deviceScaleFactor: 2 } : {}),
@@ -344,7 +344,7 @@ const SEEN = () => localStorage.setItem('astrosphere.guide.v1', JSON.stringify({
 
 // ------------------------------------------------------------------ Giảm chuyển động: mọi thứ hiện ngay
 {
-  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
   const page = await open(ctx);
   await page.waitForSelector('.guide-hello', { timeout: 10000 });
   const anim = await page.evaluate(() => ({

@@ -24,7 +24,7 @@ const browser = await chromium.launch({ args: ['--use-angle=swiftshader', '--ena
 const errors = [];
 
 async function open({ width = 1440, height = 900, reducedMotion = 'no-preference', mode = 'full', hello = true, seed = {} } = {}) {
-  const ctx = await browser.newContext({ viewport: { width, height }, deviceScaleFactor: 1, reducedMotion });
+  const ctx = await browser.newContext({ locale: 'vi-VN', viewport: { width, height }, deviceScaleFactor: 1, reducedMotion });
   await ctx.addInitScript(
     ({ mode, hello, seed }) => {
       try {

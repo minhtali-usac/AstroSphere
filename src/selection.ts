@@ -3,6 +3,7 @@
 import { fmtNum, julianDate, sunPosition } from './astro';
 import { getCatalogStar, nameOf, starConstellation, starDesignations } from './data/catalog';
 import { constellationName, constellationNameVi } from './data/constellations';
+import { pick } from './i18n/locale';
 import { DSOS, dsoDesignation, dsoGroup } from './data/deepSky';
 import { COLORS } from './scene/colors';
 import type { AppState, Selection } from './state';
@@ -55,7 +56,7 @@ function starDetails(hip: number | undefined, figureAbbr?: string): [string, str
 /** Khoảng cách theo năm ánh sáng, cách viết Việt Nam: "1 344 năm ánh sáng", "2,5 triệu năm ánh sáng". */
 export function fmtLightYears(ly: number): string {
   if (ly >= 1e6) return t('info.lyMillion', { v: fmtNum(ly / 1e6, ly >= 1e7 ? 0 : 1) });
-  return t('info.ly', { v: Math.round(ly).toLocaleString('vi-VN') });
+  return t('info.ly', { v: Math.round(ly).toLocaleString(pick('vi-VN', 'en-US')) });
 }
 
 function fmtSize(arcmin: number): string {
@@ -122,7 +123,7 @@ export function resolveSelection(s: AppState, sel: Selection = s.selected): Sele
     viName: t('info.sunViName'),
     ra: p.ra,
     dec: p.dec,
-    kind: t('info.kindSun', { date: s.sunDate.split('-').reverse().join('/') }),
+    kind: t('info.kindSun', { date: pick(s.sunDate.split('-').reverse().join('/'), s.sunDate) }),
     color: '#ffcc33',
   };
 }
