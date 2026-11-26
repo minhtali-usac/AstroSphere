@@ -2,7 +2,7 @@
 
 AstroSphere is the USAC astronomy club's celestial-coordinate simulator (CLB Thiên văn USAC, Trường ĐH KHTN – ĐHQG TP.HCM).
 
-- It is a static web app, and the whole interface is in Vietnamese.
+- It is a static web app. The interface is bilingual: Vietnamese and English, switched with the «EN»/«VI» button beside the mode switch (see «Interface text»).
 - Stack: Vite 8, TypeScript, and Three.js 0.186.
 - There is no UI framework, no web font, and no network access at runtime.
 - It deploys to GitHub Pages (`astrosphere.clbtvusac.com`) on every push to `main`; see `.github/workflows/deploy.yml`.
@@ -27,6 +27,7 @@ The browser acceptance checks:
 - run against `npx vite preview --port 4173 --strictPort`;
 - need the launch flags `--use-angle=swiftshader --enable-unsafe-swiftshader`.
 - start in Full mode: a fresh visitor lands in Simple, so the `docs/redesign/uat/` scripts store `astrosphere.mode.v1 = "full"` in an init script. `docs/redesign-2/uat/modes.mjs` covers Simple (it needs the dev server).
+- run in Vietnamese: they pass `locale: 'vi-VN'` to the browser context (an English-language browser gets the English interface);
 - skip Usui-chan's first-visit hello: every UAT except `docs/redesign-2/uat/guide.mjs` stores `astrosphere.guide.v1 = {"hello": true}` in its init script.
 
 ## Architecture rules
@@ -48,6 +49,7 @@ The browser acceptance checks:
 | `thien-cau.hoc-tap.v1` | localStorage | Learning-task progress |
 | `astrosphere.quality.v1` | sessionStorage | The user restored full quality |
 | `astrosphere.hint.v1` | localStorage | The user has dragged or clicked a 3D view once, or selected a star; the hint caption under the horizon view (always small and muted) is then hidden on phones, and Simple mode's first-action cue ("Bấm vào một ngôi sao…", `src/ui/simpleControls.ts`) is not shown on later visits |
+| `astrosphere.lang.v1` | localStorage | The interface language the user chose, `"vi"` or `"en"` (`src/i18n/locale.ts`). Order: `?lang=` → this value → the browser's languages (any `vi*` gives Vietnamese, otherwise English) |
 | `astrosphere.mode.v1` | localStorage | The interface mode the user last chose, `"simple"` or `"full"` (`src/ui/mode.ts`). With no value a visitor lands in Simple. `?mode=simple\|full` overrides it for one page load and is not stored |
 | `astrosphere.focus.v1` | sessionStorage | `{data: boolean, panels: boolean}`: whether the Full-mode focus layout (≥ 1101 px) has the data bar and the control panels open (`src/ui/focusLayout.ts`, guard `isFocusState`). Both start closed |
 | `astrosphere.codex.v1` | localStorage | Codex progress `{discovered: string[], read: string[]}` (entry ids); guard `isCodexProgress` in `src/codex/triggers.ts` |
@@ -64,7 +66,13 @@ The browser acceptance checks:
 
 ## Interface text (i18n)
 
-- Every user-visible string lives in `src/i18n/vi.json`. Read it with `t('literal.key')` or `tList('literal.key')`.
+- **Two languages.** Every Vietnamese string file has an English twin with the same keys and `{parameters}`: `vi.json`/`en.json`, `dialogs.*.json` (Help, About, object catalogue; merged into `t()` by the dialogs chunk), `codex.*.json`, `history.*.json`, `flight.*.json`. `src/i18n/en.test.ts` enforces parity, forbids leftover Vietnamese and compiles the formulas. Add a string to both.
+  - `src/i18n/locale.ts` decides the language once per page load (`LANG`, `pick(vi, en)`); switching reloads the page. It is pure, so `astro/format.ts` uses it (decimal comma and B/N/Đ/T in Vietnamese, decimal point and N/S/E/W in English). Data modules with inline text (places, constellation notes, deep-sky types, comets, review tasks) use `pick`.
+  - `src/boot.ts` is the page entry: it loads the one dictionary needed (`loadDictionary()`), then imports `main.ts`. **Do not use top-level await in `src/`**: it makes the bundler split the entry into many small chunks and breaks the size budget. Tests get the Vietnamese strings from `src/i18n/testSetup.ts`.
+  - English constellation names and abbreviations are the official IAU ones (tested against the full list of 88). Vietnamese names of objects still appear in the detail panels.
+  - **Thử thách SGK is hidden in English** (it follows a Vietnamese textbook) and is not translated.
+  - `index.html` is Vietnamese; `main.ts` sets `lang`, title, description and `manifest.en.webmanifest` for English.
+- Vietnamese strings live in `src/i18n/vi.json` (and the files above). Read them with `t('literal.key')` or `tList('literal.key')`.
 - `src/i18n/i18n.test.ts` enforces three rules:
   - Every literal key exists.
   - No common English words appear in any string. The banned words are: the, and, reset, help, about, start, pause, stop, speed, show, hide, star(s), trail, north, south, east, west, settings, loading, error.
@@ -88,7 +96,7 @@ The browser acceptance checks:
 - **USACodex** is the user-facing name of the codex (the code, file names and storage key keep `codex`). Its content lives in a second file, `src/i18n/codex.vi.json` (categories, entries, diagram labels). Only the lazy codex chunk (`src/codex/ui.ts`) imports it, so it never enters the entry chunk. The Codex interface strings stay in `vi.json` under `codexUi`.
   - `src/codex/codex.test.ts` applies the same banned-word rule and KaTeX check to it, and checks that every entry has a title, lede and body, that every `related` id, discovery-trigger id, `termLink` id and "Xem trong mô phỏng" action resolves to an entry.
   - Celestial object names (Polaris, Ursa Major, M31…) stay in English; give the Vietnamese name in the text.
-- Number formatting uses a comma as the decimal separator; see `astro/format.ts`. Use B/N for north/south and Đ/T for east/west.
+- Number formatting follows the language; see `astro/format.ts`. Vietnamese uses a comma as the decimal separator, B/N for north/south and Đ/T for east/west.
 
 ## Brand
 
@@ -105,7 +113,7 @@ The brand comes from the club site https://web-usac.vercel.app/.
 
 ## Performance budgets
 
-- Entry JS must stay at or below 90 kB gzip. three.js loads only through `import('./scene/boot')`.
+- Entry JS (boot, `main.ts` and one dictionary) must stay at or below 90 kB gzip (88.2 kB with the two languages). three.js loads only through `import('./scene/boot')`.
 - The «Bầu trời xưa» chunk (with `astronomy-engine`) stays below about 45 kB gzip; the entry chunks stay at or below 90 kB gzip (87.3 kB after adding it).
 - The flight-mode chunk stays at or below 35 kB gzip and its fetched data at or below 25 kB gzip (both excluding three.js). `docs/redesign/uat/bundle-size.mjs` enforces all three budgets.
 - Nothing in `update()` or `frame()` may allocate: no `new`, `clone()`, or array literals there. Use scratch objects.

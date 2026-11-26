@@ -6,7 +6,7 @@
 
 **Tiếng Việt** · [English](README.en.md)
 
-**Hệ thống mô phỏng hệ tọa độ thiên cầu, hoàn toàn bằng tiếng Việt**
+**Hệ thống mô phỏng hệ tọa độ thiên cầu, bằng tiếng Việt và tiếng Anh**
 
 Xoay bầu trời ngay trên trình duyệt để hiểu vì sao sao mọc, lặn, và vì sao sao Bắc Cực gần như đứng yên.
 

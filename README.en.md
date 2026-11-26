@@ -6,7 +6,7 @@
 
 [Tiếng Việt](README.md) · **English**
 
-**An interactive celestial-coordinate simulator, built for Vietnamese learners**
+**An interactive celestial-coordinate simulator, in Vietnamese and English**
 
 Spin the sky in your browser to see why stars rise and set, and why Polaris barely moves.
 
@@ -22,7 +22,7 @@ Spin the sky in your browser to see why stars rise and set, and why Polaris bare
 
 </div>
 
-> **Note:** the app's interface is entirely in Vietnamese. This page describes the project for English-speaking visitors.
+> **Languages:** the app is available in English and Vietnamese. It follows your browser's language; use the **EN / VI** button in the top bar to switch, or open [the English link](https://astrosphere.clbtvusac.com/?lang=en).
 
 ## About
 
@@ -43,7 +43,7 @@ AstroSphere helps learners build intuition for three ideas:
 | 🎚️ **Two modes** | *Cơ bản* (Simple) for newcomers: three numbered steps. *Đầy đủ* (Full): four control panels, a live data bar, review tasks and presentation mode. |
 | 🔗 **Numbers linked to shapes** | Hover a number and the matching part of the drawing lights up in both views, and the other way round. |
 | 📖 **USACodex** | A 44-entry handbook in 7 categories that unlocks as you meet each concept in the simulation. |
-| 🎮 **Thử thách SGK** (Textbook Challenge) | 10 interactive activities for Lessons 4 and 5 of the Vietnamese physics topic "Earth and Sky". The teacher picks the activities; a scoreboard closes the session. |
+| 🎮 **Thử thách SGK** (Textbook Challenge) | 10 interactive activities for Lessons 4 and 5 of the Vietnamese physics topic "Earth and Sky". The teacher picks the activities; a scoreboard closes the session. Vietnamese interface only. |
 | 🚀 **Bay vào vũ trụ** (Fly into space) | Leave Earth and fly to the Sun, the eight planets, the Moon, about 1,300 stars and 60 confirmed exoplanets, all at their real positions and distances. |
 | ⌛ **Bầu trời xưa** (Sky of the past) | Pick a place and a date from 6001 BC to AD 3000 and see the sky people saw: axial precession, stellar proper motion and the slowing of Earth's rotation (ΔT), each with a switch to compare. Presets include the Great Pyramid, Cổ Loa, Hipparchus and the 1054 guest star. |
 | ✏️ **Ôn tập** (Review) | 12 tasks with hints, explanations and scoring. |
